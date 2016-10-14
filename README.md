@@ -1,7 +1,7 @@
-SolarCollectorController
+# SolarCollectorController
 It's a program for solar collector controller, using arduino and esp8266.
 
-Parts used:
+## Parts used:
 - Arduino
 - Esp8266
 - 2x ds18b20 temperature sensors
@@ -13,7 +13,7 @@ Parts used:
 - 20x4 lcd
 - Rgb led diode (for status signalization)
 
-You can set:
+## You can set:
 - manual controll(on off) or automatic
 - min temp difference , if temp difference is lower than this pump wont be enabled
 - max temp of boiler , if boiler is higher than this pupm will stop
@@ -22,7 +22,7 @@ You can set:
 - RTC time
 - altitude(for pressure sensor)
 
-Features:
+## Features:
 - Log to SD card
 - Smart pump control
 - Esp8266 web interface to control pump options are Pump on, Pump off and Automatic(in development)
@@ -32,15 +32,14 @@ Features:
 - Encoder controlled
 - RGB signalization
 
-RGB signalization:
+## RGB signalization:
 - Green, pump is operating
 - Violet, pump is not operating
 - Red, overheated
 - Blue, sensor problem, check serial monitor for more details
 - Orange, SD card problem
 
-Pins configuration:
-
+## Pins configuration:
 - 3 -> LCD A	LCD brightness control
 - 4 -> LCD V0 	LCD Contrast control
 - 5 -> Boiler temp sensor data pin
