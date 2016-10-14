@@ -31,7 +31,7 @@ class Pump
     bool isEnabled() {
       return this->enabled;
     }
-    
+
     void disable() {
       this->enabled = false;
     }

@@ -5,10 +5,10 @@ class TempSensor
 {
   private:
     int sensorPin;
-    double sensorTemperature;
-    double sensorMaxTemperature;
-    double sensorMinTemperature;
-    double sensorAvgTemperature;
+    double sensorTemperature = -127;
+    double sensorMaxTemperature = 0;
+    double sensorMinTemperature = 0;
+    double sensorAvgTemperature = 0;
     unsigned long numberOfReadings = 0;
     unsigned long avgSumHelper;
     OneWire* sensorOneWire;
@@ -23,7 +23,9 @@ class TempSensor
       sensorOneWire = new OneWire(this->sensorPin);
       sensor = new DallasTemperature(this->sensorOneWire);
       sensor->begin();
-      this->sensorMaxTemperature, this->sensorMinTemperature, this->sensorAvgTemperature, this->sensorMinTemperature, this->sensorMaxTemperature = temp();
+      this->sensorMaxTemperature = 100.0;
+      this->sensorMinTemperature = 100.0;
+      this->sensorAvgTemperature = 100.0;
     }
 
     bool isEnabled() {
@@ -44,23 +46,24 @@ class TempSensor
     String updateTemp() {
       if (this->enabled) {
         sensor->requestTemperatures();
-        this->sensorTemperature = sensor->getTempCByIndex(0);
+        double temporary = sensor->getTempCByIndex(0);
+        Serial.println(temporary);
+        if (temporary == -127.00) return "Na";
 
-        if (this->sensorTemperature == -127) return -127.0;
-
+        this->sensorTemperature = temporary;
         this->numberOfReadings++;
         this->avgSumHelper += sensorTemperature;
 
-        if (this->sensorTemperature < this->sensorMinTemperature) this->sensorMinTemperature = this->sensorTemperature;
-        if (this->sensorTemperature > this->sensorMaxTemperature) this->sensorMaxTemperature = this->sensorTemperature;
+        if (this->sensorTemperature < this->sensorMinTemperature && !isnan(this->sensorTemperature)) this->sensorMinTemperature = this->sensorTemperature;
+        if (this->sensorTemperature > this->sensorMaxTemperature && !isnan(this->sensorTemperature)) this->sensorMaxTemperature = this->sensorTemperature;
 
-        return this->String(sensorTemperature);
+        return String(this->sensorTemperature);
       }
       else return "Na";
     }
 
     String temp() {
-      if (this->enabled) return this->String(sensorTemperature);
+      if (this->enabled && this->sensorTemperature != -127) return String(this->sensorTemperature, 0);
       else return "Na";
     }
 
@@ -76,10 +79,18 @@ class TempSensor
     }
 
     String statistics(String format) {
-      format.replace("%Max", String(this->sensorMaxTemperature, 0));
-      format.replace("%Min", String(this->sensorMinTemperature, 0));
-      format.replace("%Avg", String(this->sensorAvgTemperature, 0));
-      format.replace("%Cur", String(this->sensorTemperature, 0));
+      if (this->sensorTemperature != -127) format.replace("%Max", String(this->sensorMaxTemperature, 0));
+      else format.replace("%Max", "Na");
+
+      if (this->sensorTemperature != -127) format.replace("%Min", String(this->sensorMinTemperature, 0));
+      else format.replace("%Min", "Na");
+
+      if (this->sensorTemperature != -127) format.replace("%Avg", String(this->sensorAvgTemperature, 0));
+      else format.replace("%Avg", "Na");
+
+      if (this->sensorTemperature != -127) format.replace("%Cur", String(this->sensorTemperature, 0));
+      else format.replace("%Cur", "Na");
+
       return  format;
     }
 

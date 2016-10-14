@@ -1,7 +1,7 @@
 /*
-Name:		SolarCollectorController.ino
-Created:	6/18/2016 12:09:28 PM
-Author:	UnknownHero99
+  Name:		SolarCollectorController.ino
+  Created:	6/18/2016 12:09:28 PM
+  Author:	UnknownHero99
 */
 
 #include <SoftReset.h>
@@ -92,84 +92,83 @@ bool pressureProblem = false;
 
 
 void setup() {
-	eeprom_read_config();
-	wake();
+  eeprom_read_config();
+  wake();
 
-	Serial.begin(9600);
-	Serial2.begin(115200);
+  Serial.begin(9600);
+  Serial2.begin(115200);
 
-	dht.begin();
+  dht.begin();
 
-	if (pressure.begin())
-		Serial.println("BMP180 init success");
-	else
-	{
-		Serial.println("BMP180 init fail");
-		pressureProblem = true;
-	}
+  if (pressure.begin())
+    Serial.println("BMP180 init success");
+  else
+  {
+    Serial.println("BMP180 init fail");
+    pressureProblem = true;
+  }
 
-	menu_setup();
+  menu_setup();
 
-	if (!rtc.begin()) {
-		//RTC
-		Wire.begin();
-		Serial.println("Problem with RTC");
-	}
-	now = rtc.now();
-	sensorUpdate();
+  if (!rtc.begin()) {
+    //RTC
+    Wire.begin();
+    Serial.println("Problem with RTC");
+  }
+  now = rtc.now();
+  sensorUpdate();
   resetStatistics();
-	if (!SD.begin(ChipSelect)) {
-		lcd.clear();
-		lcd.print("Problem with SD card");
-		delay(2000);
-		sdProblem = true;
-	}
-	sdcardwrite();
-	ledHandler();
+  if (!SD.begin(ChipSelect)) {
+    lcd.clear();
+    lcd.print("Problem with SD card");
+    delay(2000);
+    sdProblem = true;
+  }
+  sdcardwrite();
+  ledHandler();
 }
 
 
 void loop() {
 
-	//esp8266 check for commands
-	serialhandler();
+  //esp8266 check for commands
+  serialhandler();
 
+  //log on sd card
+  if (millis() - lastLog >= logInterval) sdcardwrite();
 
-	//log on sd card
-	if (millis() - lastLog >= logInterval) sdcardwrite();
-
-	//reset min and max statistics
-	if (now.hour() == 0 && now.minute() == 0) {
-		mainPump.resetTime();
+  //reset min and max statistics
+  if (now.hour() == 0 && now.minute() == 0) {
+    mainPump.resetTime();
     resetStatistics();
-	}
+  }
 
-	//update time to display every second
-	mainPump.updateTime();
+  //update time to display every second
+  mainPump.updateTime();
 
 
-	//quit menu if you havent used encoder for some time
-	if (millis() - lastAction >= statusDelay && status == 0) {
-		status = 1;
-		lcd.clear();
-		statuslcd();
-	}
+  //quit menu if you havent used encoder for some time
+  if (millis() - lastAction >= statusDelay && status == 0) {
+    status = 1;
+    lcd.clear();
+    statuslcd();
+  }
 
-	//go to sleep if you havent used encoder for some time
-	if (millis() - lastAction >= sleepDelay && !sleeping) sleep();
+  //go to sleep if you havent used encoder for some time
+  if (millis() - lastAction >= sleepDelay && !sleeping) sleep();
 
-	//update sensor values, use tempHandler and ledHandler
-	if (millis() - lastUpdate >= updateInterval) {
-		sensorUpdate();
-		TempHandler();
-		ledHandler();
-	}
+  //update sensor values, use tempHandler and ledHandler
+  if (millis() - lastUpdate >= updateInterval) {
+    sensorUpdate();
+    TempHandler();
+    ledHandler();
+  }
 
-  if (status != 0){
+  if (status != 0) {
     menuEntranceHandler();
   }
 
-	//run controllhandler if in menu
-	if (status == 0 || sleeping)controlhandler();
+  //run controllhandler if in menu
+  if (status == 0 || sleeping)controlhandler();
 }
 
