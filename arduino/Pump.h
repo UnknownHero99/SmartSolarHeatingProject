@@ -5,6 +5,7 @@ class Pump
     bool normalState;
     bool pumpOperation;
     unsigned long lastOperatingTimeUpdate;
+    bool enabled = true;
 
     int operatingHours, operatingMinutes, operatingSeconds, operatingMilliSeconds = 0;
 
@@ -25,6 +26,18 @@ class Pump
 
     bool isOperating() {
       return this->pumpOperation;
+    }
+
+    bool isEnabled() {
+      return this->enabled;
+    }
+    
+    void disable() {
+      this->enabled = false;
+    }
+
+    void enable() {
+      this->enabled = true;
     }
 
     void on() {

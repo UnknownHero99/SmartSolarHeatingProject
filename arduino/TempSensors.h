@@ -13,6 +13,7 @@ class TempSensor
     unsigned long avgSumHelper;
     OneWire* sensorOneWire;
     DallasTemperature* sensor;
+    bool enabled = true;
 
   public:
 
@@ -25,28 +26,42 @@ class TempSensor
       this->sensorMaxTemperature, this->sensorMinTemperature, this->sensorAvgTemperature, this->sensorMinTemperature, this->sensorMaxTemperature = temp();
     }
 
+    bool isEnabled() {
+      return this->enabled;
+    }
 
+    void disable() {
+      this->enabled = false;
+    }
+
+    void enable() {
+      this->enabled = true;
+    }
     int showPin() {
       return this->sensorPin;
     }
 
-    double updateTemp() {
-      sensor->requestTemperatures();
-      this->sensorTemperature = sensor->getTempCByIndex(0);
+    String updateTemp() {
+      if (this->enabled) {
+        sensor->requestTemperatures();
+        this->sensorTemperature = sensor->getTempCByIndex(0);
 
-      if (this->sensorTemperature == -127) return -127.0;
+        if (this->sensorTemperature == -127) return -127.0;
 
-      this->numberOfReadings++;
-      this->avgSumHelper += sensorTemperature;
+        this->numberOfReadings++;
+        this->avgSumHelper += sensorTemperature;
 
-      if (this->sensorTemperature < this->sensorMinTemperature) this->sensorMinTemperature = this->sensorTemperature;
-      if (this->sensorTemperature > this->sensorMaxTemperature) this->sensorMaxTemperature = this->sensorTemperature;
+        if (this->sensorTemperature < this->sensorMinTemperature) this->sensorMinTemperature = this->sensorTemperature;
+        if (this->sensorTemperature > this->sensorMaxTemperature) this->sensorMaxTemperature = this->sensorTemperature;
 
-      return this->sensorTemperature;
+        return this->String(sensorTemperature);
+      }
+      else return "Na";
     }
 
-    double temp() {
-      return this->sensorTemperature;
+    String temp() {
+      if (this->enabled) return this->String(sensorTemperature);
+      else return "Na";
     }
 
     double avgTemp() {
