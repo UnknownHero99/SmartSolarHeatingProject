@@ -64,6 +64,11 @@ class TempSensor
       else return "Na";
     }
 
+    double tempDouble() {
+      if (this->enabled) return this->sensorTemperature;
+      else return -127;
+    }
+
     double avgTemp() {
       temp();
       this->sensorAvgTemperature = this->avgSumHelper / this->numberOfReadings;
