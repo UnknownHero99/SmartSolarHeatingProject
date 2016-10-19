@@ -42,7 +42,8 @@ TempSensor collectorSensor(collectorSensorPin);
 TempSensor t1Sensor(t1SensorPin);
 TempSensor t2Sensor(t2SensorPin);
 
-Pump mainPump(pumpPin);
+Pump mainPump("mainPump", pumpPin);
+Pump pumps[] = {mainPump};
 
 DHT dht(DHTPin, DHT22);
 

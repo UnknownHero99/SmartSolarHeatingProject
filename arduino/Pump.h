@@ -1,23 +1,27 @@
 class Pump
 {
   private:
+    String name;
     int pumpPin;
     bool normalState;
     bool pumpOperation;
     unsigned long lastOperatingTimeUpdate;
     bool enabled = true;
-
+    
     int operatingHours, operatingMinutes, operatingSeconds, operatingMilliSeconds = 0;
-
-
-
+    
   public:
 
-    Pump(int pin, bool state = false) {
+    Pump(String name, int pin, bool state = false) {
+      this->name = name;
       this->pumpPin = pin;
       this->normalState = state;
       pinMode(this->pumpPin, OUTPUT);
       off();
+    }
+
+    String getName(){
+      return this->name;
     }
 
     int showPin() {

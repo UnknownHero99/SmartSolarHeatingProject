@@ -47,7 +47,6 @@ class TempSensor
       if (this->enabled) {
         sensor->requestTemperatures();
         double temporary = sensor->getTempCByIndex(0);
-        Serial.println(temporary);
         if (temporary == -127.00) return "Na";
 
         this->sensorTemperature = temporary;
