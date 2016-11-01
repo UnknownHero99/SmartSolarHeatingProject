@@ -179,10 +179,7 @@ void esphandler() {
   Espsend += "&field5=";
   Espsend += roomPressure;
   Espsend += "\r\n\r\n";
-  Serial2.print(">");
-  delay(200);
-  Serial2.print(Espsend);
-  Serial.print("ThingSpeak("+Espsend+")");
+  Serial2.print("ThingSpeak(" + Espsend + ");");
 }
 
 void serialhandler() {
@@ -198,8 +195,15 @@ void serialhandler() {
       String state = args.substring(args.indexOf(',') + 2);
       for (int i = 0; i < sizeof(pumps) / sizeof(pumps[0]); i++) {
         if (pumps[i].getName() == pumpName) {
-          if (state == "On")pumps[i].on();
-          else if (state == "Off")pumps[i].off();
+			if (state == "On") {
+				autoMode = false;
+				pumps[i].on();
+			}
+			else if (state == "Off") {
+				autoMode = false;
+				pumps[i].off();
+			}
+		  else if (state == "Auto")autoMode = true;
           else if (state == "Enable")pumps[i].enable();
           else if (state == "Disable")pumps[i].disable();
           else if (state == "Reset")pumps[i].resetTime();
@@ -215,12 +219,12 @@ void serialhandler() {
       if (autoMode) data += "\"On\"";
       else data += "\"Off\"";
       data += ",\"operatingTimeHours\": " + String(mainPump.operatingTime("%H")) + ",\"operatingTimeMinutes\": " + String(mainPump.operatingTime("%M")) + ",\"boilerTemp\": " + String(boilerSensor.temp()) + ",\"collectorTemp\": " + String(collectorSensor.temp()) + ",\"t1Temp\": " + String(t1Sensor.temp()) + ",\"t2Temp\": " + String(t2Sensor.temp()) + ",\"roomTemp\": " + String(roomTemp) + ",\"roomHumidity\": " + String(roomHumidity) + ",\"roomPressure\": " + String(roomPressure) + "}";
-      Serial2.print("Data(" + data + ")");
+	  Serial2.print("Data(" + data + ");");
     }
 
     else if (cmd == "GetSettings") {
       String data = "{\"minTempDiff\": " + String(settingsMinTempDifference) + ",\"maxTempCollector\": " + String(settingsMaxTempCollector) + ",\"minTempCollector\": " + String(settingsMinTempCollector) + ",\"maxTempBoiler\": " + String(settingsMaxTempBoiler) + ",\"altitude\": " + String(altitude) + "}";
-      Serial2.print("Settings(" + data + ")");
+	  Serial2.print("Settings(" + data + ");");
     }
 
     else if (cmd == "Set") {
@@ -253,86 +257,6 @@ void serialhandler() {
 
   }
 }
-
-/*
-
-
-
-   void serialhandler() {
-  String input = "";
-  if (Serial2.available()) {
-    input = Serial2.readStringUntil(';');
-
-    if (input == "PumpOn") {
-      autoMode = false;
-      mainPump.on();
-      return;
-    }
-
-    if (input == "PumpOff") {
-      autoMode = false;
-      mainPump.off();
-      return;
-    }
-
-    if (input == "PumpAuto") {
-      autoMode = true;
-      sensorUpdate();
-      TempHandler();
-      ledHandler();
-      return;
-    }
-
-    if (input == "reqAllData") {
-      String date = "\"" + String(now.day()) + "." + String(now.month()) + "." + String(now.year()) + " " + String(now.hour()) + ":" + String(now.minute()) + "\"";
-      String data = "{\"date\": " + date + ",\"pumpOperating\": ";
-      if (mainPump.isOperating()) data += "\"On\"";
-      else data += "\"Off\"";
-      data += ",\"pumpAutoMode\": ";
-      if (autoMode) data += "\"On\"";
-      else data += "\"Off\"";
-      data += ",\"operatingTimeHours\": " + String(mainPump.operatingTime("%H")) + ",\"operatingTimeMinutes\": " + String(mainPump.operatingTime("%M")) + ",\"boilerTemp\": " + String(boilerSensor.temp()) + ",\"collectorTemp\": " + String(collectorSensor.temp()) + ",\"t1Temp\": " + String(t1Sensor.temp()) + ",\"t2Temp\": " + String(t2Sensor.temp()) + ",\"roomTemp\": " + String(roomTemp) + ",\"roomHumidity\": " + String(roomHumidity) + ",\"roomPressure\": " + String(roomPressure) + "}";
-      Serial2.println(data);
-      Serial.print(data);
-      return;
-    }
-
-    if (input == "reqSettings") {
-      String data = "{\"minTempDiff\": " + String(settingsMinTempDifference) + ",\"maxTempCollector\": " + String(settingsMaxTempCollector) + ",\"minTempCollector\": " + String(settingsMinTempCollector) + ",\"maxTempBoiler\": " + String(settingsMaxTempBoiler) + ",\"altitude\": " + String(altitude) + "}";
-      Serial2.println(data);
-      Serial.println(data);
-      return;
-    }
-
-    if (firstxchars(input, 3) == "SET") {
-      String jsonSettings = input.substring(3);
-      Serial.println(jsonSettings);
-      char json[jsonSettings.length()];
-      jsonSettings.toCharArray(json, jsonSettings.length());
-      StaticJsonBuffer<200> jsonBuffer;
-      JsonObject& root = jsonBuffer.parseObject(json);
-      settingsMinTempDifference = root["minTempDiff"];
-      settingsMinTempCollector = root["minTempCollector"];
-      settingsMaxTempCollector = root["maxTempCollector"];
-      settingsMaxTempBoiler = root["maxTempBoiler"];
-      altitude = root["altitude"];
-      EEPROM.update(0, settingsMinTempDifference);
-      EEPROM.update(1, settingsMinTempCollector);
-      EEPROM.update(2, settingsMaxTempCollector);
-      EEPROM.update(3, settingsMaxTempBoiler);
-      Serial.println(altitude);
-      int value = altitude % 10;
-      EEPROM.update(6, value);
-      value = (altitude / 10) % 10;
-      EEPROM.update(7, value);
-      value = (altitude / 100) % 10;
-      EEPROM.update(8, value);
-      value = (altitude / 1000) % 10;
-      EEPROM.update(9, value);
-      serialhandler();
-    }
-  }
-  }*/
 
 void resetStatistics() {
   collectorSensor.resetStatistics();

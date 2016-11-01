@@ -35,7 +35,7 @@ MyRenderer my_renderer;
 // Menu variables
 
 MenuSystem ms(my_renderer);
-MenuItem espIP("web ui IP", &reqestIp);
+//MenuItem espIP("web ui IP", &reqestIp);
 Menu pumpModeMenu("Pump mode");
 MenuItem pumpModeAutoMenu("Automatic", &pumpAutoModeLcd);
 Menu pumpModeManualMenu("Manual");
@@ -437,7 +437,7 @@ void pumpOffModeLcd(MenuItem* p_menu_item) {
 }
 
 void reqestIp(MenuItem* p_menu_item) {
-  Serial2.print("reqIP");
+	Serial2.print("GetIP();");
   String ip = Serial.readString();
   ms.reset();
   lcd.clear();
