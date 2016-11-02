@@ -4,8 +4,8 @@
 #include <ESP8266mDNS.h>
 #include <ArduinoJson.h>
 
-const char* ssid = "linksys";
-const char* password = "c9c2bffadf";
+const char* ssid = "";
+const char* password = "";
 String apiKey = "";//replace with thingspeak api
 const char* loginUsername = "admin";
 const char* loginPassword = "admin";
