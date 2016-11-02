@@ -73,7 +73,7 @@ int buttonState = 0;
 int lastButtonState = 0;
 
 int current;
-
+String IP;
 long millisHeld;
 long secsHeld;
 long prevSecsHeld;
