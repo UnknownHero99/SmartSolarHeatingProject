@@ -122,7 +122,7 @@ void setup() {
   if (!SD.begin(ChipSelect)) {
     lcd.clear();
     lcd.print("Problem with SD card");
-    delay(2000);
+    delay(1000);
     sdProblem = true;
   }
   sdcardwrite();
