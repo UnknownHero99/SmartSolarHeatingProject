@@ -195,7 +195,7 @@ void statuslcd() {
 	lcd.print("%");
 	lcd.setCursor(0, 3);
 	lcd.print("P:");
-	if (mainPump.isOperating()) lcd.print("On      ");
+	if (pumps[0].isOperating()) lcd.print("On      ");
 	else lcd.print("Off     ");
 	lcd.print("  ");
 	lcd.setCursor(10, 3);
@@ -245,7 +245,7 @@ void statuslcd2() {
 	lcd.print(roomMinHumidity, 0);
 	lcd.setCursor(0, 3);
 	lcd.print("Pump: ");
-	lcd.print(mainPump.operatingTime("%Hh %Mm     "));
+	lcd.print(pumps[0].operatingTime("%Hh %Mm     "));
 }
 
 void statuslcd3() {
@@ -418,7 +418,7 @@ void pumpAutoModeLcd(MenuItem* p_menu_item) {
 
 void pumpOnModeLcd(MenuItem* p_menu_item) {
 	autoMode = false;
-	mainPump.on();
+	pumps[0].on();
 	ms.back();
 	ms.back();
 	ms.display();
@@ -426,7 +426,7 @@ void pumpOnModeLcd(MenuItem* p_menu_item) {
 
 void pumpOffModeLcd(MenuItem* p_menu_item) {
 	autoMode = false;
-	mainPump.off();
+	pumps[0].off();
 	ms.back();
 	ms.back();
 	ms.display();

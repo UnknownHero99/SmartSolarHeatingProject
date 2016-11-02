@@ -40,11 +40,19 @@ void serialHandler() {
 			if (!root.success()) return;
 			Data = args;
 		}
+		else if (cmd == "PumpStatus") {
+			char json[args.length() + 1];
+			args.toCharArray(json, args.length() + 1);
+			StaticJsonBuffer<200> jsonBuffer;
+			JsonObject& root = jsonBuffer.parseObject(json);
+			if (!root.success()) return;
+			pumps = args;
+		}
 	}
 }
 
 void update() {
-	Serial.print("GetSettings();GetData();");
+	Serial.print("GetSettings();GetData();GetPumps();");
 	lastUpdate = millis();
 }
 

@@ -1,23 +1,23 @@
 
 void TempHandler() {
 	if (autoMode) {
-		if ((collectorSensor.tempDouble() - boilerSensor.tempDouble() >= settingsMinTempDifference && collectorSensor.tempDouble() >= settingsMinTempCollector && boilerSensor.tempDouble() < settingsMaxTempBoiler && !mainPump.isOperating()) || (collectorSensor.tempDouble() > settingsMaxTempCollector && boilerSensor.tempDouble() < settingsMaxTempBoiler && !mainPump.isOperating()))
+		if ((collectorSensor.tempDouble() - boilerSensor.tempDouble() >= settingsMinTempDifference && collectorSensor.tempDouble() >= settingsMinTempCollector && boilerSensor.tempDouble() < settingsMaxTempBoiler && !pumps[0].isOperating()) || (collectorSensor.tempDouble() > settingsMaxTempCollector && boilerSensor.tempDouble() < settingsMaxTempBoiler && !pumps[0].isOperating()))
 		{
-			mainPump.on();
+			pumps[0].on();
 		}
 
-		if ((collectorSensor.tempDouble() - boilerSensor.tempDouble() < settingsMinTempDifference && collectorSensor.tempDouble() < settingsMaxTempCollector && mainPump.isOperating()) || (boilerSensor.tempDouble() >= settingsMaxTempBoiler && mainPump.isOperating()) || (collectorSensor.tempDouble() < settingsMinTempCollector && mainPump.isOperating())) {
-			mainPump.off();
+		if ((collectorSensor.tempDouble() - boilerSensor.tempDouble() < settingsMinTempDifference && collectorSensor.tempDouble() < settingsMaxTempCollector && pumps[0].isOperating()) || (boilerSensor.tempDouble() >= settingsMaxTempBoiler && pumps[0].isOperating()) || (collectorSensor.tempDouble() < settingsMinTempCollector && pumps[0].isOperating())) {
+			pumps[0].off();
 		}
 	}
 	else {
-		if ((collectorSensor.tempDouble() > settingsMaxTempCollector && boilerSensor.tempDouble() < settingsMaxTempBoiler && !mainPump.isOperating())) {
+		if ((collectorSensor.tempDouble() > settingsMaxTempCollector && boilerSensor.tempDouble() < settingsMaxTempBoiler && !pumps[0].isOperating())) {
 
-			mainPump.on();
+			pumps[0].on();
 		}
 
-		if ((boilerSensor.tempDouble() >= settingsMaxTempBoiler && mainPump.isOperating())) {
-			mainPump.off();
+		if ((boilerSensor.tempDouble() >= settingsMaxTempBoiler && pumps[0].isOperating())) {
+			pumps[0].off();
 		}
 	}
 }
@@ -117,7 +117,7 @@ void sdcardwrite() {
 	}
 	else logfile = SD.open(filename.c_str(), FILE_WRITE);
 	if (logfile) {
-		logfile.println(String(now.hour()) + ":" + String(now.minute()) + ";" + String(collectorSensor.tempDouble()) + ";" + String(collectorSensor.statistics("%Max")) + ";" + String(collectorSensor.statistics("%Min")) + ";" + String(boilerSensor.tempDouble()) + ";" + String(boilerSensor.statistics("%Max")) + ";" + String(boilerSensor.statistics("%Min")) + ";" + String(roomMaxTemp) + ";" + String(roomMinTemp) + ";" + String(roomMaxPressure) + ";" + String(roomMinPressure) + ";" + String(roomMaxHumidity) + ";" + String(roomMinHumidity) + ";" + String(mainPump.isOperating()));
+		logfile.println(String(now.hour()) + ":" + String(now.minute()) + ";" + String(collectorSensor.tempDouble()) + ";" + String(collectorSensor.statistics("%Max")) + ";" + String(collectorSensor.statistics("%Min")) + ";" + String(boilerSensor.tempDouble()) + ";" + String(boilerSensor.statistics("%Max")) + ";" + String(boilerSensor.statistics("%Min")) + ";" + String(roomMaxTemp) + ";" + String(roomMinTemp) + ";" + String(roomMaxPressure) + ";" + String(roomMinPressure) + ";" + String(roomMaxHumidity) + ";" + String(roomMinHumidity) + ";" + String(pumps[0].isOperating()));
 		logfile.close();
 	}
 	lastLog = millis();
@@ -132,9 +132,9 @@ void setColor(int red = 0, int green = 0, int blue = 0)
 }
 
 void ledHandler() {
-	if (mainPump.isOperating()) setColor(0, 255, 0);
+	if (pumps[0].isOperating()) setColor(0, 255, 0);
 
-	if (!mainPump.isOperating()) setColor(153, 0, 76);
+	if (!pumps[0].isOperating()) setColor(153, 0, 76);
 
 	if (sdProblem) {
 		setColor(153, 76, 0);
@@ -186,10 +186,8 @@ void serialhandler() {
 	String input = "";
 	if (Serial2.available()) {
 		input = Serial2.readStringUntil(';');
-		Serial.println(input);
 		String cmd = input.substring(0, input.indexOf('('));
 		String args = input.substring(input.indexOf('(') + 1, input.length() - 1);
-
 		if (cmd == "Pump") {
 			String pumpName = args.substring(0, args.indexOf(','));
 			String state = args.substring(args.indexOf(',') + 2);
@@ -197,11 +195,11 @@ void serialhandler() {
 				if (pumps[i].getName() == pumpName) {
 					if (state == "On") {
 						autoMode = false;
-						mainPump.on();
+						pumps[i].on();
 					}
 					else if (state == "Off") {
 						autoMode = false;
-						mainPump.off();
+						pumps[i].off();
 					}
 					else if (state == "Auto")autoMode = true;
 					else if (state == "Enable")pumps[i].enable();
@@ -213,20 +211,26 @@ void serialhandler() {
 		else if (cmd == "GetData") {
 			String date = "\"" + String(now.day()) + "." + String(now.month()) + "." + String(now.year()) + " " + String(now.hour()) + ":" + String(now.minute()) + "\"";
 			String data = "{\"date\": " + date + ",\"pumpOperating\": ";
-			if (mainPump.isOperating()) data += "\"On\"";
+			if (pumps[0].isOperating()) data += "\"On\"";
 			else data += "\"Off\"";
 			data += ",\"pumpAutoMode\": ";
 			if (autoMode) data += "\"On\"";
 			else data += "\"Off\"";
-			data += ",\"operatingTimeHours\": " + String(mainPump.operatingTime("%H")) + ",\"operatingTimeMinutes\": " + String(mainPump.operatingTime("%M")) + ",\"boilerTemp\": " + String(boilerSensor.temp()) + ",\"collectorTemp\": " + String(collectorSensor.temp()) + ",\"t1Temp\": " + String(t1Sensor.temp()) + ",\"t2Temp\": " + String(t2Sensor.temp()) + ",\"roomTemp\": " + String(roomTemp) + ",\"roomHumidity\": " + String(roomHumidity) + ",\"roomPressure\": " + String(roomPressure) + "}";
+			data += ",\"operatingTimeHours\": " + String(pumps[0].operatingTime("%H")) + ",\"operatingTimeMinutes\": " + String(pumps[0].operatingTime("%M")) + ",\"boilerTemp\": " + String(boilerSensor.temp()) + ",\"collectorTemp\": " + String(collectorSensor.temp()) + ",\"t1Temp\": " + String(t1Sensor.temp()) + ",\"t2Temp\": " + String(t2Sensor.temp()) + ",\"roomTemp\": " + String(roomTemp) + ",\"roomHumidity\": " + String(roomHumidity) + ",\"roomPressure\": " + String(roomPressure) + "}";
 			Serial2.print("Data(" + data + ");");
-			Serial.print("Data(" + data + ");");
+			//Serial.print("Data(" + data + ");");
 		}
 
 		else if (cmd == "GetSettings") {
 			String data = "{\"minTempDiff\": " + String(settingsMinTempDifference) + ",\"maxTempCollector\": " + String(settingsMaxTempCollector) + ",\"minTempCollector\": " + String(settingsMinTempCollector) + ",\"maxTempBoiler\": " + String(settingsMaxTempBoiler) + ",\"altitude\": " + String(altitude) + "}";
 			Serial2.print("Settings(" + data + ");");
-			Serial.print("Settings(" + data + ");");
+			//Serial.print("Settings(" + data + ");");
+		}
+
+		else if (cmd == "GetPumps") {
+			String data = "{\"pump1Operating\": \"" + String(pumps[0].isOperating()) + "\",\"pump2Operating\": \"" + String(pumps[1].isOperating()) + "\",\"pump3Operating\": \"" + String(pumps[2].isOperating()) + "\",\"pump4Operating\": \"" + String(pumps[3].isOperating()) + "\"}";
+			Serial2.print("PumpStatus(" + data + ");");
+			//Serial.print("PumpStatus(" + data + ");");
 		}
 
 		else if (cmd == "Set") {
@@ -234,7 +238,6 @@ void serialhandler() {
 			args.toCharArray(json, args.length() + 1);
 			StaticJsonBuffer<200> jsonBuffer;
 			JsonObject& root = jsonBuffer.parseObject(json);
-
 			if (!root.success()) return;
 			settingsMinTempDifference = root["minTempDiff"];
 			settingsMinTempCollector = root["minTempCollector"];
