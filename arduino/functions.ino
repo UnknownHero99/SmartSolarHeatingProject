@@ -197,11 +197,11 @@ void serialhandler() {
 				if (pumps[i].getName() == pumpName) {
 					if (state == "On") {
 						autoMode = false;
-						pumps[i].on();
+						mainPump.on();
 					}
 					else if (state == "Off") {
 						autoMode = false;
-						pumps[i].off();
+						mainPump.off();
 					}
 					else if (state == "Auto")autoMode = true;
 					else if (state == "Enable")pumps[i].enable();
