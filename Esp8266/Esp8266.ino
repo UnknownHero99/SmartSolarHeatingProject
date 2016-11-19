@@ -4,8 +4,8 @@
 #include <ESP8266mDNS.h>
 #include <ArduinoJson.h>
 
-const char* ssid = "";
-const char* password = "";
+const char* ssid = "linksys";
+const char* password = "c9c2bffadf";
 String apiKey = "";//replace with thingspeak api
 const char* loginUsername = "admin";
 const char* loginPassword = "admin";
@@ -32,14 +32,11 @@ String menulogedin = "<div id='menu'><ul><li><a href='/'>Status</a></li><li><a h
 String menunotlogedin = "<div id='menu'><ul><li><a href='/'>Status</a></li><li><a href='/login'>Prijava</a></li></ul></div></div><div id='content_Wrapper'><div id='content'>";
 String footer = "<div id='footer'><div id='copyright'><p>&copyJakob Salmič</p></div></div></div></body></html>";
 
-
+String arduinoData[14];
+String arduinoSettings[5];
 String Data = "";
 String Settings = "";
 String pumps = "";
-
-char* date, pumpOperating, pumpAutoMode;
-int operatingTimeHours, operatingTimeMinutes, roomPressure;
-double boilerTemp, collectorTemp, roomTemp, roomHumidity, t1Temp, t2Temp;
 
 
 void setup(void) {

@@ -168,18 +168,7 @@ void ledHandler() {
 }
 
 void esphandler() {
-	String Espsend = "&field1=";
-	Espsend += boilerSensor.temp();
-	Espsend += "&field2=";
-	Espsend += collectorSensor.temp();
-	Espsend += "&field3=";
-	Espsend += roomTemp;
-	Espsend += "&field4=";
-	Espsend += roomHumidity;
-	Espsend += "&field5=";
-	Espsend += roomPressure;
-	Espsend += "\r\n\r\n";
-	Serial2.print("ThingSpeak(" + Espsend + ");");
+	Serial2.print("ThingSpeak();");
 }
 
 void serialhandler() {
@@ -209,28 +198,15 @@ void serialhandler() {
 			}
 		}
 		else if (cmd == "GetData") {
-			String date = "\"" + String(now.day()) + "." + String(now.month()) + "." + String(now.year()) + " " + String(now.hour()) + ":" + String(now.minute()) + "\"";
-			String data = "{\"date\": " + date + ",\"pumpOperating\": ";
-			if (pumps[0].isOperating()) data += "\"On\"";
-			else data += "\"Off\"";
-			data += ",\"pumpAutoMode\": ";
-			if (autoMode) data += "\"On\"";
-			else data += "\"Off\"";
-			data += ",\"operatingTimeHours\": " + String(pumps[0].operatingTime("%H")) + ",\"operatingTimeMinutes\": " + String(pumps[0].operatingTime("%M")) + ",\"boilerTemp\": " + String(boilerSensor.temp()) + ",\"collectorTemp\": " + String(collectorSensor.temp()) + ",\"t1Temp\": " + String(t1Sensor.temp()) + ",\"t2Temp\": " + String(t2Sensor.temp()) + ",\"roomTemp\": " + String(roomTemp) + ",\"roomHumidity\": " + String(roomHumidity) + ",\"roomPressure\": " + String(roomPressure) + "}";
-			Serial2.print("Data(" + data + ");");
-			//Serial.print("Data(" + data + ");");
+			sendData();
 		}
 
 		else if (cmd == "GetSettings") {
-			String data = "{\"minTempDiff\": " + String(settingsMinTempDifference) + ",\"maxTempCollector\": " + String(settingsMaxTempCollector) + ",\"minTempCollector\": " + String(settingsMinTempCollector) + ",\"maxTempBoiler\": " + String(settingsMaxTempBoiler) + ",\"altitude\": " + String(altitude) + "}";
-			Serial2.print("Settings(" + data + ");");
-			//Serial.print("Settings(" + data + ");");
+			sendSettings();
 		}
 
 		else if (cmd == "GetPumps") {
-			String data = "{\"pump1Operating\": \"" + String(pumps[0].isOperating()) + "\",\"pump2Operating\": \"" + String(pumps[1].isOperating()) + "\",\"pump3Operating\": \"" + String(pumps[2].isOperating()) + "\",\"pump4Operating\": \"" + String(pumps[3].isOperating()) + "\"}";
-			Serial2.print("PumpStatus(" + data + ");");
-			//Serial.print("PumpStatus(" + data + ");");
+			sendPumps();
 		}
 
 		else if (cmd == "Set") {
@@ -259,6 +235,28 @@ void serialhandler() {
 		}
 
 	}
+}
+
+void sendData() {
+	String date = "\"" + String(now.day()) + "." + String(now.month()) + "." + String(now.year()) + " " + String(now.hour()) + ":" + String(now.minute()) + "\"";
+	String data = "{\"date\": " + date + ",\"pumpOperating\": ";
+	if (pumps[0].isOperating()) data += "\"On\"";
+	else data += "\"Off\"";
+	data += ",\"pumpAutoMode\": ";
+	if (autoMode) data += "\"On\"";
+	else data += "\"Off\"";
+	data += ",\"operatingTimeHours\": " + String(pumps[0].operatingTime("%H")) + ",\"operatingTimeMinutes\": " + String(pumps[0].operatingTime("%M")) + ",\"boilerTemp\": " + String(boilerSensor.temp()) + ",\"collectorTemp\": " + String(collectorSensor.temp()) + ",\"t1Temp\": " + String(t1Sensor.temp()) + ",\"t2Temp\": " + String(t2Sensor.temp()) + ",\"roomTemp\": " + String(roomTemp) + ",\"roomHumidity\": " + String(roomHumidity) + ",\"roomPressure\": " + String(roomPressure) + "}";
+	Serial2.print("Data(" + data + ");");
+}
+
+void sendSettings() {
+	String data = "{\"minTempDiff\": " + String(settingsMinTempDifference) + ",\"maxTempCollector\": " + String(settingsMaxTempCollector) + ",\"minTempCollector\": " + String(settingsMinTempCollector) + ",\"maxTempBoiler\": " + String(settingsMaxTempBoiler) + ",\"altitude\": " + String(altitude) + "}";
+	Serial2.print("Settings(" + data + ");");
+}
+
+void sendPumps() {
+	String data = "{\"pump1Operating\": \"" + String(pumps[0].isOperating()) + "\",\"pump2Operating\": \"" + String(pumps[1].isOperating()) + "\",\"pump3Operating\": \"" + String(pumps[2].isOperating()) + "\",\"pump4Operating\": \"" + String(pumps[3].isOperating()) + "\"}";
+	Serial2.print("PumpStatus(" + data + ");");
 }
 
 void resetStatistics() {

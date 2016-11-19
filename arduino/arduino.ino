@@ -57,7 +57,7 @@ LiquidCrystal lcd(39, 41, 43, 45, 47, 49);
 
 long oldPosition = myEnc.read() / 4;
 double roomTemp, roomHumidity = 50;
-int roomPressure = 1000;
+int roomPressure = 1111;
 unsigned long lastUpdate, lastAction = 0;
 unsigned long statusDelay = 10L * 1000L; //quit menu after ms of no use
 unsigned long sleepDelay = 30L * 1000L; //sleep after ms of no nuse
@@ -125,6 +125,11 @@ void setup() {
 	}
 	sdcardwrite();
 	ledHandler();
+	sendData();
+	delay(500);
+	sendSettings();
+	delay(500);
+	sendPumps();
 }
 
 
