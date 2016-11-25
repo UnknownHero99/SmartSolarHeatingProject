@@ -57,15 +57,10 @@ bool pumpUpdate(String pumps) {
 	JsonObject& root = jsonBuffer.parseObject(json);
 	if (!root.success()) return false;
 
-	String pump1Operating = root["pump1Operating"];
-	String pump2Operating = root["pump2Operating"];
-	String pump3Operating = root["pump3Operating"];
-	String pump4Operating = root["pump4Operating"];
-
-	arduinoData[1] = pump1Operating;
-	arduinoData[2] = pump2Operating;
-	arduinoData[3] = pump3Operating;
-	arduinoData[4] = pump4Operating;
+	ardData.pump1operating = root["pump1Operating"];
+	ardData.pump2operating = root["pump2Operating"];
+	ardData.pump3operating = root["pump3Operating"];
+	ardData.pump4operating = root["pump4Operating"];
 	return true;
 }
 
@@ -96,19 +91,21 @@ bool settingsUpdate(String settings) {
 	JsonObject& root = jsonBuffer.parseObject(json);
 	if (!root.success()) return false;
 
-	String minTempDiff = root["minTempDiff"];
-	String maxTempCollector = root["maxTempCollector"];
-	String minTempCollector = root["minTempCollector"];
-	String maxTempBoiler = root["maxTempBoiler"];
-	String altitude = root["altitude"];
-	String time = root["time"];
+	ardSettings.tdiffmin = root["minTempDiff"];
+	ardSettings.tdiffmininput = ardSettings.tdiffmin;
 
-	arduinoSettings[0] = minTempDiff;
-	arduinoSettings[1] = maxTempCollector;
-	arduinoSettings[2] = minTempCollector;
-	arduinoSettings[3] = maxTempBoiler;
-	arduinoSettings[4] = altitude;
-	arduinoSettings[5] = time;
+	ardSettings.tkmax = root["maxTempCollector"];
+	ardSettings.tkmaxinput = ardSettings.tkmax;
+
+	ardSettings.tkmin = root["minTempCollector"];
+	ardSettings.tkmininput = ardSettings.tkmin;
+
+	ardSettings.tbmax = root["maxTempBoiler"];
+	ardSettings.tbmaxinput = ardSettings.tbmax;
+
+	ardSettings.altitude = root["altitude"];
+	ardSettings.altitudeinput = ardSettings.altitude;
+
 	return true;
 }
 

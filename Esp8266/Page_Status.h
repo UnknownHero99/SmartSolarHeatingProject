@@ -117,7 +117,7 @@ void send_system_status_data()
 {
 	update();
 	String values = "";
-	values += "pumpstatus|" + (String)ardData.pumpstatus + "|span\n";
+	values += "pumpstatus|" + (String)ardData.pump1operating + "|span\n";
 	values += "pumpautomode|" + (String)ardData.pumpautomode + "|span\n";
 	values += "operatinghours|" + (String)ardData.operatinghours + "|span\n";
 	values += "operatingminutes|" + (String)ardData.operatingminutes + "|span\n";

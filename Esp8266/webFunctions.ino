@@ -52,33 +52,7 @@ void handleGraphs() {
 	server.send(200, "text/html", content);
 }
 
-void handleSettings() {
-	if (is_authentified() && server.hasArg("cmd")) {
-		Serial.print(server.arg("cmd") + ";");
-		server.sendHeader("Location", String("/settings"), true);
-		server.send(302, "text/plain", "");
-	}
-	if (!is_authentified()) {
-		String header = "HTTP/1.1 301 OK\r\nLocation: /settings\r\nCache-Control: no-cache\r\n\r\n";
-		server.sendContent(header);
-		return;
-	}
-	if (server.hasArg("TDiffMin")) {
-		String Settings = "Set(";
-		Settings += "{\"minTempDiff\": " + String(server.arg("TDiffMin")) + ",\"maxTempCollector\": " + String(server.arg("TKMax")) + ",\"minTempCollector\": " + String(server.arg("TKMin")) + ",\"maxTempBoiler\": " + String(server.arg("TBMax")) + ",\"altitude\": " + String(server.arg("Altitude")) + "});";
-		Serial.print(Settings);
-		server.sendHeader("Location", String("/settings"), true);
-		server.send(302, "text/plain", "");
-		return;
-	}
-	Serial.print("GetSettings();");
-	delay(500);
-	serialHandler();
-	String content = head + menulogedin;
-	content += "<script>function syncTime(){var d=new Date();d.setHours(d.getHours()+2);var n=d.toISOString().split('.')[0];document.getElementById('time').value=n;}</script><h2>Nastavitve</h2><br/><form enctype='application/json'><table style='width:70%' align='center'><tr><th><h4>Nastavitev</h4></th><th><h4>Trenutna vrednost</h4></th><th><h4>Nova vrednost</h4></th></tr><tr><td><p>Min temp razlika:</p></td><td><p>" + arduinoSettings[0] + "°C</p></td><td><input type='text' name='TDiffMin' value='" + arduinoSettings[0] + "'></td></tr><tr><td><p>Maksimalna temperatura kolektorja:</p></td><td><p>" + arduinoSettings[1] + "°C</p></td><td><input type='text' name='TKMax' value='" + arduinoSettings[1] + "'></td></tr><tr><td><p>Minimalna temperatura kolektorja:</p></td><td><p>" + arduinoSettings[2] + "°C</p></td><td><input type='text' name='TKMin' value='" + arduinoSettings[2] + "'></td></tr><tr><td><p>Maksimalna temperatura bojlerja:</p></td><td><p>" + arduinoSettings[3] + "°C</p></td><td><input type='text' name='TBMax' value='" + arduinoSettings[3] + "'></td></tr><tr><td><p>Nadmorska višina:</p></td><td><p>" + arduinoSettings[4] + " m</p></td><td><input type='text' name='Altitude' value='" + arduinoSettings[4] + "'></td></tr><tr><td><p>Datum/ura</p></td><td><p>" + arduinoSettings[5] + "</p></td><td><input id='time' type='text' name='date' value='" + arduinoSettings[5] + "'></td></tr><tr><td colspan='2'><input class='shadow button' onclick='syncTime()' type='submit' value='Sinhroniziraj čas z računalnikom'></td><td colspan='1' ><input class='shadow button' type='submit' value='Shrani' style='float: right;'></td></tr></table><br></form></div></div>";
-	content += footer;
-	server.send(200, "text/html", content);
-}
+
 
 void handlePumps() {
 	if (is_authentified() && server.hasArg("cmd")) {

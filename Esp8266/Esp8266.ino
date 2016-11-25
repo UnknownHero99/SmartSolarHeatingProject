@@ -44,7 +44,10 @@ String pumps = "";
 
 
 struct arduinoData {
-	bool pumpstatus = false;
+	bool pump1operating = false;
+	bool pump2operating = false;
+	bool pump3operating = false;
+	bool pump4operating = false;
 	bool  pumpautomode = false;
 	int operatinghours = 0;
 	int  operatingminutes = 0;
@@ -57,9 +60,23 @@ struct arduinoData {
 	double pressureroom = 0;
 }   ardData;
 
+struct arduinoSettings {
+	int tdiffmin = 0;
+	int tdiffmininput = 0;
+	int tkmax = 0;
+	int tkmaxinput = 0;
+	int tkmin = 0;
+	int tkmininput = 0;
+	int	tbmax = 0;
+	int tbmaxinput = 0;
+	int altitude = 0;
+	int altitudeinput = 0;
+}   ardSettings;
+
 #include "Page_Constants.h"
 #include "Page_MicroAjax.js.h"
 #include "Page_Status.h"
+#include "Page_Settings.h"
 
 void setup(void) {
 	Serial.begin(115200);
@@ -76,10 +93,12 @@ void setup(void) {
 
 	server.on("/", handleStatus);
 	server.on("/status/data", send_system_status_data);
+	server.on("/settings/data", send_system_settings_data);
+	server.on("/settings", handleSettings);
 	server.on("/microajax.js", []() { server.send(200, "text/plain", PAGE_microajax_js);  });
 	server.on("/pumps", handlePumps);
 	server.on("/graphs", handleGraphs);
-	server.on("/settings", handleSettings);
+	
 	server.on("/login", handleLogin);
 
 	server.onNotFound(handleNotFound);
