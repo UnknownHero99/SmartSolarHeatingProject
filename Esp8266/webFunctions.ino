@@ -33,21 +33,6 @@ void handleLogin() {
 	server.send(200, "text/html", content);
 }
 
-//root page can be accessed only if authentification is ok
-void handleRoot() {
-	if (is_authentified() && server.hasArg("cmd")) {
-		Serial.print(server.arg("cmd") + ";");
-		server.sendHeader("Location", String("/"), true);
-		server.send(302, "text/plain", "");
-	}
-	Serial.print("GetData();");
-	String content;
-	if (is_authentified())content = head + menulogedin;
-	else content = head + menunotlogedin;
-	content += "<h2>trenutno stanje</h2><br/><table style='width:50%' align='center'><tr><td><h4>Senzor</h4></td><td><h4>Vrednost</h4></td></tr><tr><td><p>Status crpalke:</p></td><td><p>" + arduinoData[1]+ "</p></td></tr><tr><td><p>Skupen čas delovanja(danes):</p></td><td><p>" + arduinoData[6] + "h, " + arduinoData[7] + "m</p></td></tr><tr><td><p>Avtomatsko delovanje crpalke:</p></td><td><p>" + arduinoData[5] + "</p></td></tr><tr><td><p>TK:</p></td><td><p>" + arduinoData[9] + "°C</p></td></tr><tr><td><p>TB:</p></td><td><p>" + arduinoData[8] + "°C</p></td></tr><tr><td><p>T1:</p></td><td><p>" + arduinoData[12] + "°C</p></td></tr><tr><td><p>T2:</p></td><td><p>" + arduinoData[13] + "°C</p></td></tr><tr><td><p>Sobna temperatura:</p></td><td><p>" + arduinoData[10] + "°C</p></td></tr><tr><td><p>Vlaga:</p></td><td><p>" + arduinoData[11] + "%</p></td></tr><tr><td><p>Zracni tlak:</p></td><td><p>" + arduinoData[14] + "mBa</p></td></tr></table></div></div>";
-	content += footer;
-	server.send(200, "text/html", content);
-}
 
 void handleGraphs() {
 	if (is_authentified() && server.hasArg("cmd")) {

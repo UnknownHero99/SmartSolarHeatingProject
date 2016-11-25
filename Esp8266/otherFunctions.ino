@@ -75,31 +75,17 @@ bool dataUpdate(String data) {
 	StaticJsonBuffer<200> jsonBuffer;
 	JsonObject& root = jsonBuffer.parseObject(json);
 	if (!root.success()) return false;
-	String date = root["date"];
 
-
-	String pumpAutoMode = root["pumpAutoMode"];
-	String operatingTimeHours = root["operatingTimeHours"];
-	String operatingTimeMinutes = root["operatingTimeMinutes"];
-	String boilerTemp = root["boilerTemp"];
-	String collectorTemp = root["collectorTemp"];
-	String roomTemp = root["roomTemp"];
-	String roomHumidity = root["roomHumidity"];
-	String t1Temp = root["t1Temp"];
-	String t2Temp = root["t2Temp"];
-	String roomPressure = root["roomPressure"];
-
-	arduinoData[0] = date;
-	arduinoData[5] = pumpAutoMode;
-	arduinoData[6] = operatingTimeHours;
-	arduinoData[7] = operatingTimeMinutes;
-	arduinoData[8] = boilerTemp;
-	arduinoData[9] = collectorTemp;
-	arduinoData[10] = roomTemp;
-	arduinoData[11] = roomHumidity;
-	arduinoData[12] = t1Temp;
-	arduinoData[13] = t2Temp;
-	arduinoData[14] = roomPressure;
+	ardData.pumpautomode = root["pumpAutoMode"];
+	ardData.operatinghours = root["operatingTimeHours"];
+	ardData.operatingminutes = root["operatingTimeMinutes"];
+	ardData.tempboiler = root["boilerTemp"];
+	ardData.tempcollector = root["collectorTemp"];
+	ardData.temproom = root["roomTemp"];
+	ardData.humidityroom = root["roomHumidity"];
+	ardData.tempt1 = root["t1Temp"];
+	ardData.tempt2 = root["t2Temp"];
+	ardData.pressureroom = root["roomPressure"];
 	return true;
 }
 
