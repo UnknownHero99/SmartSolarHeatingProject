@@ -115,8 +115,8 @@ function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,
 
 void send_system_status_data()
 {
-	Serial.print("GetSettings();GetData();GetPumps();");
-  lastUpdate = millis();
+	Serial.print("GetData();");
+	serialHandler();
 	String values = "";
 	values += "pumpstatus|" + (String)ardData.pump1operating + "|span\n";
 	values += "pumpautomode|" + (String)ardData.pumpautomode + "|span\n";
@@ -133,10 +133,10 @@ void send_system_status_data()
 }
 
 void handleStatus() {
-	String content = String(PAGE_HEAD);
-	if (is_authentified())content += String(PAGE_MENU_LOGEDIN);
-	else content += String(PAGE_MENU_NORMAL);
+	String content = String(PAGE_head);
+	if (is_authentified())content += String(PAGE_menu_logedin);
+	else content += String(PAGE_menu_normal);
 	content += String(PAGE_status);
-	content += String(PAGE_FOOT);
+	content += String(PAGE_foot);
 	server.send(200, "text/html", content);
 }

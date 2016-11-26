@@ -15,6 +15,10 @@ function setValues(url)
 		{
 				document.getElementById(fields[0]).innerHTML  = fields[1];
 		}
+		else if(fields[2] == "iframe")
+		{
+				document.getElementById(fields[0]).src  = fields[1];
+		}
 		else if(fields[2] == "chk")
 		{
 				document.getElementById(fields[0]).checked  = fields[1];

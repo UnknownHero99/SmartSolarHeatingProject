@@ -1,3 +1,45 @@
+const char* thingspeak = "api.thingspeak.com";
+MDNSResponder mdns;
+ESP8266WebServer server(80);
+WiFiClient client;
+//replace with url to thingspeak graphs
+String graph1 = "https://thingspeak.com/channels/132705/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line";
+String graph2 = "https://thingspeak.com/channels/132705/charts/2?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line";
+String graph3 = "https://thingspeak.com/channels/132705/charts/2?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line";
+String graph4 = "https://thingspeak.com/channels/132705/charts/2?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line";
+String graph5 = "https://thingspeak.com/channels/132705/charts/2?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line";
+String graph6 = "https://thingspeak.com/channels/132705/maps/channel_show"; //map
+
+struct arduinoData {
+	bool pump1operating = false;
+	bool pump2operating = false;
+	bool pump3operating = false;
+	bool pump4operating = false;
+	bool  pumpautomode = false;
+	int operatinghours = 0;
+	int  operatingminutes = 0;
+	double tempcollector = 0;
+	double tempboiler = 0;
+	double tempt1 = 0;
+	double tempt2 = 0;
+	double temproom = 0;
+	double humidityroom = 0;
+	double pressureroom = 0;
+}   ardData;
+
+struct arduinoSettings {
+	int tdiffmin = 0;
+	int tdiffmininput = 0;
+	int tkmax = 0;
+	int tkmaxinput = 0;
+	int tkmin = 0;
+	int tkmininput = 0;
+	int tbmax = 0;
+	int tbmaxinput = 0;
+	int altitude = 0;
+	int altitudeinput = 0;
+}   ardSettings;
+
 bool settingsUpdate(String settings) {
   char json[settings.length() + 1];
   settings.toCharArray(json, settings.length() + 1);
@@ -69,33 +111,31 @@ void serialHandler() {
 		}
 
 		else if (cmd == "ThingSpeak") {
-			String thingSpeakData = "&field2=";
-			thingSpeakData += arduinoData[8];
-			thingSpeakData += "&field2=";
-			thingSpeakData += arduinoData[9];
-			thingSpeakData += "&field3=";
-			thingSpeakData += arduinoData[10];
-			thingSpeakData += "&field4=";
-			thingSpeakData += arduinoData[11];
-			thingSpeakData += "&field5=";
-			thingSpeakData += arduinoData[14];
-			thingSpeakData += "\r\n\r\n";
-			String postStr = apiKey + thingSpeakData;
-
-			server.sendContent(postStr);
-
-			if (client.connect(thingspeak, 80)) { // "184.106.153.149" or api.thingspeak.com
-				client.print("POST /update HTTP/1.1\n");
-				client.print("Host: api.thingspeak.com\n");
-				client.print("Connection: close\n");
-				client.print("X-THINGSPEAKAPIKEY: " + apiKey + "\n");
-				client.print("Content-Type: application/x-www-form-urlencoded\n");
-				client.print("Content-Length: ");
-				client.print(postStr.length());
-				client.print("\n\n");
-				client.print(postStr);
-			}
-			client.stop();
+				if (client.connect(thingspeak, 80)) {  //   "184.106.153.149" or api.thingspeak.com
+					String postStr = apiKey;
+					postStr += "&field1=";
+					postStr += String(ardData.tempboiler);
+					postStr += "&field2=";
+					postStr += String(ardData.tempcollector);
+					postStr += "&field3=";
+					postStr += String(ardData.temproom);
+					postStr += "&field4=";
+					postStr += String(ardData.humidityroom);
+					postStr += "&field5=";
+					postStr += String(ardData.pressureroom);
+					postStr += "\r\n\r\n";
+					client.print("POST /update HTTP/1.1\n");
+					client.print("Host: api.thingspeak.com\n");
+					client.print("Connection: close\n");
+					client.print("X-THINGSPEAKAPIKEY: " + apiKey + "\n");
+					client.print("Content-Type: application/x-www-form-urlencoded\n");
+					client.print("Content-Length: ");
+					client.print(postStr.length());
+					client.print("\n\n");
+					client.print(postStr);
+					client.stop();
+				}
+				
 		}
 		else if (cmd == "Settings") {
 			settingsUpdate(args);

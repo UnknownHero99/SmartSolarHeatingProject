@@ -117,14 +117,19 @@ function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,
 
 void send_system_settings_data()
 {
-	Serial.print("GetSettings();GetData();GetPumps();");
-  lastUpdate = millis();
+	Serial.print("GetSettings();");
+	serialHandler();
 	String values = "";
 	values += "tdiffmin|" + (String)ardSettings.tdiffmin + "|span\n";
+	values += "tdiffmininput|" + (String)ardSettings.tdiffmin + "|input\n";
 	values += "tkmax|" + (String)ardSettings.tkmax + "|span\n";
+	values += "tkmaxinput|" + (String)ardSettings.tkmax + "|input\n";
 	values += "tkmin|" + (String)ardSettings.tkmin + "|span\n";
+	values += "tkmininput|" + (String)ardSettings.tkmin + "|input\n";
 	values += "tbmax|" + (String)ardSettings.tbmax + "|span\n";
+	values += "tbmaxinput|" + (String)ardSettings.tbmax + "|input\n";
 	values += "altitude|" + (String)ardSettings.altitude + "|span\n";
+	values += "altitudeinput|" + (String)ardSettings.altitude + "|spaninputn";
 	server.send(200, "text/plain", values);
 }
 
@@ -161,11 +166,10 @@ void handleSettings() {
 		Settings += "{\"minTempDiff\": " + String(ardSettings.tdiffmin) + ",\"maxTempCollector\": " + String(ardSettings.tkmax) + ",\"minTempCollector\": " + String(ardSettings.tkmin) + ",\"maxTempBoiler\": " + String(ardSettings.tbmax) + ",\"altitude\": " + String(ardSettings.altitude) + "});";
 		Serial.print(Settings);
 	}
-	Serial.print("GetSettings();");
-	String content = String(PAGE_HEAD);
-	content += String(PAGE_MENU_LOGEDIN);
+
+	String content = String(PAGE_head);
+	content += String(PAGE_menu_logedin);
 	content += String(PAGE_settings);
-	content += String(PAGE_FOOT);
+	content += String(PAGE_foot);
 	server.send(200, "text/html", content);
 }
-

@@ -1,4 +1,4 @@
-const char PAGE_HEAD[] PROGMEM = R"=====(
+const char PAGE_head[] PROGMEM = R"=====(
 <!DOCTYPE html>
 <html>
 
@@ -222,7 +222,7 @@ const char PAGE_HEAD[] PROGMEM = R"=====(
 			</a>
 )=====";
 
-const char PAGE_FOOT[] PROGMEM = R"=====(
+const char PAGE_foot[] PROGMEM = R"=====(
 		<div id="footer">
 			<div id="copyright">
 				<p>&copyJakob Salmič</p>
@@ -233,7 +233,7 @@ const char PAGE_FOOT[] PROGMEM = R"=====(
 </html>
 )=====";
 
-const char PAGE_MENU_LOGEDIN[] PROGMEM = R"=====(
+const char PAGE_menu_logedin[] PROGMEM = R"=====(
 	<div id="menu">
 		<ul>
 			<li><a href="/">Status</a></li>
@@ -248,7 +248,7 @@ const char PAGE_MENU_LOGEDIN[] PROGMEM = R"=====(
     <div id="content">
 )=====";
 
-const char PAGE_MENU_NORMAL[] PROGMEM = R"=====(
+const char PAGE_menu_normal[] PROGMEM = R"=====(
 	<div id="menu">
 		<ul>
 			<li><a href="/">Status</a></li>
