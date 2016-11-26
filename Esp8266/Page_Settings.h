@@ -117,7 +117,8 @@ function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,
 
 void send_system_settings_data()
 {
-	update();
+	Serial.print("GetSettings();GetData();GetPumps();");
+  lastUpdate = millis();
 	String values = "";
 	values += "tdiffmin|" + (String)ardSettings.tdiffmin + "|span\n";
 	values += "tkmax|" + (String)ardSettings.tkmax + "|span\n";

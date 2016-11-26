@@ -115,7 +115,8 @@ function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,
 
 void send_system_status_data()
 {
-	update();
+	Serial.print("GetSettings();GetData();GetPumps();");
+  lastUpdate = millis();
 	String values = "";
 	values += "pumpstatus|" + (String)ardData.pump1operating + "|span\n";
 	values += "pumpautomode|" + (String)ardData.pumpautomode + "|span\n";
