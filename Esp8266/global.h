@@ -5,9 +5,9 @@ WiFiClient client;
 //replace with url to thingspeak graphs
 String graph1 = "https://thingspeak.com/channels/132705/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line";
 String graph2 = "https://thingspeak.com/channels/132705/charts/2?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line";
-String graph3 = "https://thingspeak.com/channels/132705/charts/2?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line";
-String graph4 = "https://thingspeak.com/channels/132705/charts/2?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line";
-String graph5 = "https://thingspeak.com/channels/132705/charts/2?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line";
+String graph3 = "https://thingspeak.com/channels/132705/charts/3?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line";
+String graph4 = "https://thingspeak.com/channels/132705/charts/4?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line";
+String graph5 = "https://thingspeak.com/channels/132705/charts/5?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line";
 String graph6 = "https://thingspeak.com/channels/132705/maps/channel_show"; //map
 
 struct arduinoData {
