@@ -105,6 +105,7 @@ void statisticshandler() {
 }
 
 void sdcardwrite() {
+	esphandler();
 	if (!SD.begin(ChipSelect)) sdProblem = true;
 	else sdProblem = false;
 	String filename = "LOG-" + String(now.day()) + "." + String(now.month()) + "." + String(now.year()) + ".csv";
@@ -125,7 +126,6 @@ void sdcardwrite() {
 
 void setColor(int red = 0, int green = 0, int blue = 0)
 {
-
 	analogWrite(redPin, map(red, 0, 255, 255, 0));
 	analogWrite(greenPin, map(green, 0, 255, 255, 0));
 	analogWrite(bluePin, map(blue, 0, 255, 255, 0));
@@ -173,7 +173,7 @@ void esphandler() {
 
 void serialhandler() {
 	String input = "";
-	if (Serial2.available()) {
+	while (Serial2.available()) {
 		input = Serial2.readStringUntil(';');
 		String cmd = input.substring(0, input.indexOf('('));
 		String args = input.substring(input.indexOf('(') + 1, input.length() - 1);

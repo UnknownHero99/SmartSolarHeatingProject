@@ -4,8 +4,8 @@
 #include <ESP8266mDNS.h>
 #include <ArduinoJson.h>
 
-const char* ssid = "";
-const char* password = "";
+const char* ssid = ""; //change with wifi SSID
+const char* password = "";//change with wifi password
 String apiKey = "";//replace with thingspeak api
 const char* loginUsername = "admin";
 const char* loginPassword = "admin";
@@ -24,6 +24,7 @@ unsigned long lastUpdate = 0;
 #include "Page_Pumps.h"
 #include "Page_Graphs.h"
 #include "Page_404NotFound.h"
+#include "API.h"
 
 void setup(void) {
 	Serial.begin(115200);
@@ -37,6 +38,12 @@ void setup(void) {
 	server.on("/", handleStatus);
 	server.on("/status/data", send_system_status_data);
 
+	server.on("/api", send_system_api_data);
+	server.on("/api/set", set_system_api_data);
+	server.on("/api/login", api_handleLogin);
+
+	server.on("/login", handleLogin);
+
 	server.on("/settings", handleSettings);
 	server.on("/settings/data", send_system_settings_data);
 
@@ -48,7 +55,7 @@ void setup(void) {
 	server.on("/graphs", handleGraphs);
 	server.on("/graphs/data", send_system_graphs_data);
   
-	server.on("/login", handleLogin);
+	
 	server.onNotFound(handleNotFound);
 
 	//here the list of headers to be recorded
