@@ -26,7 +26,7 @@ void send_system_api_data()
 	ApiContent += "\n\t\t\"altitude\":" + String(ardSettings.altitude);
 	ApiContent += "\n\t}";
 	ApiContent += "\n}";
-	server.send(200, "text/plain", ApiContent);
+	server.send(200, "application/json", ApiContent);
 }
 
 void set_system_api_data()
