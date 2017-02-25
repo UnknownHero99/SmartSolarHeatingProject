@@ -107,29 +107,30 @@ void setup() {
 		pressureProblem = true;
 	}
 
-	menu_setup();
-
+	
 	if (!rtc.begin()) {
 		//RTC
 		Wire.begin();
 		Serial.println("Problem with RTC");
 	}
 	now = rtc.now();
-	sensorUpdate();
-	resetStatistics();
+
 	if (!SD.begin(ChipSelect)) {
 		lcd.clear();
 		lcd.print("Problem with SD card");
 		delay(1000);
 		sdProblem = true;
 	}
+
+	sensorUpdate();
+	resetStatistics();
+	
 	sdcardwrite();
 	ledHandler();
 	sendData();
-	delay(500);
 	sendSettings();
-	delay(500);
 	sendPumps();
+	menu_setup();
 }
 
 
@@ -147,7 +148,7 @@ void loop() {
 		resetStatistics();
 	}
 
-	//update time to display every second
+	//update time to display
 	pumps[0].updateTime();
 
 
@@ -172,7 +173,7 @@ void loop() {
 		menuEntranceHandler();
 	}
 
-	//run controllhandler if in menu
+	//run controlhandler if in menu
 	if (status == 0 || sleeping)controlhandler();
 }
 

@@ -28,6 +28,9 @@ unsigned long lastUpdate = 0;
 
 void setup(void) {
 	Serial.begin(115200);
+	while (ardData.tempcollector != 0) { //wait until get data;
+		serialHandler();
+	}
 	WiFi.begin(ssid, password);
 	// Wait for connection
 	while (WiFi.status() != WL_CONNECTED) {
@@ -64,7 +67,6 @@ void setup(void) {
 	//ask server to track these headers
 	server.collectHeaders(headerkeys, headerkeyssize);
 	server.begin();
-	update();
 }
 void loop(void) {
 	if (millis() - lastUpdate >= updateInterval) update();
