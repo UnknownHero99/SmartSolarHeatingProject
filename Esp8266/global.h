@@ -101,7 +101,7 @@ bool dataUpdate(String data) {
 
 void serialHandler() {
 	String input = "";
-	if (Serial.available()) {
+	while (Serial.available()) {
 		input = Serial.readStringUntil(';');;
 		String cmd = input.substring(0, input.indexOf('('));
 		String args = input.substring(input.indexOf('(') + 1, input.length() - 1);
