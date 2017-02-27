@@ -35,7 +35,7 @@ MyRenderer my_renderer;
 // Menu variables
 
 MenuSystem ms(my_renderer);
-//MenuItem espIP("web ui IP", &reqestIp);
+MenuItem showEspIP("web ui IP", &reqestIp);
 Menu pumpModeMenu("Pump mode");
 MenuItem pumpModeAutoMenu("Automatic", &pumpAutoModeLcd);
 Menu pumpModeManualMenu("Manual");
@@ -64,6 +64,7 @@ MenuItem backMenu("back", &backLcd);
 void menu_setup()
 {
 	lcd.begin(20, 4);
+	ms.get_root_menu().add_item(&showEspIP);
 	ms.get_root_menu().add_menu(&pumpModeMenu);
 	pumpModeMenu.add_item(&pumpModeAutoMenu);
 	pumpModeMenu.add_menu(&pumpModeManualMenu);
@@ -89,6 +90,7 @@ void menu_setup()
 	settingsMenu.add_item(&backMenu);
 	ms.get_root_menu().add_item(&exitMenu);
 }
+
 
 void exitLcd(MenuItem* p_menu_item)
 {
@@ -433,11 +435,13 @@ void pumpOffModeLcd(MenuItem* p_menu_item) {
 }
 
 void reqestIp(MenuItem* p_menu_item) {
-	Serial2.print("GetIP();");
-	ms.reset();
 	lcd.clear();
+  getIP();
 	lcd.print("IP of esp:");
-	lcd.println(IP);
+	lcd.setCursor(0, 1);
+  serialhandler();
+	if(IP != "") lcd.print(IP);
+  else lcd.print("unable to get IP");
 	delay(5000);
 	statuslcd();
 }

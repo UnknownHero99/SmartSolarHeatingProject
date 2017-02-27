@@ -12,7 +12,7 @@ const char* loginPassword = "admin";
 
 unsigned long updateInterval = 600000;
 unsigned long lastUpdate = 0;
-
+String IP = "";//leave this there will be saved IP of esp
 
 #include "global.h"
 #include "Page_Functions.h"
@@ -39,6 +39,7 @@ void setup(void) {
   while (ardData.tempcollector == 0) { //wait until get data;
     serialHandler();
   }
+	IP = WiFi.localIP().toString();
 	server.on("/", handleStatus);
 	server.on("/status/data", send_system_status_data);
 

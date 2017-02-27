@@ -107,7 +107,7 @@ void serialHandler() {
 		String args = input.substring(input.indexOf('(') + 1, input.length() - 1);
 
 		if (cmd == "GetIP") {
-			Serial.println("IP(NA);");
+			Serial.println("IP(" + IP + ");");
 		}
 
 		else if (cmd == "ThingSpeak") {

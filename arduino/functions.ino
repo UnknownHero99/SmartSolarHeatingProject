@@ -234,6 +234,10 @@ void serialhandler() {
 			EEPROM.update(9, value);
 		}
 
+		else if (cmd == "IP") {
+			IP = args;
+		}
+
 	}
 }
 
@@ -270,6 +274,10 @@ void resetStatistics() {
 	roomMaxHumidity = roomHumidity;
 	roomMinTemp = roomTemp;
 	roomMaxTemp = roomTemp;
+}
+
+void getIP(){
+  Serial2.print("GetIP();");
 }
 
 

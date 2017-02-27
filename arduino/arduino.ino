@@ -71,7 +71,7 @@ int buttonState = 0;
 int lastButtonState = 0;
 
 int current;
-String IP;
+String IP = "";
 long millisHeld;
 long secsHeld;
 long prevSecsHeld;
@@ -129,9 +129,9 @@ void setup() {
 	sendData(); //send data, settings and pump status to esp
 	sendSettings();
 	sendPumps();
-  
   sdcardwrite();//write data on SD and send to thingspeak
 	menu_setup();
+  getIP();
 }
 
 
