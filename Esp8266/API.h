@@ -20,10 +20,10 @@ void send_system_api_data()
 	ApiContent += "\n\t},";
 	ApiContent += "\n\t\"settings\": {";
 	ApiContent += "\n\t\t\"tdiffmin\":" + String(ardSettings.tdiffmin);
-	ApiContent += "\n\t\t\"tkmax\":" + String(ardSettings.tkmax);
-	ApiContent += "\n\t\t\"tkmin\":" + String(ardSettings.tkmin);
-	ApiContent += "\n\t\t\"tbmax\":" + String(ardSettings.tbmax);
-	ApiContent += "\n\t\t\"altitude\":" + String(ardSettings.altitude);
+	ApiContent += ",\n\t\t\"tkmax\":" + String(ardSettings.tkmax);
+	ApiContent += ",\n\t\t\"tkmin\":" + String(ardSettings.tkmin);
+	ApiContent += ",\n\t\t\"tbmax\":" + String(ardSettings.tbmax);
+	ApiContent += ",\n\t\t\"altitude\":" + String(ardSettings.altitude);
 	ApiContent += "\n\t}";
 	ApiContent += "\n}";
 	server.send(200, "application/json", ApiContent);
