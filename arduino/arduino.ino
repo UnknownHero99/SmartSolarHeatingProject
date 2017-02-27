@@ -122,14 +122,15 @@ void setup() {
 		sdProblem = true;
 	}
 
-	sensorUpdate();
-	resetStatistics();
-	
-	sdcardwrite();
-	ledHandler();
-	sendData();
+	sensorUpdate(); //update sensors data
+	resetStatistics(); //reset pump operating time statistics
+	ledHandler(); //run ledhandler
+  
+	sendData(); //send data, settings and pump status to esp
 	sendSettings();
 	sendPumps();
+  
+  sdcardwrite();//write data on SD and send to thingspeak
 	menu_setup();
 }
 
