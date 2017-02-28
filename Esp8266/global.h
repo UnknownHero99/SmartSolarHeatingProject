@@ -12,10 +12,10 @@ String graph6 = "https://thingspeak.com/channels/132705/maps/channel_show"; //ma
 
 struct arduinoData {
 	bool pump1operating = false;
-	bool pump2operating = false;
-	bool pump3operating = false;
-	bool pump4operating = false;
-	bool  pumpautomode = false;
+	String pump1Status = "";
+	String pump2Status = "";
+	String pump3Status = "";
+  String pump4Status = "";
 	int operatinghours = 0;
 	int  operatingminutes = 0;
 	double tempcollector = 0;
@@ -73,9 +73,14 @@ bool pumpUpdate(String pumps) {
   if (!root.success()) return false;
 
   ardData.pump1operating = root["pump1Operating"];
-  ardData.pump2operating = root["pump2Operating"];
-  ardData.pump3operating = root["pump3Operating"];
-  ardData.pump4operating = root["pump4Operating"];
+  String pump1Status = root["pump1Status"];
+  ardData.pump1Status = pump1Status;
+  String pump2Status = root["pump2Status"];
+  ardData.pump2Status = pump2Status;
+  String pump3Status = root["pump3Status"];
+  ardData.pump3Status = pump3Status;
+  String pump4Status = root["pump4Status"];
+  ardData.pump4Status = pump4Status;
   return true;
 }
 
@@ -86,7 +91,6 @@ bool dataUpdate(String data) {
   JsonObject& root = jsonBuffer.parseObject(json);
   if (!root.success()) return false;
 
-  ardData.pumpautomode = root["pumpAutoMode"];
   ardData.operatinghours = root["operatingTimeHours"];
   ardData.operatingminutes = root["operatingTimeMinutes"];
   ardData.tempboiler = root["boilerTemp"];

@@ -198,10 +198,10 @@ void send_system_pumps_data()
 	Serial.print("GetPumps();");
 	serialHandler();
 	String values = "";
-	values += "pump1status|" + (String)ardData.pump1operating + "|span\n";
-	values += "pump2status|" + (String)ardData.pump2operating + "|span\n";
-	values += "pump3status|" + (String)ardData.pump3operating + "|span\n";
-	values += "pump4status|" + (String)ardData.pump4operating + "|span\n";
+	values += "pump1status|" + (String)ardData.pump1Status + "|span\n";
+	values += "pump2status|" + (String)ardData.pump2Status + "|span\n";
+	values += "pump3status|" + (String)ardData.pump3Status + "|span\n";
+	values += "pump4status|" + (String)ardData.pump4Status + "|span\n";
 	server.send(200, "text/plain", values);
 }
 
@@ -212,7 +212,28 @@ void handlePumps() {
 		return;
 	}
 	if (server.hasArg("cmd")) {
-		Serial.print(server.arg("cmd") + ";");
+    String cmd = server.arg("cmd");
+		Serial.print(cmd + ";");
+    int pump = cmd.substring(cmd.indexOf('(')+1, cmd.indexOf(',')).toInt();
+    String status = cmd.substring(cmd.indexOf(',')+2, cmd.indexOf(')'));
+    if(status == "Auto") status = "A";
+    switch (pump){
+      case 1:
+        ardData.pump1Status = status;
+        if (status == "On") ardData.pump1operating = true;
+        break;
+      case 2:
+        ardData.pump2Status = status;
+        break;
+      case 3:
+        ardData.pump3Status = status;
+        break;
+      case 4:
+        ardData.pump4Status = status;
+        break;
+       
+    }
+    serialHandler();
 		server.sendHeader("Location", String("/pumps"), true);
 		server.send(302, "text/plain", "");
 	}

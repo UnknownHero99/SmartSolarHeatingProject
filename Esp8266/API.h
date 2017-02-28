@@ -4,10 +4,13 @@ void send_system_api_data()
 	serialHandler();
 	String ApiContent = "{\n\t\"data\": {";
 	ApiContent += "\n\t\t\"pump1operating\":" + String(ardData.pump1operating);
-	ApiContent += ",\n\t\t\"pump2operating\":" + String(ardData.pump2operating);
-	ApiContent += ",\n\t\t\"pump3operating\":" + String(ardData.pump3operating);
-	ApiContent += ",\n\t\t\"pump4operating\":" + String(ardData.pump4operating);
-	ApiContent += ",\n\t\t\"pumpautomode\":" + String(ardData.pumpautomode);
+	ApiContent += ",\n\t\t\"pump1Status\":" + String(ardData.pump1Status);
+	ApiContent += ",\n\t\t\"pump2Status\":" + String(ardData.pump2Status);
+	ApiContent += ",\n\t\t\"pump3Status\":" + String(ardData.pump3Status);
+  ApiContent += ",\n\t\t\"pump4Status\":" + String(ardData.pump4Status);
+	ApiContent += ",\n\t\t\"pumpautomode\":";
+	if(ardData.pump1Status != "A") ApiContent += "OFF";
+  else ApiContent += "ON";
 	ApiContent += ",\n\t\t\"operatinghours\":" + String(ardData.operatinghours);
 	ApiContent += ",\n\t\t\"operatingminutes\":" + String(ardData.operatingminutes);
 	ApiContent += ",\n\t\t\"tempcollector\":" + String(ardData.tempcollector);

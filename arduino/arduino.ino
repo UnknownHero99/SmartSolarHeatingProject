@@ -96,7 +96,6 @@ void setup() {
 
 	Serial.begin(9600);
 	Serial2.begin(115200);
-
 	dht.begin();
 
 	if (pressure.begin())

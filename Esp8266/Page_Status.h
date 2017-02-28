@@ -118,8 +118,16 @@ void send_system_status_data()
 	Serial.print("GetData();");
 	serialHandler();
 	String values = "";
-	values += "pumpstatus|" + (String)ardData.pump1operating + "|span\n";
-	values += "pumpautomode|" + (String)ardData.pumpautomode + "|span\n";
+ 
+	values += "pumpstatus|";
+	if(ardData.pump1operating == 1)values += "ON";
+	else values += "OFF";
+	values += "|span\n";
+	values += "pumpautomode|";
+	if(ardData.pump1Status == "A") values += "ON";
+	else values += "OFF";
+	values += "|span\n";
+  
 	values += "operatinghours|" + (String)ardData.operatinghours + "|span\n";
 	values += "operatingminutes|" + (String)ardData.operatingminutes + "|span\n";
 	values += "tempcollector|" + (String)ardData.tempcollector + "|span\n";

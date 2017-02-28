@@ -246,9 +246,6 @@ void sendData() {
 	String data = "{\"date\": " + date + ",\"pumpOperating\": ";
 	if (pumps[0].isOperating()) data += "\"On\"";
 	else data += "\"Off\"";
-	data += ",\"pumpAutoMode\": ";
-	if (autoMode) data += "\"On\"";
-	else data += "\"Off\"";
 	data += ",\"operatingTimeHours\": " + String(pumps[0].operatingTime("%H")) + ",\"operatingTimeMinutes\": " + String(pumps[0].operatingTime("%M")) + ",\"boilerTemp\": " + String(boilerSensor.temp()) + ",\"collectorTemp\": " + String(collectorSensor.temp()) + ",\"t1Temp\": " + String(t1Sensor.temp()) + ",\"t2Temp\": " + String(t2Sensor.temp()) + ",\"roomTemp\": " + String(roomTemp) + ",\"roomHumidity\": " + String(roomHumidity) + ",\"roomPressure\": " + String(roomPressure) + "}";
 	Serial2.print("Data(" + data + ");");
 }
@@ -259,7 +256,22 @@ void sendSettings() {
 }
 
 void sendPumps() {
-	String data = "{\"pump1Operating\": \"" + String(pumps[0].isOperating()) + "\",\"pump2Operating\": \"" + String(pumps[1].isOperating()) + "\",\"pump3Operating\": \"" + String(pumps[2].isOperating()) + "\",\"pump4Operating\": \"" + String(pumps[3].isOperating()) + "\"}";
+	String data = "{\"pump1Operating\": \"" + String(pumps[0].isOperating());
+ 
+  data += "\",\"pump1Status\": \"";
+	if(autoMode) data += "A";
+  else if(pumps[0].isOperating())data += "On";
+  else data += "Off";
+  data += "\",\"pump2Status\": \"";
+  if(pumps[1].isOperating())data += "On";
+  else data += "Off";
+  data += "\",\"pump3Status\": \"";
+  if(pumps[2].isOperating())data += "On";
+  else data += "Off";
+  data += "\",\"pump4Status\": \"";
+  if(pumps[3].isOperating())data += "On";
+  else data += "Off";
+  data += "\"}";
 	Serial2.print("PumpStatus(" + data + ");");
 }
 
