@@ -11,6 +11,7 @@ const char* loginUsername = "admin";
 const char* loginPassword = "admin";
 
 unsigned long updateInterval = 60000;
+const unsigned long noDataRecivedInterval = 2000;
 unsigned long lastUpdate = 0;
 String IP = "";//leave this there will be saved IP of esp
 
@@ -36,8 +37,13 @@ void setup(void) {
 	}
 	if (mdns.begin("esp8266", WiFi.localIP())) {
 	}
+  unsigned long lastRequest = millis();
   while (ardData.tempcollector == 0) { //wait until get data;
     serialHandler();
+    if(millis() - lastRequest >= noDataRecivedInterval){
+      requestData();
+      lastRequest = millis();
+    }
   }
 	IP = WiFi.localIP().toString();
 	server.on("/", handleStatus);
@@ -71,7 +77,7 @@ void setup(void) {
 	server.begin();
 }
 void loop(void) {
-	if (millis() - lastUpdate >= updateInterval) update();
+	if (millis() - lastUpdate >= updateInterval) requestAll();
 	serialHandler();
 	server.handleClient();
 }

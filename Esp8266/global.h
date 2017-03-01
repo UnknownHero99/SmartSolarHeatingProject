@@ -153,8 +153,21 @@ void serialHandler() {
 	}
 }
 
-void update() {
-	Serial.print("GetSettings();GetData();GetPumps();");
+void requestData(){
+  Serial.print("GetData();");
+}
+
+void requestSettings(){
+  Serial.print("GetSettings();");
+}
+void requestPumps(){
+  Serial.print("GetPumps();");
+}
+
+void requestAll() {
+	requestData();
+  requestSettings();
+  requestPumps();
 	lastUpdate = millis();
 }
 

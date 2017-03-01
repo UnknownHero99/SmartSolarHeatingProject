@@ -115,8 +115,15 @@ function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,
 
 void send_system_status_data()
 {
-	Serial.print("GetData();");
-  pagesGetData();
+  unsigned long lastRequest = millis();
+  requestData();
+  while(!Serial.available()){
+    if(millis() - lastRequest >= noDataRecivedInterval){
+      requestData();
+      lastRequest = millis();
+    }
+  }
+  serialHandler();
 	String values = "";
 	values += "pumpstatus|";
 	if(ardData.pump1operating == 1)values += "ON";

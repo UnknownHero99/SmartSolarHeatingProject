@@ -126,8 +126,15 @@ function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,
 
 void send_system_pumps_data()
 {
-	Serial.print("GetPumps();");
-  pagesGetData();
+  unsigned long lastRequest = millis();
+  requestPumps();
+  while(!Serial.available()){
+    if(millis() - lastRequest >= noDataRecivedInterval){
+      requestPumps();
+      lastRequest = millis();
+    }
+  }
+  serialHandler();
 	String values = "";
 	values += "pump1status|" + (String)ardData.pump1Status + "|span\n";
 	values += "pump2status|" + (String)ardData.pump2Status + "|span\n";

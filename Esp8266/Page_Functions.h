@@ -9,8 +9,3 @@ bool is_authentified() {
   return false;
 }
 
-void pagesGetData(){
-  while(!Serial.available());
-  serialHandler();
-}
-

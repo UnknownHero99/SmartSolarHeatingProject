@@ -117,8 +117,15 @@ function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,
 
 void send_system_settings_data()
 {
-	Serial.print("GetSettings();");
-  pagesGetData();
+  unsigned long lastRequest = millis();
+	requestSettings();
+  while(!Serial.available()){
+    if(millis() - lastRequest >= noDataRecivedInterval){
+      requestSettings();
+      lastRequest = millis();
+    }
+  }
+  serialHandler();
 	String values = "";
 	values += "tdiffmin|" + (String)ardSettings.tdiffmin + "|span\n";
 	values += "tdiffmininput|" + (String)ardSettings.tdiffmin + "|input\n";

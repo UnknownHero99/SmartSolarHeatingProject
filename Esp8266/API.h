@@ -1,7 +1,14 @@
 void send_system_api_data()
 {
-	Serial.print("GetPumps();GetPumps();GetSettings();");
-  pagesGetData();
+  unsigned long lastRequest = millis();
+  requestAll();
+  while(!Serial.available()){
+    if(millis() - lastRequest >= noDataRecivedInterval){
+      requestAll();
+      lastRequest = millis();
+    }
+  }
+  serialHandler();
 	String ApiContent = "{\n\t\"data\": {";
 	ApiContent += "\n\t\t\"pump1operating\":" + String(ardData.pump1operating);
 	ApiContent += ",\n\t\t\"pump1Status\":" + String(ardData.pump1Status);
