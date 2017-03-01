@@ -10,7 +10,7 @@ String apiKey = "";//replace with thingspeak api
 const char* loginUsername = "admin";
 const char* loginPassword = "admin";
 
-unsigned long updateInterval = 600000;
+unsigned long updateInterval = 1000;
 unsigned long lastUpdate = 0;
 String IP = "";//leave this there will be saved IP of esp
 

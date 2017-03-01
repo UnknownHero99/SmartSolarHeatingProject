@@ -1,75 +1,6 @@
 const char PAGE_pumps[] PROGMEM = R"=====(
 <h2 style="text-align:center">Upravljanje črpalk/senzorjev</h2>
 <br/>
-<script>
-    function r1Controller() {
-        if (document.getElementById("r1").checked) r1Enable();
-        else r1Disable();
-    }
-
-    function r2Controller() {
-        if (document.getElementById("r2").checked) r2Enable();
-        else r2Disable();
-    }
-
-    function r3Controller() {
-        if (document.getElementById("r3").checked) r3Enable();
-        else r3Disable();
-    }
-
-    function r4Controller() {
-        if (document.getElementById("r4").checked) r4Enable();
-        else r4Disable();
-    }
-
-    function r1Disable() {
-        document.getElementById("p1activate").disabled = true;
-        document.getElementById("p1deactivate").disabled = true;
-        document.getElementById("p1auto").disabled = true;
-    }
-
-    function r1Enable() {
-        document.getElementById("p1activate").disabled = false;
-        document.getElementById("p1deactivate").disabled = false;
-        document.getElementById("p1auto").disabled = false;
-    }
-
-    function r2Disable() {
-        document.getElementById("p2activate").disabled = true;
-        document.getElementById("p2deactivate").disabled = true;
-        document.getElementById("p2auto").disabled = true;
-    }
-
-    function r2Enable() {
-        document.getElementById("p2activate").disabled = false;
-        document.getElementById("p2deactivate").disabled = false;
-        document.getElementById("p2auto").disabled = false;
-    }
-
-    function r3Disable() {
-        document.getElementById("p3activate").disabled = true;
-        document.getElementById("p3deactivate").disabled = true;
-        document.getElementById("p3auto").disabled = true;
-    }
-
-    function r3Enable() {
-        document.getElementById("p3activate").disabled = false;
-        document.getElementById("p3deactivate").disabled = false;
-        document.getElementById("p3auto").disabled = false;
-    }
-
-    function r4Disable() {
-        document.getElementById("p4activate").disabled = true;
-        document.getElementById("p4deactivate").disabled = true;
-        document.getElementById("p4auto").disabled = true;
-    }
-
-    function r4Enable() {
-        document.getElementById("p4activate").disabled = false;
-        document.getElementById("p4deactivate").disabled = false;
-        document.getElementById("p4auto").disabled = false;
-    }
-</script>
 		<table style="width:50%" align="center">
 			<tr>
 				<td>
@@ -87,7 +18,7 @@ const char PAGE_pumps[] PROGMEM = R"=====(
 			</tr>
 			<tr>
 				<td>
-					<input onclick="r1Controller()" type="checkbox" id="r1" name="rele1" checked="checked"> </td>
+					<input  type="checkbox" id="r1" name="rele1" checked="checked"> </td>
 				<td>
 					<p>Crpalka 1</p>
 				</td>
@@ -109,7 +40,7 @@ const char PAGE_pumps[] PROGMEM = R"=====(
 			</tr>
 			<tr>
 				<td>
-					<input onclick="r2Controller()" type="checkbox" id="r2" name="rele2" checked="checked"> </td>
+					<input type="checkbox" id="r2" name="rele2" checked="checked"> </td>
 				<td>
 					<p>Crpalka 2</p>
 				</td>
@@ -131,7 +62,7 @@ const char PAGE_pumps[] PROGMEM = R"=====(
 			</tr>
 			<tr>
 				<td>
-					<input onclick="r3Controller()" type="checkbox" id="r3" name="rele3" checked="checked"> </td>
+					<input type="checkbox" id="r3" name="rele3" checked="checked"> </td>
 				<td>
 					<p>Crpalka 3</p>
 				</td>
@@ -153,7 +84,7 @@ const char PAGE_pumps[] PROGMEM = R"=====(
 			</tr>
 			<tr>
 				<td>
-					<input onclick="r4Controller()" type="checkbox" id="r4" name="rele1" checked="checked"> </td>
+					<input type="checkbox" id="r4" name="rele1" checked="checked"> </td>
 				<td>
 					<p>Crpalka 4</p>
 				</td>
@@ -196,7 +127,7 @@ function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,
 void send_system_pumps_data()
 {
 	Serial.print("GetPumps();");
-	serialHandler();
+  pagesGetData();
 	String values = "";
 	values += "pump1status|" + (String)ardData.pump1Status + "|span\n";
 	values += "pump2status|" + (String)ardData.pump2Status + "|span\n";

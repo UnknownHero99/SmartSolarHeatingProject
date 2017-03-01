@@ -116,9 +116,8 @@ function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,
 void send_system_status_data()
 {
 	Serial.print("GetData();");
-	serialHandler();
+  pagesGetData();
 	String values = "";
- 
 	values += "pumpstatus|";
 	if(ardData.pump1operating == 1)values += "ON";
 	else values += "OFF";

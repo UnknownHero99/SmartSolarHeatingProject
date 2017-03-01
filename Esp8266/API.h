@@ -1,7 +1,7 @@
 void send_system_api_data()
 {
 	Serial.print("GetPumps();GetPumps();GetSettings();");
-	serialHandler();
+  pagesGetData();
 	String ApiContent = "{\n\t\"data\": {";
 	ApiContent += "\n\t\t\"pump1operating\":" + String(ardData.pump1operating);
 	ApiContent += ",\n\t\t\"pump1Status\":" + String(ardData.pump1Status);

@@ -28,8 +28,6 @@ function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,
 
 void send_system_graphs_data()
 {
-	Serial.print("GetPumps();");
-	serialHandler();
 	String values = "";
 	values += "graph1url|" + graph1 + "|iframe\n";
 	values += "graph2url|" + graph2 + "|iframe\n";
