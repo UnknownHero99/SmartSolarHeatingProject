@@ -129,7 +129,7 @@ void send_system_settings_data()
 	values += "tbmax|" + (String)ardSettings.tbmax + "|span\n";
 	values += "tbmaxinput|" + (String)ardSettings.tbmax + "|input\n";
 	values += "altitude|" + (String)ardSettings.altitude + "|span\n";
-	values += "altitudeinput|" + (String)ardSettings.altitude + "|spaninputn";
+	values += "altitudeinput|" + (String)ardSettings.altitude + "|input";
 	server.send(200, "text/plain", values);
 }
 
