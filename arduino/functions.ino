@@ -215,11 +215,11 @@ void serialhandler() {
 			StaticJsonBuffer<200> jsonBuffer;
 			JsonObject& root = jsonBuffer.parseObject(json);
 			if (!root.success()) return;
-			settingsMinTempDifference = root["minTempDiff"];
-			settingsMinTempCollector = root["minTempCollector"];
-			settingsMaxTempCollector = root["maxTempCollector"];
-			settingsMaxTempBoiler = root["maxTempBoiler"];
-			altitude = root["altitude"];
+			settingsMinTempDifference = root["mTD"]; //minTempDifference
+      settingsMaxTempCollector = root["maxTC"]; //maxTempCollector
+			settingsMinTempCollector = root["minTC"]; //minTempCollector;
+			settingsMaxTempBoiler = root["mTB"]; //maxTempBoiler
+			altitude = root["a"]; //altitude
 			EEPROM.update(0, settingsMinTempDifference);
 			EEPROM.update(1, settingsMinTempCollector);
 			EEPROM.update(2, settingsMaxTempCollector);
@@ -239,38 +239,38 @@ void serialhandler() {
 		}
 
 	}
- Serial.println("serialhandler has been runned");
 }
 
 void sendData() {
 	String date = "\"" + String(now.day()) + "." + String(now.month()) + "." + String(now.year()) + " " + String(now.hour()) + ":" + String(now.minute()) + "\"";
-	String data = "{\"date\": " + date + ",\"pumpOperating\": ";
-	if (pumps[0].isOperating()) data += "\"On\"";
-	else data += "\"Off\"";
-	data += ",\"operatingTimeHours\": " + String(pumps[0].operatingTime("%H")) + ",\"operatingTimeMinutes\": " + String(pumps[0].operatingTime("%M")) + ",\"boilerTemp\": " + String(boilerSensor.temp()) + ",\"collectorTemp\": " + String(collectorSensor.temp()) + ",\"t1Temp\": " + String(t1Sensor.temp()) + ",\"t2Temp\": " + String(t2Sensor.temp()) + ",\"roomTemp\": " + String(roomTemp) + ",\"roomHumidity\": " + String(roomHumidity) + ",\"roomPressure\": " + String(roomPressure) + "}";
+	String data = "{\"date\": " + date + ",\"p1O\": "+ pumps[0].isOperating() + ",\"p1S\": "; 
+  if(autoMode) data += "A";
+  else if(pumps[0].isOperating())data += "On";
+  else data += "Off";
+	data += ",\"oTH\": " + String(pumps[0].operatingTime("%H")) + ",\"oTM\": " + String(pumps[0].operatingTime("%M")) + ",\"bT\": " + String(boilerSensor.temp()) + ",\"cT\": " + String(collectorSensor.temp()) + ",\"t1T\": " + String(t1Sensor.temp()) + ",\"t2T\": " + String(t2Sensor.temp()) + ",\"rT\": " + String(roomTemp) + ",\"rH\": " + String(roomHumidity) + ",\"rP\": " + String(roomPressure) + "}";
 	Serial2.print("Data(" + data + ");");
   Serial.print("Data(" + data + ");");
  }
 
 void sendSettings() {
-	String data = "{\"minTempDiff\": " + String(settingsMinTempDifference) + ",\"maxTempCollector\": " + String(settingsMaxTempCollector) + ",\"minTempCollector\": " + String(settingsMinTempCollector) + ",\"maxTempBoiler\": " + String(settingsMaxTempBoiler) + ",\"altitude\": " + String(altitude) + "}";
+	String data = "{\"mTD\": " + String(settingsMinTempDifference) + ",\"maxTC\": " + String(settingsMaxTempCollector) + ",\"minTC\": " + String(settingsMinTempCollector) + ",\"mTB\": " + String(settingsMaxTempBoiler) + ",\"a\": " + String(altitude) + "}";
 	Serial2.print("Settings(" + data + ");");
 }
 
 void sendPumps() {
-	String data = "{\"pump1Operating\": \"" + String(pumps[0].isOperating());
+	String data = "{\"p1O\": \"" + String(pumps[0].isOperating());
  
-  data += "\",\"pump1Status\": \"";
+  data += "\",\"p1S\": \"";
 	if(autoMode) data += "A";
   else if(pumps[0].isOperating())data += "On";
   else data += "Off";
-  data += "\",\"pump2Status\": \"";
+  data += "\",\"p2S\": \"";
   if(pumps[1].isOperating())data += "On";
   else data += "Off";
-  data += "\",\"pump3Status\": \"";
+  data += "\",\"p3S\": \"";
   if(pumps[2].isOperating())data += "On";
   else data += "Off";
-  data += "\",\"pump4Status\": \"";
+  data += "\",\"p4S\": \"";
   if(pumps[3].isOperating())data += "On";
   else data += "Off";
   data += "\"}";

@@ -47,19 +47,19 @@ bool settingsUpdate(String settings) {
   JsonObject& root = jsonBuffer.parseObject(json);
   if (!root.success()) return false;
 
-  ardSettings.tdiffmin = root["minTempDiff"];
+  ardSettings.tdiffmin = root["mTD"];
   ardSettings.tdiffmininput = ardSettings.tdiffmin;
 
-  ardSettings.tkmax = root["maxTempCollector"];
+  ardSettings.tkmax = root["maxTC"];
   ardSettings.tkmaxinput = ardSettings.tkmax;
 
-  ardSettings.tkmin = root["minTempCollector"];
+  ardSettings.tkmin = root["minTC"];
   ardSettings.tkmininput = ardSettings.tkmin;
 
-  ardSettings.tbmax = root["maxTempBoiler"];
+  ardSettings.tbmax = root["mTB"];
   ardSettings.tbmaxinput = ardSettings.tbmax;
 
-  ardSettings.altitude = root["altitude"];
+  ardSettings.altitude = root["a"];
   ardSettings.altitudeinput = ardSettings.altitude;
 
   return true;
@@ -72,14 +72,14 @@ bool pumpUpdate(String pumps) {
   JsonObject& root = jsonBuffer.parseObject(json);
   if (!root.success()) return false;
 
-  ardData.pump1operating = root["pump1Operating"];
-  String pump1Status = root["pump1Status"];
+  ardData.pump1operating = root["p1O"];
+  String pump1Status = root["p1S"];
   ardData.pump1Status = pump1Status;
-  String pump2Status = root["pump2Status"];
+  String pump2Status = root["p2S"];
   ardData.pump2Status = pump2Status;
-  String pump3Status = root["pump3Status"];
+  String pump3Status = root["p3S"];
   ardData.pump3Status = pump3Status;
-  String pump4Status = root["pump4Status"];
+  String pump4Status = root["p4S"];
   ardData.pump4Status = pump4Status;
   return true;
 }
@@ -90,16 +90,19 @@ bool dataUpdate(String data) {
   StaticJsonBuffer<200> jsonBuffer;
   JsonObject& root = jsonBuffer.parseObject(json);
   if (!root.success()) return false;
-
-  ardData.operatinghours = root["operatingTimeHours"];
-  ardData.operatingminutes = root["operatingTimeMinutes"];
-  ardData.tempboiler = root["boilerTemp"];
-  ardData.tempcollector = root["collectorTemp"];
-  ardData.temproom = root["roomTemp"];
-  ardData.humidityroom = root["roomHumidity"];
-  ardData.tempt1 = root["t1Temp"];
-  ardData.tempt2 = root["t2Temp"];
-  ardData.pressureroom = root["roomPressure"];
+  
+  ardData.pump1operating = root["p1O"];
+  String pump1Status = root["p1S"];
+  ardData.pump1Status = pump1Status;
+  ardData.operatinghours = root["oTH"];
+  ardData.operatingminutes = root["oTM"];
+  ardData.tempboiler = root["bT"];
+  ardData.tempcollector = root["cT"];
+  ardData.temproom = root["rT"];
+  ardData.humidityroom = root["rH"];
+  ardData.tempt1 = root["t1T"];
+  ardData.tempt2 = root["t2T"];
+  ardData.pressureroom = root["rP"];
   return true;
 }
 

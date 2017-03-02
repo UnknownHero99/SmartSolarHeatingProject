@@ -170,7 +170,7 @@ void handleSettings() {
 			ardSettings.altitudeinput = ardSettings.altitude;
 		}
 		String Settings = "Set(";
-		Settings += "{\"minTempDiff\": " + String(ardSettings.tdiffmin) + ",\"maxTempCollector\": " + String(ardSettings.tkmax) + ",\"minTempCollector\": " + String(ardSettings.tkmin) + ",\"maxTempBoiler\": " + String(ardSettings.tbmax) + ",\"altitude\": " + String(ardSettings.altitude) + "});";
+		Settings += "{\"mTD\": " + String(ardSettings.tdiffmin) + ",\"maxTC\": " + String(ardSettings.tkmax) + ",\"minTC\": " + String(ardSettings.tkmin) + ",\"mTB\": " + String(ardSettings.tbmax) + ",\"a\": " + String(ardSettings.altitude) + "});";
 		Serial.print(Settings);
 	}
 
