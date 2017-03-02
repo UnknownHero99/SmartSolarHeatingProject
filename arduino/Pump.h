@@ -80,18 +80,19 @@ class Pump
     void updateTime() {
 
       if (this->lastOperatingTimeUpdate != 0) {
-        int milliSeconds = millis() - this->lastOperatingTimeUpdate;
-
+        unsigned long currentMillis = millis();
+        unsigned long milliSeconds = currentMillis - this->lastOperatingTimeUpdate;
+        
         this->operatingHours += milliSeconds / (3600 * 1000) % 24;
         this->operatingMinutes += (milliSeconds / (60 * 1000)) % 60;
         this->operatingSeconds += milliSeconds / 1000 % 60;
         this->operatingMilliSeconds += milliSeconds % 1000;
-
+        
         if (this->operatingMilliSeconds >= 1000) {
           this->operatingSeconds++;
           this->operatingMilliSeconds = this->operatingMilliSeconds % 60;
         }
-
+        
         if (this->operatingSeconds >= 60) {
           this->operatingMinutes++;
           this->operatingSeconds = this->operatingSeconds % 60;
@@ -101,10 +102,11 @@ class Pump
           this->operatingHours++;
           this->operatingMinutes = this->operatingMinutes % 60;
         }
-
+        
         if (this->operatingHours >= 24) this->operatingHours = this->operatingHours % 24;
-        this->lastOperatingTimeUpdate = millis();
+        this->lastOperatingTimeUpdate = currentMillis;
       }
+      if(this->operatingHours < 0) delay(5000);
     }
 
     void resetTime() {
