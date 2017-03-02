@@ -1,4 +1,3 @@
-
 void TempHandler() {
 	if (autoMode) {
 		if ((collectorSensor.tempDouble() - boilerSensor.tempDouble() >= settingsMinTempDifference && collectorSensor.tempDouble() >= settingsMinTempCollector && boilerSensor.tempDouble() < settingsMaxTempBoiler && !pumps[0].isOperating()) || (collectorSensor.tempDouble() > settingsMaxTempCollector && boilerSensor.tempDouble() < settingsMaxTempBoiler && !pumps[0].isOperating()))
@@ -239,7 +238,6 @@ void serialhandler() {
 		}
 
 	}
- Serial.println("serialhandler has been runned");
 }
 
 void sendData() {
