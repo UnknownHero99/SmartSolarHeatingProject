@@ -118,6 +118,7 @@ void serialHandler() {
 		}
 
 		else if (cmd == "ThingSpeak") {
+        if (ardData.pump1Status == "") return; //in case that esp still doesnt have data, it wont send it on thinkspeak
 				if (client.connect(thingspeak, 80)) {  //   "184.106.153.149" or api.thingspeak.com
 					String postStr = apiKey;
 					postStr += "&field1=";

@@ -38,7 +38,7 @@ void setup(void) {
 	if (mdns.begin("esp8266", WiFi.localIP())) {
 	}
   unsigned long lastRequest = millis();
-  while (ardData.tempcollector == 0) { //wait until get data;
+  while (ardData.pump1Status == "") { //wait until get data;
     serialHandler();
     if(millis() - lastRequest >= noDataRecivedInterval){
       requestData();
