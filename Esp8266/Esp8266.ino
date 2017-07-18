@@ -6,9 +6,9 @@
 #include <WiFiManager.h>
 #include <ESP8266httpUpdate.h>
 
-String apiKey = "WIAU0D6RPL9B3I1F";//replace with thingspeak api
-const char* loginUsername = "jakob";
-const char* loginPassword = "Salama123";
+String apiKey = "";//replace with thingspeak api
+const char* loginUsername = "";
+const char* loginPassword = "";
 
 const int bufferSize = 6000;
 uint8_t _buffer[6000];
