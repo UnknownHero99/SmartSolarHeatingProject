@@ -1,127 +1,75 @@
 const char PAGE_pumps[] PROGMEM = R"=====(
-<h2 style="text-align:center">Upravljanje črpalk/senzorjev</h2>
-<br/>
-		<table style="width:50%" align="center">
-			<tr>
-				<td>
-					<h4></h4></td>
-				<td>
-					<h4>črpalka/rele</h4></td>
-				<td>
-					<h4>Status</h4></td>
-				<td>
-					<h4>VKLOP</h4></td>
-				<td>
-					<h4>IZKLOP</h4></td>
-				<td>
-					<h4>AUTO</h4></td>
-			</tr>
-			<tr>
-				<td>
-					<input  type="checkbox" id="r1" name="rele1" checked="checked"> </td>
-				<td>
-					<p>Crpalka 1</p>
-				</td>
-				<td>
-					<span id="pump1status" name="pump1status"></span>
-				</td>
-				<td>
-					<a href="?cmd=Pump(1, On);">
-						<input class="shadow button" id="p1activate" type="button" value="Vklop"> </a>
-				</td>
-				<td>
-					<a href=" ?cmd=Pump(1, Off);">
-						<input class="shadow button" id="p1deactivate" type="button" value="Izklop"> </a>
-				</td>
-				<td>
-					<a href="?cmd=Pump(1, Auto);">
-						<input class="shadow button" id="p1auto" type="button" value="Auto"> </a>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<input type="checkbox" id="r2" name="rele2" checked="checked"> </td>
-				<td>
-					<p>Crpalka 2</p>
-				</td>
-				<td>
-					<span id="pump2status" name="pump2status"></span>
-				</td>
-				<td>
-					<a href="?cmd=Pump(2, On);">
-						<input class="shadow button" id="p2activate" type="button" value="Vklop"> </a>
-				</td>
-				<td>
-					<a href="?cmd=Pump(2, Off);">
-						<input class="shadow button" id="p2deactivate" type="button" value="Izklop"> </a>
-				</td>
-				<td>
-					<a href="?cmd=Pump(2, Auto);">
-						<input class="shadow button" id="p2auto" type="button" value="Auto"> </a>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<input type="checkbox" id="r3" name="rele3" checked="checked"> </td>
-				<td>
-					<p>Crpalka 3</p>
-				</td>
-				<td>
-					<span id="pump3status" name="pump3status"></span>
-				</td>
-				<td>
-					<a href="?cmd=Pump(3, On);">
-						<input class="shadow button" id="p3activate" type="button" value="Vklop"> </a>
-				</td>
-				<td>
-					<a href="?cmd=Pump(3, Off); ">
-						<input class="shadow button" id="p3deactivate" type="button" value="Izklop"> </a>
-				</td>
-				<td>
-					<a href="?cmd=Pump(3, Auto);">
-						<input class="shadow button" id="p3auto" type="button" value="Auto"> </a>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<input type="checkbox" id="r4" name="rele1" checked="checked"> </td>
-				<td>
-					<p>Crpalka 4</p>
-				</td>
-				<td>
-					<span id="pump4status" name="pump4status"></span>
-				</td>
-				<td>
-					<a href="?cmd=Pump(4, On);">
-						<input class="shadow button" id="p4activate" type="button" value="Vklop"> </a>
-				</td>
-				<td>
-					<a href="?cmd=Pump(4, Off);">
-						<input class="shadow button" id="p4deactivate" type="button" value="Izklop"> </a>
-				</td>
-				<td>
-					<a href="?cmd=Pump(4, Auto);">
-						<input class="shadow button" id="p4auto" type="button" value="Auto"> </a>
-				</td>
-			</tr>
-		</table>
-	</div>
-</div>
-<script>
-function GetPumpsData()
-{
-	setValues("/pumps/data");
-}
+<div id="content">
+        <article>
+          <h1>Upravljanje črpalk</h1>
+          <style>
+            input[type=radio]{position:absolute;visibility:hidden;display:none}.radio-group,label{display:inline-block}label{color:#FFF;cursor:pointer;font-weight:700;padding:5px 20px}.option-one:checked+label{background-color:#5cb85c}.option-two:checked+label{background-color:#ff551d}.option-three:checked+label{background-color:#d9534f}label+input[type=radio]+label{border-left:solid 4px #999}.radio-group{border:4px solid #999;border-radius:10px;overflow:hidden}
+          </style>
+            
+            <form class="inline-block">
+              <div class="text underline">Pumpa 1</div>
+              <div class="radio-group">
+                <input type="radio" class="option-one" id="pump1-on" name="selector" onclick="check1()" /><label class="text" for="pump1-on" >On</label><input type="radio" class="option-two" id="pump1-auto" name="selector" onclick="check1()" /><label class="text" for="pump1-auto">Auto</label><input type="radio" class="option-three" id="pump1-off" name="selector" onclick="check1()" /><label class="text" for="pump1-off">Off</label>
+              </div>
+            </form>
+            <form class="inline-block">
+              <div class="text underline">Pumpa 2</div>
+              <div class="radio-group">
+                <input type="radio" class="option-one" id="pump2-on" name="selector" onclick="check2()" /><label class="text" for="pump2-on">On</label><input type="radio" class="option-two" id="pump2-auto" name="selector" onclick="check2()" /><label class="text" for="pump2-auto">Auto</label><input type="radio" class="option-three" id="pump2-off" name="selector" onclick="check2()" /><label class="text" for="pump2-off">Off</label>
+              </div>
+            </form>
+            <form class="inline-block">
+              <div class="text underline">Pumpa 3</div>
+              <div class="radio-group">
+                <input type="radio" class="option-one" id="pump3-on" name="selector" onclick="check3()" /><label class="text" for="pump3-on">On</label><input type="radio" class="option-two" id="pump3-auto" name="selector" onclick="check3()" /><label class="text" for="pump3-auto">Auto</label><input type="radio" class="option-three" id="pump3-off" name="selector" onclick="check3()" /><label class="text" for="pump3-off">Off</label>
+              </div>
+            </form>
+            <form class="inline-block">
+              <div class="text underline">Pumpa 4</div>
+              <div class="radio-group">
+                <input type="radio" class="option-one" id="pump4-on" name="selector" onclick="check4()" /><label class="text" for="pump4-on">On</label><input type="radio" class="option-two" id="pump4-auto" name="selector" onclick="check4()" /><label class="text" for="pump4-auto">Auto</label><input type="radio" class="option-three" id="pump4-off" name="selector" onclick="check4()" /><label class="text" for="pump4-off">Off</label>
+              </div>
+            </form>
+            <script>
+              function check1() {
+                if(document.getElementById('pump1-on').checked) window.location.replace('?cmd=Pump(1, On);');
+                else if(document.getElementById('pump1-auto').checked) window.location.replace('?cmd=Pump(1, Auto);');
+                else if(document.getElementById('pump1-off').checked) window.location.replace('?cmd=Pump(1, Off);');
+              }
+              function check2() {
+                if(document.getElementById('pump2-on').checked) window.location.replace('?cmd=Pump(2, On);');
+                else if(document.getElementById('pump2-auto').checked) window.location.replace('?cmd=Pump(2, Auto);');
+                else if(document.getElementById('pump2-off').checked) window.location.replace('?cmd=Pump(2, Off);');
+              }
+              function check3() {
+                if(document.getElementById('pump3-on').checked) window.location.replace('?cmd=Pump(3, On);');
+                else if(document.getElementById('pump3-auto').checked) window.location.replace('?cmd=Pump(3, Auto);');
+                else if(document.getElementById('pump3-off').checked) window.location.replace('?cmd=Pump(3, Off);');
+              }
+              function check4() {
+                if(document.getElementById('pump4-on').checked) window.location.replace('?cmd=Pump(4, On);');
+                else if(document.getElementById('pump4-auto').checked) window.location.replace('?cmd=Pump(4, Auto);');
+                else if(document.getElementById('pump4-off').checked) window.location.replace('?cmd=Pump(4, Off);');
+              }
+            </script>
+            
+        </article>
+      </div>
+      <script>
+        function GetStatusData()
+        {
+          setValues("http://192.168.1.153/pumps/data");
+        }
 
-window.onload = function ()
-{
-	load("microajax.js","js", function() 
-	{
-			GetPumpsData();
-	});
-}
-function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,a.type="text/javascript",a.async=!1,a.onload=function(){n()},document.getElementsByTagName("head")[0].appendChild(a)}else if("css"==t){var a=document.createElement("link");a.href=e,a.rel="stylesheet",a.type="text/css",a.async=!1,a.onload=function(){n()},document.getElementsByTagName("head")[0].appendChild(a)}}
-</script>
+        window.onload = function ()
+        {
+          load("microajax.js","js", function() 
+          {
+              GetStatusData();
+          });
+        }
+        function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,a.type="text/javascript",a.async=!1,a.onload=function(){n()},document.getElementsByTagName("head")[0].appendChild(a)}else if("css"==t){var a=document.createElement("link");a.href=e,a.rel="stylesheet",a.type="text/css",a.async=!1,a.onload=function(){n()},document.getElementsByTagName("head")[0].appendChild(a)}}
+      </script>
 )=====";
 
 void send_system_pumps_data()
@@ -175,10 +123,6 @@ void handlePumps() {
 		server.sendHeader("Location", String("/pumps"), true);
 		server.send(302, "text/plain", "");
 	}
-
-	String content = String(PAGE_head);
-	content += String(PAGE_menu_logedin);
-	content += String(PAGE_pumps);
-	content += String(PAGE_foot);
-	server.send(200, "text/html", content);
+  String content = String(PAGE_head) + String(PAGE_menu_logedin)+ String(PAGE_pumps)+ String(PAGE_foot);
+	server.sendContent(content);
 }

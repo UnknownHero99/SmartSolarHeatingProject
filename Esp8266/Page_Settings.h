@@ -1,118 +1,104 @@
 const char PAGE_settings[] PROGMEM = R"=====(
-		<script>
-			function syncTime() {
-				var d = new Date();
-				d.setHours(d.getHours() + 2);
-				var n = d.toISOString().split(".")[0];
-				document.getElementById("time").value = n;
-			}
-		</script>
-		<h2>Nastavitve</h2>
-		<br/>
-		<form enctype="application/json" method="post">
-			<table style="width:70%" align="center">
-				<tr>
-					<th>
-						<h4>Nastavitev</h4></th>
-					<th>
-						<h4>Trenutna vrednost</h4></th>
-					<th>
-						<h4>Nova vrednost</h4></th>
-				</tr>
-				<tr>
-					<td>
-						<p>Min temp razlika:</p>
-					</td>
-					<td>
-						<span id="tdiffmin" name="tdiffmin"></span><span>°C</span>
-					</td>
-					<td>
-						<input type="text" id="tdiffmininput" name="tdiffmininput" value="0" />
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<p>Maksimalna temperatura kolektorja:</p>
-					</td>
-					<td>
-						<span id="tkmax" name="tkmax"></span><span>°C</span>
-					</td>
-					<td>
-						<input type="text" id="tkmaxinput" name="tkmaxinput" value="0" />
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<p>Minimalna temperatura kolektorja:</p>
-					</td>
-					<td>
-						<span id="tkmin" name="tkmin"></span><span>°C</span>
-					</td>
-					<td>
-						<input type="text" id="tkmininput" name="tkmininput" value="0" />
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<p>Maksimalna temperatura bojlerja:</p>
-					</td>
-					<td>
-						<span id="tbmax" name="tbmax"></span><span>°C</span>
-					</td>
-					<td>
-						<input type="text" id="tbmaxinput" name="tbmaxinput" value="0">
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<p>Nadmorska višina:</p>
-					</td>
-					<td>
-						<span id="altitude" name="altitude"></span><span>m</span>
-					</td>
-					<td>
-						<input type="text" id="altitudeinput" name="altitudeinput" value="0">
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<p>Datum/ura</p>
-					</td>
-					<td>
-						<span id="time" name="time"></span>
-					</td>
-					<td>
-						<input id="timeinput" type="text" name="date" value="0">
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2">
-						<button type="button" onclick="GetSettingsData()" class="shadow button">Osveži</button>
-					</td>
-					<td colspan="1">
-						<input class="shadow button" type="submit" value="Shrani" style="float: right;">
-					</td>
-				</tr>
-			</table>
-			<br>
-		</form>
-	</div>
-</div>
-<script>
-function GetSettingsData()
-{
-	setValues("/settings/data");
-}
+		<div id="content">
+        <article>
+          <h1>Nastavitve</h1>
+          <form enctype="application/json" method="post">
+            <table align="center">
+              <tbody><tr>
+                <th>
+                  <h4>Nastavitev</h4></th>
+                <th>
+                  <h4>Trenutna<br />vrednost</h4></th>
+                <th>
+                  <h4>Nova<br />vrednost</h4></th>
+              </tr>
+              <tr>
+                <td>
+                  <p>Min temp razlika:</p>
+                </td>
+                <td>
+                  <span id="tdiffmin" name="tdiffmin"></span><span>°C</span>
+                </td>
+                <td>
+                  <input type="text" id="tdiffmininput" name="tdiffmininput" value="0">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p>Maksimalna temperatura kolektorja:</p>
+                </td>
+                <td>
+                  <span id="tkmax" name="tkmax"></span><span>°C</span>
+                </td>
+                <td>
+                  <input type="text" id="tkmaxinput" name="tkmaxinput" value="0">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p>Minimalna temperatura kolektorja:</p>
+                </td>
+                <td>
+                  <span id="tkmin" name="tkmin"></span><span>°C</span>
+                </td>
+                <td>
+                  <input type="text" id="tkmininput" name="tkmininput" value="0">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p>Maksimalna temperatura bojlerja:</p>
+                </td>
+                <td>
+                  <span id="tbmax" name="tbmax"></span><span>°C</span>
+                </td>
+                <td>
+                  <input type="text" id="tbmaxinput" name="tbmaxinput" value="0">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p>Nadmorska višina:</p>
+                </td>
+                <td>
+                  <span id="altitude" name="altitude"></span><span>m</span>
+                </td>
+                <td>
+                  <input type="text" id="altitudeinput" name="altitudeinput" value="0">
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <button type="button" onclick="GetSettingsData()" class="shadow button">Osveži</button>
+                </td>
+                <td colspan="1">
+                  <input class="shadow button" type="submit" value="Shrani" style="float: right;">
+                </td>
+              </tr>
+            </tbody></table>
+            <br>
+          </form>
+          <button type="button" onclick="OTA()" class="shadow button">Update Over The Air</button>
+        </article>
+      </div>
+      <script>
+      function OTA(){
+        document.location.href = '/settings/ota';
+      }
+      function GetSettingsData()
+      {
+        setValues("http://192.168.1.153/settings/data");
+      }
 
-window.onload = function ()
-{
-	load("microajax.js","js", function() 
-	{
-			GetSettingsData();
-	});
-}
-function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,a.type="text/javascript",a.async=!1,a.onload=function(){n()},document.getElementsByTagName("head")[0].appendChild(a)}else if("css"==t){var a=document.createElement("link");a.href=e,a.rel="stylesheet",a.type="text/css",a.async=!1,a.onload=function(){n()},document.getElementsByTagName("head")[0].appendChild(a)}}
-</script>
+      window.onload = function ()
+      {
+        load("microajax.js","js", function() 
+        {
+            GetSettingsData();
+        });
+      }
+      function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,a.type="text/javascript",a.async=!1,a.onload=function(){n()},document.getElementsByTagName("head")[0].appendChild(a)}else if("css"==t){var a=document.createElement("link");a.href=e,a.rel="stylesheet",a.type="text/css",a.async=!1,a.onload=function(){n()},document.getElementsByTagName("head")[0].appendChild(a)}}
+      </script>
 )=====";
 
 void send_system_settings_data()
@@ -174,9 +160,6 @@ void handleSettings() {
 		Serial.print(Settings);
 	}
 
-	String content = String(PAGE_head);
-	content += String(PAGE_menu_logedin);
-	content += String(PAGE_settings);
-	content += String(PAGE_foot);
-	server.send(200, "text/html", content);
+  String content = String(PAGE_head) + String(PAGE_menu_logedin) + String(PAGE_settings) + String(PAGE_foot);
+	server.sendContent(content);
 }

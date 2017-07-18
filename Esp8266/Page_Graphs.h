@@ -1,29 +1,32 @@
 const char PAGE_graphs[] PROGMEM = R"=====(
-		<h2>Grafi</h2>
-		<br/>
-		<iframe id="graph1url" width="450" height="260" style="border: 1px solid #cccccc;" src=""></iframe>
-		<iframe id="graph2url" width="450" height="260" style="border: 1px solid #cccccc;" src=""></iframe>
-		<iframe id="graph3url" width="450" height="260" style="border: 1px solid #cccccc;" src=""></iframe>
-		<iframe id="graph4url" width="450" height="260" style="border: 1px solid #cccccc;" src=""></iframe>
-		<iframe id="graph5url" width="450" height="260" style="border: 1px solid #cccccc;" src=""></iframe>
-		<iframe id="graph6url" width="450" height="260" style="border: 1px solid #cccccc;" src=""></iframe>
-	</div>
-</div>
-<script>
-function GetGraphsData()
-{
-	setValues("/graphs/data");
-}
+<div id="content">
+        <article>
+          <h1>Grafi</h1>
+          <iframe id="graph1url" width="450" height="260" style="border: 1px solid #cccccc;" ></iframe>
+          <iframe id="graph2url" width="450" height="260" style="border: 1px solid #cccccc;" ></iframe>
+          <iframe id="graph3url" width="450" height="260" style="border: 1px solid #cccccc;" ></iframe>
+          <iframe id="graph4url" width="450" height="260" style="border: 1px solid #cccccc;" ></iframe>
+          <iframe id="graph5url" width="450" height="260" style="border: 1px solid #cccccc;" ></iframe>
+          <iframe id="graph6url" width="450" height="260" style="border: 1px solid #cccccc;" ></iframe>
+        </article>
+      </div>
+      <script>
+      function GetGraphsData()
+      {
+        setValues("http://192.168.1.153/graphs/data");
+      }
 
-window.onload = function ()
-{
-	load("microajax.js","js", function() 
-	{
-			GetGraphsData();
-	});
-}
-function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,a.type="text/javascript",a.async=!1,a.onload=function(){n()},document.getElementsByTagName("head")[0].appendChild(a)}else if("css"==t){var a=document.createElement("link");a.href=e,a.rel="stylesheet",a.type="text/css",a.async=!1,a.onload=function(){n()},document.getElementsByTagName("head")[0].appendChild(a)}}
-</script>
+      window.onload = function ()
+      {
+        load("microajax.js","js", function() 
+        {
+            GetGraphsData();
+        });
+      }
+      function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,a.type="text/javascript",a.async=!1,a.onload=function(){n()},document.getElementsByTagName("head")[0].appendChild(a)}else if("css"==t){var a=document.createElement("link");a.href=e,a.rel="stylesheet",a.type="text/css",a.async=!1,a.onload=function(){n()},document.getElementsByTagName("head")[0].appendChild(a)}}
+            
+      </script>
+    </div>
 )=====";
 
 void send_system_graphs_data()
@@ -44,10 +47,8 @@ void handleGraphs() {
 		server.sendContent(header);
 		return;
 	}
+  String content = String(PAGE_head)+String(PAGE_menu_logedin)+String(PAGE_graphs)+String(PAGE_foot);
+  server.sendContent(content);
 
-	String content = String(PAGE_head);
-	content += String(PAGE_menu_logedin);
-	content += String(PAGE_graphs);
-	content += String(PAGE_foot);
-	server.send(200, "text/html", content);
+  
 }

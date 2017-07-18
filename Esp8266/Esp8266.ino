@@ -3,12 +3,15 @@
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 #include <ArduinoJson.h>
+#include <WiFiManager.h>
+#include <ESP8266httpUpdate.h>
 
-const char* ssid = ""; //change with wifi SSID
-const char* password = "";//change with wifi password
-String apiKey = "";//replace with thingspeak api
-const char* loginUsername = "admin";
-const char* loginPassword = "admin";
+String apiKey = "WIAU0D6RPL9B3I1F";//replace with thingspeak api
+const char* loginUsername = "jakob";
+const char* loginPassword = "Salama123";
+
+const int bufferSize = 6000;
+uint8_t _buffer[6000];
 
 unsigned long updateInterval = 60000;
 const unsigned long noDataRecivedInterval = 2000;
@@ -25,12 +28,12 @@ String IP = "";//leave this there will be saved IP of esp
 #include "Page_Pumps.h"
 #include "Page_Graphs.h"
 #include "Page_404NotFound.h"
+#include "Page_Update.h"
 #include "API.h"
-
 void setup(void) {
 	Serial.begin(115200);
- 
-	WiFi.begin(ssid, password);
+  WiFiManager wifiManager;
+  wifiManager.autoConnect("SmartSolarHeatingProject");
 	// Wait for connection
 	while (WiFi.status() != WL_CONNECTED) {
 	delay(500);
@@ -38,17 +41,11 @@ void setup(void) {
 	if (mdns.begin("esp8266", WiFi.localIP())) {
 	}
   unsigned long lastRequest = millis();
-  while (ardData.pump1Status == "") { //wait until get data;
-    serialHandler();
-    if(millis() - lastRequest >= noDataRecivedInterval){
-      requestData();
-      lastRequest = millis();
-    }
-  }
+
 	IP = WiFi.localIP().toString();
 	server.on("/", handleStatus);
 	server.on("/status/data", send_system_status_data);
-
+ 
 	server.on("/api", send_system_api_data);
 	server.on("/api/set", set_system_api_data);
 	server.on("/api/login", api_handleLogin);
@@ -57,7 +54,8 @@ void setup(void) {
 
 	server.on("/settings", handleSettings);
 	server.on("/settings/data", send_system_settings_data);
-
+  server.on("/settings/ota", handleSystemUpdate);
+  
 	server.on("/microajax.js", []() { server.send(200, "text/plain", PAGE_microajax_js);  });
 
 	server.on("/pumps", handlePumps);

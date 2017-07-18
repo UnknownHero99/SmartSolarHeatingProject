@@ -1,116 +1,87 @@
 const char PAGE_status[] PROGMEM = R"=====(
-	<h2>trenutno stanje</h2>
-	<br/>
-	<table style="width:50%" align="center">
-		<tr>
-			<td>
-				<h4>Senzor</h4></td>
-			<td>
-				<h4>Vrednost</h4></td>
-		</tr>
-		<tr>
-			<td>
-				<span>Status crpalke:</span>
-			</td>
-			<td>
-				<span id="pumpstatus" name="pumpstatus"></span>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<span>Avtomatsko delovanje črpalke:</span>
-			</td>
-			<td>
-				<span id="pumpautomode" name="pumpautomode"></span>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<span>Skupen čas delovanja(danes):</span>
-			</td>
-			<td>
-				<span id="operatinghours" name="operatinghours"></span><span>h, </span>
-				<span id="operatingminutes" name="operatingminutes"></span><span>m</span>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<span>TK:</span>
-			</td>
-			<td>
-				<span id="tempcollector" name="tempcollector"></span><span>°C</span>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<span>TB:</span>
-			</td>
-			<td>
-				<span id="tempboiler" name="tempboiler"></span><span>°C</span>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<span>T1:</span>
-			</td>
-			<td>
-				<span id="tempt1" name="tempt1"></span><span>°C</span>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<span>T2:</span>
-			</td>
-			<td>
-				<span id="tempt2" name="tempt2"></span><span>°C</span>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<span>Sobna temperatura:</span>
-			</td>
-			<td>
-				<span id="temproom" name="temproom"></span><span>°C</span>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<span>Vlaga:</span>
-			</td>
-			<td>
-				<span id="humidityroom" name="humidityroom"></span><span>%</span>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<span>Zracni tlak:</span>
-			</td>
-			<td>
-				<span id="pressureroom" name="pressureroom"></span><span>mBa</span>
-			</td>
-		</tr>
-		<tr>
-			<td><button onclick="GetStatusData()" class="shadow button">Osveži</button></td>
-		</tr>
-	</table>
-	</div>
-</div>
+<div id="content">
+        <article>
+          <h1>Trenutno stanje</h1>
+          <div style="text-align: center;max-width: 1250px;margin: 0 auto;">
+            <div class="textValue"><div class="text underline">Pump Status</div><div class="text" id="pumpstatus">-</div></div>
+            <div class="textValue"><div class="text underline">Pump Auto Mode</div><div class="text" id="pumpautomode">-</div></div>
+            <div class="textValue"><div class="text underline">Pump Operating Time</div><span class="text" id="operatinghours">-</span><span class="text"> h </span><span class="text" id="operatingminutes">-</span><span class="text"> m</span></div>
+          </div>
+          <div style="text-align: center;max-width: 1250px;margin: 0 auto;">
+            <div id="boilerTempContainer" class="progressbar"><div class="text progressbarText">Boiler Temp</div></div>
+            <div id="collectorTempContainer" class="progressbar"><div class="text progressbarText">Collector Temp</div></div>
+            <div id="t1TempContainer" class="progressbar"><div class="text progressbarText">T1 Temp</div></div>
+            <div id="t2TempContainer" class="progressbar"><div class="text progressbarText">T2 Temp</div></div>
+            <div id="roomTempContainer" class="progressbar"><div class="text progressbarText">Room Temp</div></div>
+            <div id="roomHumidityContainer" class="progressbar"><div class="text progressbarText">Room Humidity</div></div>
+            <div id="airPressureContainer" class="progressbar"><div class="text progressbarText">Air Pressure</div></div>
+          </div>
+          <button onclick="GetStatusData()" class="shadow button">Osveži</button>
+        </article>
+      </div>
+      <script>
+        var progressbarSettings = {
+          color: '#ff551d',
+          strokeWidth: 4,
+          trailWidth: 1,
+          easing: 'easeInOut',
+          duration: 1400,
+          text: {
+            autoStyleContainer: false
+          },
+          from: { color: '#27ae60', width: 3 },
+          to: { color: '#ff3f00', width: 5 },
+          attachment: { units: "°C" },
+          step: function(state, circle, attachment) {
+            circle.path.setAttribute('stroke', state.color);
+            circle.path.setAttribute('stroke-width', state.width);
 
-<script>
-function GetStatusData()
-{
-	setValues("/status/data");
-}
+          var value = Math.round(circle.value() * 1000)/10;
+            if (value === 0) {
+              circle.setText('');
+            } else {
+            if (attachment.min != undefined){
+              var diff = attachment.max - attachment.min;
+              console.log(diff);
+              
+              value = Math.round(value*diff+attachment.min*100)/100;
+              value = Math.round(value);
+              circle.setText(value + " " + attachment.units);
+            }
+            else circle.setText(value + " " + attachment.units);          
+            }
 
-window.onload = function ()
-{
-	load("microajax.js","js", function() 
-	{
-			GetStatusData();
-	});
-}
-function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,a.type="text/javascript",a.async=!1,a.onload=function(){n()},document.getElementsByTagName("head")[0].appendChild(a)}else if("css"==t){var a=document.createElement("link");a.href=e,a.rel="stylesheet",a.type="text/css",a.async=!1,a.onload=function(){n()},document.getElementsByTagName("head")[0].appendChild(a)}}
-</script>
+          }
+        }
+        
+        var progressBars = new Array(new ProgressBar.Circle(boilerTempContainer, progressbarSettings),
+        new ProgressBar.Circle(collectorTempContainer, progressbarSettings),
+        new ProgressBar.Circle(t1TempContainer, progressbarSettings),
+        new ProgressBar.Circle(t2TempContainer, progressbarSettings),
+        new ProgressBar.Circle(roomTempContainer, progressbarSettings),
+        new ProgressBar.Circle(roomHumidityContainer, progressbarSettings),
+        new ProgressBar.Circle(airPressureContainer, progressbarSettings));
+
+        for(var i = 0; i < progressBars.length; i++){
+          progressBars[i].text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
+          progressBars[i].text.style.fontSize = '1.5rem';
+        }
+      </script>
+      <script>
+        function GetStatusData()
+        {
+          setValues("http://192.168.1.153/status/data");
+        }
+
+        window.onload = function ()
+        {
+          load("microajax.js","js", function() 
+          {
+              GetStatusData();
+          });
+        }
+        function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,a.type="text/javascript",a.async=!1,a.onload=function(){n()},document.getElementsByTagName("head")[0].appendChild(a)}else if("css"==t){var a=document.createElement("link");a.href=e,a.rel="stylesheet",a.type="text/css",a.async=!1,a.onload=function(){n()},document.getElementsByTagName("head")[0].appendChild(a)}}
+      </script>
 )=====";
 
 void send_system_status_data()
@@ -147,10 +118,9 @@ void send_system_status_data()
 }
 
 void handleStatus() {
-	String content = String(PAGE_head);
-	if (is_authentified())content += String(PAGE_menu_logedin);
-	else content += String(PAGE_menu_normal);
-	content += String(PAGE_status);
-	content += String(PAGE_foot);
-	server.send(200, "text/html", content);
+  String content = String(PAGE_head); 
+  if (is_authentified())content += String(PAGE_menu_logedin);
+  else content += String(PAGE_menu_normal);
+  content += String(PAGE_status) + String(PAGE_foot);
+  server.sendContent(content);
 }

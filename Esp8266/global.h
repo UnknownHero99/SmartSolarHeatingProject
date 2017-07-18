@@ -17,7 +17,7 @@ struct arduinoData {
 	String pump3Status = "";
   String pump4Status = "";
 	int operatinghours = 0;
-	int  operatingminutes = 0;
+	int operatingminutes = 0;
 	double tempcollector = 0;
 	double tempboiler = 0;
 	double tempt1 = 0;
