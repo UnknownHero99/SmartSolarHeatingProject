@@ -1,24 +1,19 @@
 
 void TempHandler() {
 	if (autoMode) {
-		if ((collectorSensor.tempDouble() - boilerSensor.tempDouble() >= settingsMinTempDifference && collectorSensor.tempDouble() >= settingsMinTempCollector && boilerSensor.tempDouble() < settingsMaxTempBoiler && !pumps[0].isOperating()) || (collectorSensor.tempDouble() > settingsMaxTempCollector && boilerSensor.tempDouble() < settingsMaxTempBoiler && !pumps[0].isOperating()))
+		if (boilerSensor.tempDouble() < settingsMaxTempBoiler && ((collectorSensor.tempDouble() - boilerSensor.tempDouble() >= settingsMinTempDifference && collectorSensor.tempDouble() >= settingsMinTempCollector) || collectorSensor.tempDouble() > settingsMaxTempCollector) )
 		{
-			pumps[0].on();
+		  if(!pumps[0].isOperating()) pumps[0].on();
 		}
 
-		if ((collectorSensor.tempDouble() - boilerSensor.tempDouble() < settingsMinTempDifference && collectorSensor.tempDouble() < settingsMaxTempCollector && pumps[0].isOperating()) || (boilerSensor.tempDouble() >= settingsMaxTempBoiler && pumps[0].isOperating()) || (collectorSensor.tempDouble() < settingsMinTempCollector && pumps[0].isOperating())) {
-			pumps[0].off();
-		}
+		else if(pumps[0].isOperating()) pumps[0].off();
 	}
 	else {
-		if ((collectorSensor.tempDouble() > settingsMaxTempCollector && boilerSensor.tempDouble() < settingsMaxTempBoiler && !pumps[0].isOperating())) {
-
-			pumps[0].on();
+		if (collectorSensor.tempDouble() > settingsMaxTempCollector && boilerSensor.tempDouble() < settingsMaxTempBoiler) {
+			if(!pumps[0].isOperating()) pumps[0].on();
 		}
-
-		if ((boilerSensor.tempDouble() >= settingsMaxTempBoiler && pumps[0].isOperating())) {
-			pumps[0].off();
-		}
+   
+		else if (pumps[0].isOperating()) pumps[0].off();
 	}
 }
 
