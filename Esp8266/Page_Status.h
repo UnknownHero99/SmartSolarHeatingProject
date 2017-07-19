@@ -70,7 +70,7 @@ const char PAGE_status[] PROGMEM = R"=====(
       <script>
         function GetStatusData()
         {
-          setValues("http://192.168.1.153/status/data");
+          setValues("/status/data");
         }
 
         window.onload = function ()

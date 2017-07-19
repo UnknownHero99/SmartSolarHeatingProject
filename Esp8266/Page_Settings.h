@@ -3,10 +3,10 @@ const char PAGE_settings[] PROGMEM = R"=====(
         <article>
           <h1>Nastavitve</h1>
           <form enctype="application/json" method="post">
-            <table align="center">
+            <table id="settingsTable" align="center">
               <tbody><tr>
                 <th>
-                  <h4>Nastavitev</h4></th>
+                  <h4>Nastavitve Sistema</h4></th>
                 <th>
                   <h4>Trenutna<br />vrednost</h4></th>
                 <th>
@@ -68,6 +68,33 @@ const char PAGE_settings[] PROGMEM = R"=====(
                 </td>
               </tr>
               <tr>
+                <td colspan="3">
+                  <h4>ThingSpeak nastavitve</h4>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p>Thingspeak API key:</p>
+                </td>
+                <td>
+                  <span id="tsapi" name="tsapi"></span>
+                </td>
+                <td>
+                  <input type="text" id="tsapiinput" name="tsapiinput" value="0">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p>Thingspeak channel ID:</p>
+                </td>
+                <td>
+                  <span id="tschid" name="tschid"></span>
+                </td>
+                <td>
+                  <input type="text" id="tschidinput" name="tschidinput" value="0">
+                </td>
+              </tr>
+              <tr>
                 <td colspan="2">
                   <button type="button" onclick="GetSettingsData()" class="shadow button">Osveži</button>
                 </td>
@@ -87,7 +114,7 @@ const char PAGE_settings[] PROGMEM = R"=====(
       }
       function GetSettingsData()
       {
-        setValues("http://192.168.1.153/settings/data");
+        setValues("/settings/data");
       }
 
       window.onload = function ()
@@ -122,7 +149,11 @@ void send_system_settings_data()
 	values += "tbmax|" + (String)ardSettings.tbmax + "|span\n";
 	values += "tbmaxinput|" + (String)ardSettings.tbmax + "|input\n";
 	values += "altitude|" + (String)ardSettings.altitude + "|span\n";
-	values += "altitudeinput|" + (String)ardSettings.altitude + "|input";
+  values += "altitudeinput|" + (String)ardSettings.altitude + "|input\n";
+  values += "tsapi|" + (String)apiKey + "|span\n";
+  values += "tsapiinput|" + (String)apiKey + "|input\n";
+  values += "tschid|" + (String)thingspeakChannelID + "|span\n";
+  values += "tschidinput|" + (String)thingspeakChannelID + "|input";
 	server.send(200, "text/plain", values);
 }
 
@@ -152,9 +183,17 @@ void handleSettings() {
 			ardSettings.tbmaxinput = ardSettings.tbmax;
 		}
 		if (server.hasArg("altitudeinput")) {
-			ardSettings.altitude = server.arg("altitudeinput").toInt();
-			ardSettings.altitudeinput = ardSettings.altitude;
-		}
+      ardSettings.altitude = server.arg("altitudeinput").toInt();
+      ardSettings.altitudeinput = ardSettings.altitude;
+    }
+    if (server.hasArg("tsapiinput")) {
+      apiKey = server.arg("tsapiinput");
+      eepromWriteString(0, 16, apiKey);
+    }
+    if (server.hasArg("tschidinput")) {
+      thingspeakChannelID = server.arg("tschidinput");
+      eepromWriteString(25, 6, thingspeakChannelID);
+    }
 		String Settings = "Set(";
 		Settings += "{\"mTD\": " + String(ardSettings.tdiffmin) + ",\"maxTC\": " + String(ardSettings.tkmax) + ",\"minTC\": " + String(ardSettings.tkmin) + ",\"mTB\": " + String(ardSettings.tbmax) + ",\"a\": " + String(ardSettings.altitude) + "});";
 		Serial.print(Settings);

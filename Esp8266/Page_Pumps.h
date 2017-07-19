@@ -58,7 +58,7 @@ const char PAGE_pumps[] PROGMEM = R"=====(
       <script>
         function GetStatusData()
         {
-          setValues("http://192.168.1.153/pumps/data");
+          setValues("/pumps/data");
         }
 
         window.onload = function ()

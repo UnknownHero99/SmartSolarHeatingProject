@@ -5,10 +5,12 @@
 #include <ArduinoJson.h>
 #include <WiFiManager.h>
 #include <ESP8266httpUpdate.h>
+#include <EEPROM.h>
 
-String apiKey = "WIAU0D6RPL9B3I1F";//replace with thingspeak api
-const char* loginUsername = "jakob";
-const char* loginPassword = "Salama123";
+String apiKey;//replace with thingspeak api
+String thingspeakChannelID ;
+const char* loginUsername = "admin";
+const char* loginPassword = "admin";
 
 const int bufferSize = 6000;
 uint8_t _buffer[6000];
@@ -34,6 +36,7 @@ void setup(void) {
 	Serial.begin(115200);
   WiFiManager wifiManager;
   wifiManager.autoConnect("SmartSolarHeatingProject");
+
 	// Wait for connection
 	while (WiFi.status() != WL_CONNECTED) {
 	delay(500);
@@ -73,6 +76,8 @@ void setup(void) {
 	//ask server to track these headers
 	server.collectHeaders(headerkeys, headerkeyssize);
 	server.begin();
+  apiKey = eepromReadString(0, 16);
+  thingspeakChannelID = eepromReadString(25, 6);  
 }
 void loop(void) {
 	if (millis() - lastUpdate >= updateInterval) requestAll();

@@ -1,14 +1,8 @@
 const char* thingspeak = "api.thingspeak.com";
+
 MDNSResponder mdns;
 ESP8266WebServer server(80);
 WiFiClient client;
-//replace with url to thingspeak graphs
-String graph1 = "https://thingspeak.com/channels/132705/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line";
-String graph2 = "https://thingspeak.com/channels/132705/charts/2?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line";
-String graph3 = "https://thingspeak.com/channels/132705/charts/3?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line";
-String graph4 = "https://thingspeak.com/channels/132705/charts/4?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line";
-String graph5 = "https://thingspeak.com/channels/132705/charts/5?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line";
-String graph6 = "https://thingspeak.com/channels/132705/maps/channel_show"; //map
 
 struct arduinoData {
 	bool pump1operating = false;
@@ -118,7 +112,7 @@ void serialHandler() {
 		}
 
 		else if (cmd == "ThingSpeak") {
-        if (ardData.pump1Status == "") return; //in case that esp still doesnt have data, it wont send it on thinkspeak
+        if (ardData.pump1Status == "" || apiKey == NULL) return; //in case that esp still doesnt have data or dont have API key, it wont send it on thinkspeak 
 				if (client.connect(thingspeak, 80)) {  //   "184.106.153.149" or api.thingspeak.com
 					String postStr = apiKey;
 					postStr += "&field1=";
@@ -173,5 +167,33 @@ void requestAll() {
   requestSettings();
   requestPumps();
 	lastUpdate = millis();
+}
+
+String eepromReadString(int offset, int bytes){
+  char c = 0;
+  String string = "";
+  EEPROM.begin(32);
+  EEPROM.write(1, 233);
+  for (int i = 0; i < (bytes); i++) {
+    int addr=i;
+    addr += EEPROM.get(addr, c);
+    EEPROM.commit();
+    string += c;
+  }
+  
+  EEPROM.end();
+  return string;
+}
+
+void eepromWriteString(int offset, int bytes, String buf){
+  char c = 0;
+  //int len = (strlen(buf) < bytes) ? strlen(buf) : bytes;
+  EEPROM.begin(512);
+  for (int i = 0; i < bytes; i++) {
+    c = buf[i];
+    i+= EEPROM.put(i, (int)c);
+    EEPROM.write(offset + i, (int)c); 
+  }
+  EEPROM.end();
 }
 
