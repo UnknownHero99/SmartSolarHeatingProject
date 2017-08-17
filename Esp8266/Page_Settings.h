@@ -80,7 +80,7 @@ const char PAGE_settings[] PROGMEM = R"=====(
                   <span id="tsapi" name="tsapi"></span>
                 </td>
                 <td>
-                  <input type="text" id="tsapiinput" name="tsapiinput" value="0">
+                  <input type="text" id="tsapiinput" name="tsapiinput" value="">
                 </td>
               </tr>
               <tr>
@@ -91,7 +91,18 @@ const char PAGE_settings[] PROGMEM = R"=====(
                   <span id="tschid" name="tschid"></span>
                 </td>
                 <td>
-                  <input type="text" id="tschidinput" name="tschidinput" value="0">
+                  <input type="text" id="tschidinput" name="tschidinput" value="">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p>Password:</p>
+                </td>
+                <td>
+                  <span id="password" name="password"></span>
+                </td>
+                <td>
+                  <input type="password" id="passwordinput" name="passwordinput" value="">
                 </td>
               </tr>
               <tr>
@@ -153,7 +164,9 @@ void send_system_settings_data()
   values += "tsapi|" + (String)apiKey + "|span\n";
   values += "tsapiinput|" + (String)apiKey + "|input\n";
   values += "tschid|" + (String)thingspeakChannelID + "|span\n";
-  values += "tschidinput|" + (String)thingspeakChannelID + "|input";
+  values += "tschidinput|" + (String)thingspeakChannelID + "|input\n";
+  values += "password|" + (String)"******" + "|span\n";
+  values += "passwordinut|" + (String)loginPassword + "|input";
 	server.send(200, "text/plain", values);
 }
 
@@ -194,9 +207,14 @@ void handleSettings() {
       thingspeakChannelID = server.arg("tschidinput");
       eepromWriteString(25, 6, thingspeakChannelID);
     }
+    if (server.hasArg("passwordinput")) {
+      loginPassword = server.arg("passwordinput");
+      File f = SPIFFS.open("/data.txt", "w");
+      f.println(loginPassword + "|" + thingspeakChannelID + "|" + apiKey + "|");
+      f.close();
+    }
 		String Settings = "Set(";
-		Settings += "{\"mTD\": " + String(ardSettings.tdiffmin) + ",\"maxTC\": " + String(ardSettings.tkmax) + ",\"minTC\": " + String(ardSettings.tkmin) + ",\"mTB\": " + String(ardSettings.tbmax) + ",\"a\": " + String(ardSettings.altitude) + "});";
-		Serial.print(Settings);
+		Settings += "{\"mTD\": " + String(ardSettings.tdiffmin) + ",\"maxTC\": " + String(ardSettings.tkmax) + ",\"minTC\": " + String(ardSettings.tkmin) + ",\"mTB\": " + String(ardSettings.tbmax) + ",\"a\": " + String(ardSettings.altitude) + "});";    
 	}
 
   String content = String(PAGE_head) + String(PAGE_menu_logedin) + String(PAGE_settings) + String(PAGE_foot);

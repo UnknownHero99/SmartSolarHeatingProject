@@ -6,11 +6,12 @@
 #include <WiFiManager.h>
 #include <ESP8266httpUpdate.h>
 #include <EEPROM.h>
+#include "FS.h"
 
 String apiKey;//replace with thingspeak api
 String thingspeakChannelID ;
 const char* loginUsername = "admin";
-const char* loginPassword = "admin";
+String loginPassword = "admin";
 
 const int bufferSize = 6000;
 uint8_t _buffer[6000];
@@ -34,6 +35,7 @@ String IP = "";//leave this there will be saved IP of esp
 #include "API.h"
 void setup(void) {
 	Serial.begin(115200);
+  SPIFFS.begin();
   WiFiManager wifiManager;
   wifiManager.autoConnect("SmartSolarHeatingProject");
 
@@ -76,8 +78,12 @@ void setup(void) {
 	//ask server to track these headers
 	server.collectHeaders(headerkeys, headerkeyssize);
 	server.begin();
-  apiKey = eepromReadString(0, 16);
-  thingspeakChannelID = eepromReadString(25, 6);  
+  File f = SPIFFS.open("/data.txt", "r");
+  loginPassword = f.readStringUntil('|');
+  if (loginPassword == "") loginPassword = "admin";
+  thingspeakChannelID = f.readStringUntil('|');
+  apiKey = f.readStringUntil('|');
+  f.close();
 }
 void loop(void) {
 	if (millis() - lastUpdate >= updateInterval) requestAll();

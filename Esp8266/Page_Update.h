@@ -10,7 +10,7 @@ const char PAGE_update[] PROGMEM = R"=====(
       {  
         window.location="/"; 
       }  
-      setTimeout('Redirect()', 10000);   
+      setTimeout('Redirect()', 1000);   
     </script>
 </body>
 </html>
@@ -42,20 +42,18 @@ void handleSystemUpdate() {
   
   server.sendContent(String(PAGE_update));
   if (is_authentified()) {
-    delay(5000);
-    t_httpUpdate_return ret = ESPhttpUpdate.update("http://sshp.dejavu.si/SmartSolarHeatingProjectESP.bin");
-    switch(ret) {
-            case HTTP_UPDATE_FAILED:
-                server.sendContent("<script>alert('HTTP_UPDATE_FAILD Error ("+ String(ESPhttpUpdate.getLastError()) +"): " + String(ESPhttpUpdate.getLastErrorString().c_str())+"');</script>");
-                break;
-
-            case HTTP_UPDATE_NO_UPDATES:
-                server.sendContent("<script>alert('HTTP_UPDATE_NO_UPDATES');</script>");
-                break;
-
-            case HTTP_UPDATE_OK:
-                server.sendContent("<script>alert('HTTP_UPDATE_OK');</script>");
-                break;
-        }
+  delay(1000);
+  t_httpUpdate_return ret = ESPhttpUpdate.update("sshp.dejavu.si", 80, "/SmartSolarHeatingProjectESP.bin", "Test");
+  switch(ret) {
+    case HTTP_UPDATE_FAILED:
+        Serial.println("[update] Update failed.");
+        break;
+    case HTTP_UPDATE_NO_UPDATES:
+        Serial.println("[update] Update no Update.");
+        break;
+    case HTTP_UPDATE_OK:
+        Serial.println("[update] Update ok."); // may not called we reboot the ESP
+        break;
+}
   }
 }
