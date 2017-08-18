@@ -166,7 +166,7 @@ void send_system_settings_data()
   values += "tschid|" + (String)thingspeakChannelID + "|span\n";
   values += "tschidinput|" + (String)thingspeakChannelID + "|input\n";
   values += "password|" + (String)"******" + "|span\n";
-  values += "passwordinut|" + (String)loginPassword + "|input";
+  values += "passwordinput|" + (String)loginPassword + "|input";
 	server.send(200, "text/plain", values);
 }
 
