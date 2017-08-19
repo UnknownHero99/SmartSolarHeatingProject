@@ -137,8 +137,7 @@ void handleSettings() {
 		return;
 	}
 	
-	String content = String(PAGE_head) + String(PAGE_menu_logedin) + String(PAGE_settings) + String(PAGE_foot);
-	server.sendContent(content);
+	server.sendContent(String(PAGE_head) + String(PAGE_menu_logedin) + String(PAGE_settings) + String(PAGE_foot));
 
 	if (server.args() > 0)  // Save Settings
 	{

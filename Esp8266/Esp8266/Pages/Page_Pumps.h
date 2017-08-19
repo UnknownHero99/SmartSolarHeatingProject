@@ -5,7 +5,7 @@ const char PAGE_pumps[] PROGMEM = R"=====(
           <style>
             input[type=radio]{position:absolute;visibility:hidden;display:none}.radio-group,label{display:inline-block}label{color:#FFF;cursor:pointer;font-weight:700;padding:5px 20px}.option-one:checked+label{background-color:#5cb85c}.option-two:checked+label{background-color:#ff551d}.option-three:checked+label{background-color:#d9534f}label+input[type=radio]+label{border-left:solid 4px #999}.radio-group{border:4px solid #999;border-radius:10px;overflow:hidden}
           </style>
-            
+
             <form class="inline-block">
               <div class="text underline">Pumpa 1</div>
               <div class="radio-group">
@@ -52,7 +52,7 @@ const char PAGE_pumps[] PROGMEM = R"=====(
                 else if(document.getElementById('pump4-off').checked) window.location.replace('?cmd=Pump(4, Off);');
               }
             </script>
-            
+
         </article>
       </div>
       <script>
@@ -63,7 +63,7 @@ const char PAGE_pumps[] PROGMEM = R"=====(
 
         window.onload = function ()
         {
-          load("microajax.js","js", function() 
+          load("microajax.js","js", function()
           {
               GetStatusData();
           });
@@ -97,6 +97,9 @@ void handlePumps() {
 		server.sendContent(header);
 		return;
 	}
+
+	server.sendContent(String(PAGE_head) + String(PAGE_menu_logedin)+ String(PAGE_pumps)+ String(PAGE_foot));
+	
 	if (server.hasArg("cmd")) {
     String cmd = server.arg("cmd");
 		Serial.print(cmd + ";");
@@ -117,12 +120,8 @@ void handlePumps() {
       case 4:
         ardData.pump4Status = status;
         break;
-       
+
     }
-    SerialHandler::handle();
-		server.sendHeader("Location", String("/pumps"), true);
-		server.send(302, "text/plain", "");
 	}
-  String content = String(PAGE_head) + String(PAGE_menu_logedin)+ String(PAGE_pumps)+ String(PAGE_foot);
-	server.sendContent(content);
+
 }
