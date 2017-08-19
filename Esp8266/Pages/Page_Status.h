@@ -87,14 +87,14 @@ const char PAGE_status[] PROGMEM = R"=====(
 void send_system_status_data()
 {
   unsigned long lastRequest = millis();
-  requestData();
+  SerialHandler::requestData();
   while(!Serial.available()){
     if(millis() - lastRequest >= noDataRecivedInterval){
-      requestData();
+      SerialHandler::requestData();
       lastRequest = millis();
     }
   }
-  serialHandler();
+  SerialHandler::handle();
 	String values = "";
 	values += "pumpstatus|";
 	if(ardData.pump1operating == 1)values += "ON";

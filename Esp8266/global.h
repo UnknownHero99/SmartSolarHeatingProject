@@ -1,198 +1,65 @@
+
 const char* thingspeak = "api.thingspeak.com";
 
-MDNSResponder mdns;
-ESP8266WebServer server(80);
-WiFiClient client;
+WiFiClient client; //needed for sending data to thingspeak
 
-struct arduinoData {
-	bool pump1operating = false;
-	String pump1Status = "";
-	String pump2Status = "";
-	String pump3Status = "";
-  String pump4Status = "";
-	int operatinghours = 0;
-	int operatingminutes = 0;
-	double tempcollector = 0;
-	double tempboiler = 0;
-	double tempt1 = 0;
-	double tempt2 = 0;
-	double temproom = 0;
-	double humidityroom = 0;
-	double pressureroom = 0;
-}   ardData;
+String apiKey;
+String thingspeakChannelID;
 
-struct arduinoSettings {
-	int tdiffmin = 0;
-	int tdiffmininput = 0;
-	int tkmax = 0;
-	int tkmaxinput = 0;
-	int tkmin = 0;
-	int tkmininput = 0;
-	int tbmax = 0;
-	int tbmaxinput = 0;
-	int altitude = 0;
-	int altitudeinput = 0;
-}   ardSettings;
+const char* loginUsername = "admin";
+String loginPassword;
 
-bool settingsUpdate(String settings) {
-  char json[settings.length() + 1];
-  settings.toCharArray(json, settings.length() + 1);
-  StaticJsonBuffer<200> jsonBuffer;
-  JsonObject& root = jsonBuffer.parseObject(json);
-  if (!root.success()) return false;
+const unsigned long noDataRecivedInterval = 2000;
+unsigned long lastUpdate = 0;
 
-  ardSettings.tdiffmin = root["mTD"];
-  ardSettings.tdiffmininput = ardSettings.tdiffmin;
+String IP;
 
-  ardSettings.tkmax = root["maxTC"];
-  ardSettings.tkmaxinput = ardSettings.tkmax;
+void wifiConnect () {
+  WiFiManager wifiManager;
+  wifiManager.autoConnect("SmartSolarHeatingProject");
 
-  ardSettings.tkmin = root["minTC"];
-  ardSettings.tkmininput = ardSettings.tkmin;
+  // Wait for connection
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+  }
 
-  ardSettings.tbmax = root["mTB"];
-  ardSettings.tbmaxinput = ardSettings.tbmax;
-
-  ardSettings.altitude = root["a"];
-  ardSettings.altitudeinput = ardSettings.altitude;
-
-  return true;
+  IP = WiFi.localIP().toString();
 }
 
-bool pumpUpdate(String pumps) {
-  char json[pumps.length() + 1];
-  pumps.toCharArray(json, pumps.length() + 1);
-  StaticJsonBuffer<200> jsonBuffer;
-  JsonObject& root = jsonBuffer.parseObject(json);
-  if (!root.success()) return false;
-
-  ardData.pump1operating = root["p1O"];
-  String pump1Status = root["p1S"];
-  ardData.pump1Status = pump1Status;
-  String pump2Status = root["p2S"];
-  ardData.pump2Status = pump2Status;
-  String pump3Status = root["p3S"];
-  ardData.pump3Status = pump3Status;
-  String pump4Status = root["p4S"];
-  ardData.pump4Status = pump4Status;
-  return true;
+void SPIFFSInitReadData() {
+  SPIFFS.begin();
+  File f = SPIFFS.open("/data.txt", "r");
+  loginPassword = f.readStringUntil('|');
+  if (loginPassword == "") loginPassword = "admin";
+  thingspeakChannelID = f.readStringUntil('|');
+  apiKey = f.readStringUntil('|');
+  f.close();
 }
 
-bool dataUpdate(String data) {
-  char json[data.length() + 1];
-  data.toCharArray(json, data.length() + 1);
-  StaticJsonBuffer<200> jsonBuffer;
-  JsonObject& root = jsonBuffer.parseObject(json);
-  if (!root.success()) return false;
-  
-  ardData.pump1operating = root["p1O"];
-  String pump1Status = root["p1S"];
-  ardData.pump1Status = pump1Status;
-  ardData.operatinghours = root["oTH"];
-  ardData.operatingminutes = root["oTM"];
-  ardData.tempboiler = root["bT"];
-  ardData.tempcollector = root["cT"];
-  ardData.temproom = root["rT"];
-  ardData.humidityroom = root["rH"];
-  ardData.tempt1 = root["t1T"];
-  ardData.tempt2 = root["t2T"];
-  ardData.pressureroom = root["rP"];
-  return true;
-}
-
-void serialHandler() {
-	String input = "";
-	while (Serial.available()) {
-		input = Serial.readStringUntil(';');;
-		String cmd = input.substring(0, input.indexOf('('));
-		String args = input.substring(input.indexOf('(') + 1, input.length() - 1);
-
-		if (cmd == "GetIP") {
-			Serial.println("IP(" + IP + ");");
-		}
-
-		else if (cmd == "ThingSpeak") {
-        if (ardData.pump1Status == "" || apiKey == NULL) return; //in case that esp still doesnt have data or dont have API key, it wont send it on thinkspeak 
-				if (client.connect(thingspeak, 80)) {  //   "184.106.153.149" or api.thingspeak.com
-					String postStr = apiKey;
-					postStr += "&field1=";
-					postStr += String(ardData.tempboiler);
-					postStr += "&field2=";
-					postStr += String(ardData.tempcollector);
-					postStr += "&field3=";
-					postStr += String(ardData.temproom);
-					postStr += "&field4=";
-					postStr += String(ardData.humidityroom);
-					postStr += "&field5=";
-					postStr += String(ardData.pressureroom);
-					postStr += "\r\n\r\n";
-					client.print("POST /update HTTP/1.1\n");
-					client.print("Host: api.thingspeak.com\n");
-					client.print("Connection: close\n");
-					client.print("X-THINGSPEAKAPIKEY: " + apiKey + "\n");
-					client.print("Content-Type: application/x-www-form-urlencoded\n");
-					client.print("Content-Length: ");
-					client.print(postStr.length());
-					client.print("\n\n");
-					client.print(postStr);
-					client.stop();
-				}
-				
-		}
-		else if (cmd == "Settings") {
-			settingsUpdate(args);
-		}
-		else if (cmd == "Data") {
-			dataUpdate(args);
-		}
-		else if (cmd == "PumpStatus") {
-			pumpUpdate(args);
-		}
-	}
-}
-
-void requestData(){
-  Serial.print("GetData();");
-}
-
-void requestSettings(){
-  Serial.print("GetSettings();");
-}
-void requestPumps(){
-  Serial.print("GetPumps();");
-}
-
-void requestAll() {
-	requestData();
-  requestSettings();
-  requestPumps();
-	lastUpdate = millis();
-}
-
-String eepromReadString(int offset, int bytes){
+String eepromReadString(int offset, int bytes) {
   char c = 0;
   String string = "";
   EEPROM.begin(32);
   EEPROM.write(1, 233);
   for (int i = 0; i < (bytes); i++) {
-    int addr=i;
+    int addr = i;
     addr += EEPROM.get(addr, c);
     EEPROM.commit();
     string += c;
   }
-  
+
   EEPROM.end();
   return string;
 }
 
-void eepromWriteString(int offset, int bytes, String buf){
+void eepromWriteString(int offset, int bytes, String buf) {
   char c = 0;
   //int len = (strlen(buf) < bytes) ? strlen(buf) : bytes;
   EEPROM.begin(512);
   for (int i = 0; i < bytes; i++) {
     c = buf[i];
-    i+= EEPROM.put(i, (int)c);
-    EEPROM.write(offset + i, (int)c); 
+    i += EEPROM.put(i, (int)c);
+    EEPROM.write(offset + i, (int)c);
   }
   EEPROM.end();
 }

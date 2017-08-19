@@ -3,8 +3,6 @@ const char PAGE_update[] PROGMEM = R"=====(
 <html>
 <head></head>
 <body>
-<h1>OTA Update</h1>
-<img src="http://sshp.dejavu.si/img/loading.gif" alt="Loading"/>
 <script type="text/javascript">   
       function Redirect() 
       {  
@@ -15,6 +13,7 @@ const char PAGE_update[] PROGMEM = R"=====(
 </body>
 </html>
 )=====";
+
 const char PAGE_noPermission[] PROGMEM = R"=====(
     <div id="content"> <article> <h1>You have no permission for this operation</h1>
     <script type="text/javascript">   
@@ -25,7 +24,6 @@ const char PAGE_noPermission[] PROGMEM = R"=====(
     setTimeout('Redirect()', 5000);   
   </script>
 )=====";
-
 
 void handleSystemUpdate() {
 
@@ -40,20 +38,19 @@ void handleSystemUpdate() {
   }
   content += String(PAGE_foot);
   
-  server.sendContent(String(PAGE_update));
   if (is_authentified()) {
-  delay(1000);
-  t_httpUpdate_return ret = ESPhttpUpdate.update("sshp.dejavu.si", 80, "/SmartSolarHeatingProjectESP.bin", "Test");
-  switch(ret) {
-    case HTTP_UPDATE_FAILED:
-        Serial.println("[update] Update failed.");
-        break;
-    case HTTP_UPDATE_NO_UPDATES:
-        Serial.println("[update] Update no Update.");
-        break;
-    case HTTP_UPDATE_OK:
-        Serial.println("[update] Update ok."); // may not called we reboot the ESP
-        break;
-}
+    delay(1000);
+    t_httpUpdate_return ret = ESPhttpUpdate.update("sshp.dejavu.si", 80, "/", releaseVersion);
+    switch(ret) {
+      case HTTP_UPDATE_FAILED:
+          Serial.println("[update] Update failed.");
+          break;
+      case HTTP_UPDATE_NO_UPDATES:
+          Serial.println("[update] Update no Update.");
+          break;
+      case HTTP_UPDATE_OK:
+          Serial.println("[update] Update ok."); // may not called we reboot the ESP
+          break;
+    }
   }
 }

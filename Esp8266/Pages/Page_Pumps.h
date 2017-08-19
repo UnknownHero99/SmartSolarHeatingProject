@@ -75,14 +75,14 @@ const char PAGE_pumps[] PROGMEM = R"=====(
 void send_system_pumps_data()
 {
   unsigned long lastRequest = millis();
-  requestPumps();
+  SerialHandler::requestPumps();
   while(!Serial.available()){
     if(millis() - lastRequest >= noDataRecivedInterval){
-      requestPumps();
+      SerialHandler::requestPumps();
       lastRequest = millis();
     }
   }
-  serialHandler();
+  SerialHandler::handle();
 	String values = "";
 	values += "pump1status|" + (String)ardData.pump1Status + "|span\n";
 	values += "pump2status|" + (String)ardData.pump2Status + "|span\n";
@@ -119,7 +119,7 @@ void handlePumps() {
         break;
        
     }
-    serialHandler();
+    SerialHandler::handle();
 		server.sendHeader("Location", String("/pumps"), true);
 		server.send(302, "text/plain", "");
 	}
