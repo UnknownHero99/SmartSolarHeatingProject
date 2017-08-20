@@ -77,7 +77,7 @@ function Redirect() {
 
 function updatePopup() {
     var popup = document.createElement("div");
-    popup.innerHTML = "<div id='disable' style='width: 100%;height: 100%;position: absolute;top: 0;z-index: 100;background: rgba(1, 1, 1, 0.76);'><div id='OTAPopup' style='position: fixed;right: 0;left: 0;text-align: center;margin: 0 auto;width: 50%;height: 100%;background: #FFF;'><h1 style='margin:0; padding-top: 30px;'>Posodabljanje programske opreme</h1><img style='margin:0 auto;margin-top:100px;' src='http://sshp.dejavu.si/img/loading.gif'></div></div>";
+    popup.innerHTML = "<div id='disable' style='width: 100%;height: 100%;position: absolute;top: 0;z-index: 100;background: rgba(1, 1, 1, 0.76);'><div id='OTAPopup' style='position: fixed;right: 0;left: 0;text-align: center;margin: 0 auto;width: 50%;height: 100%;background: #FFF;'><h1 style='margin:0; padding-top: 30px;'>Posodabljanje programske opreme</h1><img style='margin:0 auto;margin-top:100px;max-width: 75%;' src='http://sshp.dejavu.si/img/loading.gif'></div></div>";
     document.getElementById("wrapper").appendChild(popup);
 }
 
@@ -136,7 +136,7 @@ void handleSettings() {
 		server.sendContent(header);
 		return;
 	}
-	
+
 	server.sendContent(String(PAGE_head) + String(PAGE_menu_logedin) + String(PAGE_settings) + String(PAGE_foot));
 
 	if (server.args() > 0)  // Save Settings
