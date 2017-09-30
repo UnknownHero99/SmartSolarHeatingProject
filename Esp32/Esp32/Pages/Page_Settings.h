@@ -101,7 +101,7 @@ function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,
 
 void send_system_settings_data()
 {
-  unsigned long lastRequest = millis();
+  unsigned long lastRequest = 0;
 	SerialHandler::requestSettings();
   while(!Serial.available()){
     if(millis() - lastRequest >= noDataRecivedInterval){
@@ -137,7 +137,7 @@ void handleSettings() {
 		return;
 	}
 
-	server.sendContent(String(PAGE_head) + String(PAGE_menu_logedin) + String(PAGE_settings) + String(PAGE_foot));
+	server.send(200, "text/html", String(PAGE_head) + String(PAGE_menu_logedin) + String(PAGE_settings) + String(PAGE_foot));
 
 	if (server.args() > 0)  // Save Settings
 	{

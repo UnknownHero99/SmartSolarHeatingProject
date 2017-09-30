@@ -1,16 +1,17 @@
 #include <Arduino.h>
 
 /*Libraries*/
-#include <ESP8266WiFi.h>
+#include <WiFi.h>          
+#include <WebServer.h>
+#include <WiFiManager.h> 
+#include <SPIFFS.h>  
+    
 #include <WiFiClient.h>
-#include <ESP8266WebServer.h>
 #include <ArduinoJson.h>
-#include <WiFiManager.h>
-#include <ESP8266httpUpdate.h>
 #include <EEPROM.h>
 #include "FS.h"
 
-#define releaseVersion "1.0"
+const String releaseVersion = "1.0";
 
 #include "global.h"
 #include "SerialHandler.h"
@@ -22,7 +23,7 @@ void setup(void) {
 
   //begin SPIFFS and read data from it
   SPIFFSInitReadData();
-  
+
   //connect to WIFI
   wifiConnect();
   //init webserver
@@ -33,4 +34,3 @@ void loop(void) {
   SerialHandler::handle();
   WebServerHandler::handleClient();
 }
-

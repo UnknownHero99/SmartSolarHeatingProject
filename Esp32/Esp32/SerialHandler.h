@@ -79,7 +79,7 @@ class SerialHandler {
       return true;
     }
 
-   static bool dataUpdate(String data) { //update data from recived JSON
+    static bool dataUpdate(String data) { //update data from recived JSON
       char json[data.length() + 1];
       data.toCharArray(json, data.length() + 1);
       StaticJsonBuffer<200> jsonBuffer;
@@ -115,6 +115,14 @@ class SerialHandler {
 
         else if (cmd == "ThingSpeak") {
           if (ardData.pump1Status == "" || apiKey == NULL) return; //in case that esp still doesnt have data or dont have API key, it wont send it on thinkspeak
+          unsigned long lastRequest = 0;
+          while (!Serial.available()) {
+            if (millis() - lastRequest >= noDataRecivedInterval) {
+              SerialHandler::requestData();
+              lastRequest = millis();
+            }
+          }
+          SerialHandler::handle();
           if (client.connect(thingspeak, 80)) {  //   "184.106.153.149" or api.thingspeak.com
             String postStr = apiKey;
             postStr += "&field1=";

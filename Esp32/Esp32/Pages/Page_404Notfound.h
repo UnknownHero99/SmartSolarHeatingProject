@@ -11,5 +11,5 @@ void handleNotFound() {
   if (is_authentified())content += String(PAGE_menu_logedin);
   else content += String(PAGE_menu_normal);
   content += String(PAGE_404notfound) + String(PAGE_foot);
-  server.sendContent(content);
+  server.send(404, "text/html", content);
 }

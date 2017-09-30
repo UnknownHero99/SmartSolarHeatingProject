@@ -1,5 +1,5 @@
 
-ESP8266WebServer server(80);
+WebServer server(80);
 
 /*Include all pages and REST API*/
 #include "Pages/Page_Functions.h"

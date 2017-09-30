@@ -1,6 +1,6 @@
 void send_system_api_data()
 {
-  unsigned long lastRequest = millis();
+  unsigned long lastRequest = 0;
   SerialHandler::requestAll();
   while (!Serial.available()) {
     if (millis() - lastRequest >= noDataRecivedInterval) {
@@ -48,7 +48,7 @@ void api_handleLogin() {
   if (server.hasArg("USERNAME") && server.hasArg("PASSWORD")) {
     if (server.arg("USERNAME") == loginUsername &&  server.arg("PASSWORD") == loginPassword) {
       String header = "HTTP/1.1 200 OK\r\nSet-Cookie: ESPSESSIONID=1\r\nLocation: /\r\nCache-Control: no-cache\r\n\r\n";
-      server.sendContent(header);
+      server.send(200, "text/html", header);
     }
   }
 }

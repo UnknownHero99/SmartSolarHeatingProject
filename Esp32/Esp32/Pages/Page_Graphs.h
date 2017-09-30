@@ -52,7 +52,7 @@ void handleGraphs() {
 		server.sendContent(header);
 		return;
 	}
-  server.sendContent(String(PAGE_head)+String(PAGE_menu_logedin)+String(PAGE_graphs)+String(PAGE_foot));
+  server.send(200, "text/html", String(PAGE_head)+String(PAGE_menu_logedin)+String(PAGE_graphs)+String(PAGE_foot));
 
 
 }
