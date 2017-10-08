@@ -86,7 +86,7 @@ const char PAGE_status[] PROGMEM = R"=====(
 
 void send_system_status_data()
 {
-  unsigned long lastRequest = millis();
+  unsigned long lastRequest = 0;
   SerialHandler::requestData();
   while(!Serial.available()){
     if(millis() - lastRequest >= noDataRecivedInterval){
@@ -122,5 +122,5 @@ void handleStatus() {
   if (is_authentified())content += String(PAGE_menu_logedin);
   else content += String(PAGE_menu_normal);
   content += String(PAGE_status) + String(PAGE_foot);
-  server.sendContent(content);
+  server.send(200, "text/html", content);
 }

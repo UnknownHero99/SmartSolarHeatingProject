@@ -74,7 +74,7 @@ const char PAGE_pumps[] PROGMEM = R"=====(
 
 void send_system_pumps_data()
 {
-  unsigned long lastRequest = millis();
+  unsigned long lastRequest = 0;
   SerialHandler::requestPumps();
   while(!Serial.available()){
     if(millis() - lastRequest >= noDataRecivedInterval){
@@ -98,8 +98,8 @@ void handlePumps() {
 		return;
 	}
 
-	server.sendContent(String(PAGE_head) + String(PAGE_menu_logedin)+ String(PAGE_pumps)+ String(PAGE_foot));
-	
+	server.send(200, "text/html", String(PAGE_head) + String(PAGE_menu_logedin)+ String(PAGE_pumps)+ String(PAGE_foot));
+
 	if (server.hasArg("cmd")) {
     String cmd = server.arg("cmd");
 		Serial.print(cmd + ";");
