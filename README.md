@@ -1,4 +1,4 @@
-# SolarCollectorController
+# Smart Solar Heating Project
 It's a program for solar collector controller, using arduino and esp32(esp8266 branch still exists).
 
 ## Parts used:
