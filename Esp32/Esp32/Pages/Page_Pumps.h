@@ -99,7 +99,7 @@ void handlePumps() {
 	}
 
 	server.send(200, "text/html", String(PAGE_head) + String(PAGE_menu_logedin)+ String(PAGE_pumps)+ String(PAGE_foot));
-	
+
 	if (server.hasArg("cmd")) {
     String cmd = server.arg("cmd");
 		Serial.print(cmd + ";");

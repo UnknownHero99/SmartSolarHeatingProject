@@ -45,6 +45,5 @@ void handleLogin() {
 		String msg = "Napačno uporabniško ime/geslo! Poizkusi znova.";
 	}
   String content = String(PAGE_head)+String(PAGE_menu_normal)+String(PAGE_login)+String(PAGE_foot);
-	server.sendContent(content);
+	server.send(200, "text/html", content);
 }
-

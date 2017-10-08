@@ -1,17 +1,18 @@
 #include <Arduino.h>
 
 /*Libraries*/
-#include <WiFi.h>          
+#include <WiFi.h>
 #include <WebServer.h>
-#include <WiFiManager.h> 
-#include <SPIFFS.h>  
-    
+#include <WiFiManager.h>
+#include <SPIFFS.h>
+
 #include <WiFiClient.h>
 #include <ArduinoJson.h>
 #include <EEPROM.h>
 #include "FS.h"
 
-const String releaseVersion = "1.0";
+
+const String releaseVersion = "1.1";
 
 #include "global.h"
 #include "SerialHandler.h"
@@ -20,6 +21,7 @@ const String releaseVersion = "1.0";
 
 void setup(void) {
   Serial.begin(115200);
+  latestVersion = releaseVersion;
 
   //begin SPIFFS and read data from it
   SPIFFSInitReadData();
