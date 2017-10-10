@@ -42,18 +42,17 @@ const char PAGE_status[] PROGMEM = R"=====(
             } else {
             if (attachment.min != undefined){
               var diff = attachment.max - attachment.min;
-              console.log(diff);
-              
+
               value = Math.round(value*diff+attachment.min*100)/100;
               value = Math.round(value);
               circle.setText(value + " " + attachment.units);
             }
-            else circle.setText(value + " " + attachment.units);          
+            else circle.setText(value + " " + attachment.units);
             }
 
           }
         }
-        
+
         var progressBars = new Array(new ProgressBar.Circle(boilerTempContainer, progressbarSettings),
         new ProgressBar.Circle(collectorTempContainer, progressbarSettings),
         new ProgressBar.Circle(t1TempContainer, progressbarSettings),
@@ -75,7 +74,7 @@ const char PAGE_status[] PROGMEM = R"=====(
 
         window.onload = function ()
         {
-          load("microajax.js","js", function() 
+          load("microajax.js","js", function()
           {
               GetStatusData();
           });
@@ -104,7 +103,7 @@ void send_system_status_data()
 	if(ardData.pump1Status == "A") values += "ON";
 	else values += "OFF";
 	values += "|span\n";
-  
+
 	values += "operatinghours|" + (String)ardData.operatinghours + "|span\n";
 	values += "operatingminutes|" + (String)ardData.operatingminutes + "|span\n";
 	values += "tempcollector|" + (String)ardData.tempcollector + "|span\n";
@@ -118,7 +117,7 @@ void send_system_status_data()
 }
 
 void handleStatus() {
-  String content = String(PAGE_head); 
+  String content = String(PAGE_head);
   if (is_authentified())content += String(PAGE_menu_logedin);
   else content += String(PAGE_menu_normal);
   content += String(PAGE_status) + String(PAGE_foot);

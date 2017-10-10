@@ -12,7 +12,7 @@
 #include "FS.h"
 
 
-const String releaseVersion = "1.1";
+const String releaseVersion = "1.0";
 
 #include "global.h"
 #include "SerialHandler.h"
