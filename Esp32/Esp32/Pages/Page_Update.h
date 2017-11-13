@@ -40,16 +40,16 @@ const char PAGE_noPermission[] PROGMEM = R"=====(
 
 String getLatestVersion(){
   String latestVersion = "";
-  Serial.println("Checking latest Version AT: " + String(host));
+  //Serial.println("Checking latest Version AT: " + String(host));
   if (client.connect(host.c_str(), port)) {
     client.print(String("GET ") + "/updates/index.php" + " HTTP/1.1\r\n" +
                  "Host: " + host + "\r\n" +
                  "Cache-Control: no-cache\r\n" +
                  "Connection: close\r\n\r\n");
     String line = client.readStringUntil('\n');
-    Serial.println(line);
+    //Serial.println(line);
     latestVersion = line.substring(line.lastIndexOf(' ')+1, line.length()-1);
-    Serial.println(latestVersion);
+    //Serial.println(latestVersion);
     client.stop();
   }
   return latestVersion;
@@ -68,9 +68,9 @@ bool checkForUpdate(){
   currentVersionDigits[1] = releaseVersion.substring(releaseVersion.indexOf('.')+1).toInt();
 
 
-  Serial.println("latestVersion is: "+ String(latestVersion));
-  Serial.println(String(latestVersionDigits[0]) + "."+ String(latestVersionDigits[1]));
-  Serial.println(String(currentVersionDigits[0]) + "."+ String(currentVersionDigits[1]));
+  //Serial.println("latestVersion is: "+ String(latestVersion));
+  //Serial.println(String(latestVersionDigits[0]) + "."+ String(latestVersionDigits[1]));
+  //Serial.println(String(currentVersionDigits[0]) + "."+ String(currentVersionDigits[1]));
 
 	if(latestVersionDigits[0] > currentVersionDigits[0]) return true;
   else if(latestVersionDigits[1] > currentVersionDigits[1]) return true;
@@ -129,7 +129,7 @@ void OTAUpdate() {
       // get headers
       if (line.startsWith("Content-Length: ")) {
         contentLength = atoi((getHeaderValue(line, "Content-Length: ")).c_str());
-        //Serial.println("content size is " + String(contentLength) + " bytes");
+        //Serial.println("content length " + String(contentLength) + " bytes");
       }
 
       if (line.startsWith("Content-Type: ")) {

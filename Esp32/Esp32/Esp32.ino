@@ -35,4 +35,5 @@ void setup(void) {
 void loop(void) {
   SerialHandler::handle();
   WebServerHandler::handleClient();
+  if(WiFi.status() != WL_CONNECTED) wifiConnect(); //reconnect to WIFI
 }
