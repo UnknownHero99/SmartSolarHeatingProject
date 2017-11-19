@@ -22,17 +22,17 @@ const char PAGE_graphs[] PROGMEM = R"=====(
 
       window.onload = function ()
       {
-        load("microajax.js","js", function() 
+        load("microajax.js","js", function()
         {
             GetGraphsData();
         });
       }
       function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,a.type="text/javascript",a.async=!1,a.onload=function(){n()},document.getElementsByTagName("head")[0].appendChild(a)}else if("css"==t){var a=document.createElement("link");a.href=e,a.rel="stylesheet",a.type="text/css",a.async=!1,a.onload=function(){n()},document.getElementsByTagName("head")[0].appendChild(a)}}
-            
+
       </script>
 )=====";
 
-void send_system_graphs_data()
+void send_system_graphs_data(AsyncWebServerRequest * request)
 {
 	String values = "";
   if(thingspeakChannelID != NULL ){
@@ -42,18 +42,17 @@ void send_system_graphs_data()
   values += "graph4url|" + graphThingspeakURL + thingspeakChannelID + "/charts/4"+ graphProperties + "|iframe\n";
   values += "graph5url|" + graphThingspeakURL + thingspeakChannelID + "/charts/5"+ graphProperties + "|iframe\n";
   values += "graph6url|" + graphThingspeakURL + thingspeakChannelID + "/maps/channel_show" + "|iframe\n";
-  } 
-	server.send(200, "text/plain", values);
+  }
+	request->send(200, "text/plain", values);
 }
 
-void handleGraphs() {
+void handleGraphs(AsyncWebServerRequest * request) {
 	if (!is_authentified()) {
 		String header = "HTTP/1.1 301 OK\r\nLocation: /\r\nCache-Control: no-cache\r\n\r\n";
-		server.sendContent(header);
+		request->sendContent(header);
 		return;
 	}
-  String content = String(PAGE_head)+String(PAGE_menu_logedin)+String(PAGE_graphs)+String(PAGE_foot);
-  server.sendContent(content);
+  request->send(200, "text/plain", String(PAGE_head)+String(PAGE_menu_logedin)+String(PAGE_graphs)+String(PAGE_foot));
 
-  
+
 }

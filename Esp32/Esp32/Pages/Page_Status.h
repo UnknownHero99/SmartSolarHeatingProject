@@ -83,43 +83,31 @@ const char PAGE_status[] PROGMEM = R"=====(
       </script>
 )=====";
 
-void send_system_status_data()
-{
-  unsigned long lastRequest = 0;
-  SerialHandler::requestData();
-  while(!Serial.available()){
-    if(millis() - lastRequest >= noDataRecivedInterval){
-      SerialHandler::requestData();
-      lastRequest = millis();
-    }
-  }
-  SerialHandler::handle();
-	String values = "";
-	values += "pumpstatus|";
-	if(ardData.pump1operating == 1)values += "ON";
-	else values += "OFF";
-	values += "|span\n";
-	values += "pumpautomode|";
-	if(ardData.pump1Status == "A") values += "ON";
-	else values += "OFF";
-	values += "|span\n";
+String getStatusData() {
+  String values = "";
 
-	values += "operatinghours|" + (String)ardData.operatinghours + "|span\n";
-	values += "operatingminutes|" + (String)ardData.operatingminutes + "|span\n";
-	values += "tempcollector|" + (String)ardData.tempcollector + "|span\n";
-	values += "tempboiler|" + (String)ardData.tempboiler + "|span\n";
-	values += "tempt1|" + (String)ardData.tempt1 + "|span\n";
-	values += "tempt2|" + (String)ardData.tempt2 + "|span\n";
-	values += "temproom|" + (String)ardData.temproom + "|span\n";
-	values += "humidityroom|" + (String)ardData.humidityroom + "|span\n";
-	values += "pressureroom|" + (String)ardData.pressureroom + "|span\n";
-	server.send(200, "text/plain", values);
-}
+  values += "pumpstatus|";
+  if (pumps[0].isOperating())
+    values += "ON";
+  else
+    values += "OFF";
+  values += "|span\n";
 
-void handleStatus() {
-  String content = String(PAGE_head);
-  if (is_authentified())content += String(PAGE_menu_logedin);
-  else content += String(PAGE_menu_normal);
-  content += String(PAGE_status) + String(PAGE_foot);
-  server.send(200, "text/html", content);
+  values += "pumpautomode|";
+  if (autoMode)
+    values += "ON";
+  else
+    values += "OFF";
+  values += "|span\n";
+
+  values += "operatinghours|" + String(pumps[0].operatingTime("%H")) + "|span\n";
+  values += "operatingminutes|" + String(pumps[0].operatingTime("%M")) + "|span\n";
+  values += "tempcollector|" + String(collectorSensor.tempDouble()) + "|span\n";
+  values += "tempboiler|" + String(boilerSensor.tempDouble()) + "|span\n";
+  values += "tempt1|" +  String(t1Sensor.tempDouble()) + "|span\n";
+  values += "tempt2|" +  String(t2Sensor.tempDouble()) + "|span\n";
+  values += "temproom|" + String(roomTemp) + "|span\n";
+  values += "humidityroom|" + String(roomHumidity) + "|span\n";
+  values += "pressureroom|" + String(roomPressure) + "|span\n";
+  return values;
 }

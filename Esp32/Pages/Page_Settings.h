@@ -77,7 +77,7 @@ function Redirect() {
 
 function updatePopup() {
     var popup = document.createElement("div");
-    popup.innerHTML = "<div id='disable' style='width: 100%;height: 100%;position: absolute;top: 0;z-index: 100;background: rgba(1, 1, 1, 0.76);'><div id='OTAPopup' style='position: fixed;right: 0;left: 0;text-align: center;margin: 0 auto;width: 50%;height: 100%;background: #FFF;'><h1 style='margin:0; padding-top: 30px;'>Posodabljanje programske opreme</h1><img style='margin:0 auto;margin-top:100px;' src='http://sshp.dejavu.si/img/loading.gif'></div></div>";
+    popup.innerHTML = "<div id='disable' style='width: 100%;height: 100%;position: absolute;top: 0;z-index: 100;background: rgba(1, 1, 1, 0.76);'><div id='OTAPopup' style='position: fixed;right: 0;left: 0;text-align: center;margin: 0 auto;width: 50%;height: 100%;background: #FFF;'><h1 style='margin:0; padding-top: 30px;'>Posodabljanje programske opreme</h1><img style='margin:0 auto;margin-top:100px;max-width: 75%;' src='http://sshp.dejavu.si/img/loading.gif'></div></div>";
     document.getElementById("wrapper").appendChild(popup);
 }
 
@@ -99,9 +99,9 @@ function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,
 </script>
 )=====";
 
-void send_system_settings_data()
+void send_system_settings_data(AsyncWebServerRequest * request)
 {
-  unsigned long lastRequest = millis();
+  unsigned long lastRequest = 0;
 	SerialHandler::requestSettings();
   while(!Serial.available()){
     if(millis() - lastRequest >= noDataRecivedInterval){
@@ -111,56 +111,55 @@ void send_system_settings_data()
   }
   SerialHandler::handle();
 	String values = "";
-	values += "tdiffmin|" + (String)ardSettings.tdiffmin + "|span\n";
-	values += "tdiffmininput|" + (String)ardSettings.tdiffmin + "|input\n";
-	values += "tkmax|" + (String)ardSettings.tkmax + "|span\n";
-	values += "tkmaxinput|" + (String)ardSettings.tkmax + "|input\n";
-	values += "tkmin|" + (String)ardSettings.tkmin + "|span\n";
-	values += "tkmininput|" + (String)ardSettings.tkmin + "|input\n";
-	values += "tbmax|" + (String)ardSettings.tbmax + "|span\n";
-	values += "tbmaxinput|" + (String)ardSettings.tbmax + "|input\n";
-	values += "altitude|" + (String)ardSettings.altitude + "|span\n";
-  values += "altitudeinput|" + (String)ardSettings.altitude + "|input\n";
+	values += "tdiffmin|" + (String)SettingsValues.tdiffmin + "|span\n";
+	values += "tdiffmininput|" + (String)SettingsValues.tdiffmin + "|input\n";
+	values += "tkmax|" + (String)SettingsValues.tkmax + "|span\n";
+	values += "tkmaxinput|" + (String)SettingsValues.tkmax + "|input\n";
+	values += "tkmin|" + (String)SettingsValues.tkmin + "|span\n";
+	values += "tkmininput|" + (String)SettingsValues.tkmin + "|input\n";
+	values += "tbmax|" + (String)SettingsValues.tbmax + "|span\n";
+	values += "tbmaxinput|" + (String)SettingsValues.tbmax + "|input\n";
+	values += "altitude|" + (String)SettingsValues.altitude + "|span\n";
+  values += "altitudeinput|" + (String)SettingsValues.altitude + "|input\n";
   values += "tsapi|" + (String)apiKey + "|span\n";
   values += "tsapiinput|" + (String)apiKey + "|input\n";
   values += "tschid|" + (String)thingspeakChannelID + "|span\n";
   values += "tschidinput|" + (String)thingspeakChannelID + "|input\n";
   values += "password|" + (String)"******" + "|span\n";
   values += "passwordinput|" + (String)loginPassword + "|input";
-	server.send(200, "text/plain", values);
+	request->send(200, "text/plain", values);
 }
 
-void handleSettings() {
+void handleSettings(AsyncWebServerRequest* request) {
 	if (!is_authentified()) {
 		String header = "HTTP/1.1 301 OK\r\nLocation: /\r\nCache-Control: no-cache\r\n\r\n";
-		server.sendContent(header);
+		request->sendContent(header);
 		return;
 	}
-	
-	String content = String(PAGE_head) + String(PAGE_menu_logedin) + String(PAGE_settings) + String(PAGE_foot);
-	server.sendContent(content);
+
+	request->send(200, "text/plain", String(PAGE_head) + String(PAGE_menu_logedin) + String(PAGE_settings) + String(PAGE_foot));
 
 	if (server.args() > 0)  // Save Settings
 	{
 		if (server.hasArg("tdiffmininput")) {
-			ardSettings.tdiffmin = server.arg("tdiffmininput").toInt();
-			ardSettings.tdiffmininput = ardSettings.tdiffmin;
+			SettingsValues.tdiffmin = server.arg("tdiffmininput").toInt();
+			SettingsValues.tdiffmininput = SettingsValues.tdiffmin;
 		}
 		if (server.hasArg("tkmaxinput")) {
-			ardSettings.tkmax = server.arg("tkmaxinput").toInt();
-			ardSettings.tkmaxinput = ardSettings.tkmax;
+			SettingsValues.tkmax = server.arg("tkmaxinput").toInt();
+			SettingsValues.tkmaxinput = SettingsValues.tkmax;
 		}
 		if (server.hasArg("tkmininput")) {
-			ardSettings.tkmin = server.arg("tkmininput").toInt();
-			ardSettings.tkmininput = ardSettings.tkmin;
+			SettingsValues.tkmin = server.arg("tkmininput").toInt();
+			SettingsValues.tkmininput = SettingsValues.tkmin;
 		}
 		if (server.hasArg("tbmaxinput")) {
-			ardSettings.tbmax = server.arg("tbmaxinput").toInt();
-			ardSettings.tbmaxinput = ardSettings.tbmax;
+			SettingsValues.tbmax = server.arg("tbmaxinput").toInt();
+			SettingsValues.tbmaxinput = SettingsValues.tbmax;
 		}
 		if (server.hasArg("altitudeinput")) {
-      ardSettings.altitude = server.arg("altitudeinput").toInt();
-      ardSettings.altitudeinput = ardSettings.altitude;
+      SettingsValues.altitude = server.arg("altitudeinput").toInt();
+      SettingsValues.altitudeinput = SettingsValues.altitude;
     }
     if (server.hasArg("tsapiinput")) {
       apiKey = server.arg("tsapiinput");
@@ -177,7 +176,7 @@ void handleSettings() {
       f.close();
     }
 		String Settings = "Set(";
-		Settings += "{\"mTD\": " + String(ardSettings.tdiffmin) + ",\"maxTC\": " + String(ardSettings.tkmax) + ",\"minTC\": " + String(ardSettings.tkmin) + ",\"mTB\": " + String(ardSettings.tbmax) + ",\"a\": " + String(ardSettings.altitude) + "});";
+		Settings += "{\"mTD\": " + String(SettingsValues.tdiffmin) + ",\"maxTC\": " + String(SettingsValues.tkmax) + ",\"minTC\": " + String(SettingsValues.tkmin) + ",\"mTB\": " + String(SettingsValues.tbmax) + ",\"a\": " + String(SettingsValues.altitude) + "});";
 		Serial.print(Settings);
 	}
 }

@@ -1,14 +1,5 @@
-void send_system_api_data()
-{
-  unsigned long lastRequest = millis();
-  SerialHandler::requestAll();
-  while (!Serial.available()) {
-    if (millis() - lastRequest >= noDataRecivedInterval) {
-      SerialHandler::requestAll();
-      lastRequest = millis();
-    }
-  }
-  SerialHandler::handle();
+
+String getApiData(){
   String ApiContent = "{\n\t\"data\": {";
   ApiContent += "\n\t\t\"pump1operating\":" + String(ardData.pump1operating);
   ApiContent += ",\n\t\t\"pump1Status\":" + String(ardData.pump1Status);
@@ -29,26 +20,12 @@ void send_system_api_data()
   ApiContent += ",\n\t\t\"pressureroom\":" + String(ardData.pressureroom);
   ApiContent += "\n\t},";
   ApiContent += "\n\t\"settings\": {";
-  ApiContent += "\n\t\t\"tdiffmin\":" + String(ardSettings.tdiffmin);
-  ApiContent += ",\n\t\t\"tkmax\":" + String(ardSettings.tkmax);
-  ApiContent += ",\n\t\t\"tkmin\":" + String(ardSettings.tkmin);
-  ApiContent += ",\n\t\t\"tbmax\":" + String(ardSettings.tbmax);
-  ApiContent += ",\n\t\t\"altitude\":" + String(ardSettings.altitude);
+  ApiContent += "\n\t\t\"tdiffmin\":" + String(SettingsValues.tdiffmin);
+  ApiContent += ",\n\t\t\"tkmax\":" + String(SettingsValues.tkmax);
+  ApiContent += ",\n\t\t\"tkmin\":" + String(SettingsValues.tkmin);
+  ApiContent += ",\n\t\t\"tbmax\":" + String(SettingsValues.tbmax);
+  ApiContent += ",\n\t\t\"altitude\":" + String(SettingsValues.altitude);
   ApiContent += "\n\t}";
   ApiContent += "\n}";
-  server.send(200, "application/json", ApiContent);
-}
-
-void set_system_api_data()
-{
-  handleSettings();
-}
-
-void api_handleLogin() {
-  if (server.hasArg("USERNAME") && server.hasArg("PASSWORD")) {
-    if (server.arg("USERNAME") == loginUsername &&  server.arg("PASSWORD") == loginPassword) {
-      String header = "HTTP/1.1 200 OK\r\nSet-Cookie: ESPSESSIONID=1\r\nLocation: /\r\nCache-Control: no-cache\r\n\r\n";
-      server.sendContent(header);
-    }
-  }
+  return ApiContent;
 }

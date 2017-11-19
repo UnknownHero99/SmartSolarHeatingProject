@@ -5,7 +5,7 @@ const char PAGE_pumps[] PROGMEM = R"=====(
           <style>
             input[type=radio]{position:absolute;visibility:hidden;display:none}.radio-group,label{display:inline-block}label{color:#FFF;cursor:pointer;font-weight:700;padding:5px 20px}.option-one:checked+label{background-color:#5cb85c}.option-two:checked+label{background-color:#ff551d}.option-three:checked+label{background-color:#d9534f}label+input[type=radio]+label{border-left:solid 4px #999}.radio-group{border:4px solid #999;border-radius:10px;overflow:hidden}
           </style>
-            
+
             <form class="inline-block">
               <div class="text underline">Pumpa 1</div>
               <div class="radio-group">
@@ -52,7 +52,7 @@ const char PAGE_pumps[] PROGMEM = R"=====(
                 else if(document.getElementById('pump4-off').checked) window.location.replace('?cmd=Pump(4, Off);');
               }
             </script>
-            
+
         </article>
       </div>
       <script>
@@ -63,7 +63,7 @@ const char PAGE_pumps[] PROGMEM = R"=====(
 
         window.onload = function ()
         {
-          load("microajax.js","js", function() 
+          load("microajax.js","js", function()
           {
               GetStatusData();
           });
@@ -72,9 +72,9 @@ const char PAGE_pumps[] PROGMEM = R"=====(
       </script>
 )=====";
 
-void send_system_pumps_data()
+void send_system_pumps_data(AsyncWebServerRequest * request)
 {
-  unsigned long lastRequest = millis();
+  unsigned long lastRequest = 0;
   SerialHandler::requestPumps();
   while(!Serial.available()){
     if(millis() - lastRequest >= noDataRecivedInterval){
@@ -82,21 +82,24 @@ void send_system_pumps_data()
       lastRequest = millis();
     }
   }
-  SerialHandler::handle();
+  SerialHandler::handle(AsyncWebServerRequest * request);
 	String values = "";
 	values += "pump1status|" + (String)ardData.pump1Status + "|span\n";
 	values += "pump2status|" + (String)ardData.pump2Status + "|span\n";
 	values += "pump3status|" + (String)ardData.pump3Status + "|span\n";
 	values += "pump4status|" + (String)ardData.pump4Status + "|span\n";
-	server.send(200, "text/plain", values);
+	request->send(200, "text/plain", values);
 }
 
-void handlePumps() {
+void handlePumps(AsyncWebServerRequest * request) {
 	if (!is_authentified()) {
 		String header = "HTTP/1.1 301 OK\r\nLocation: /\r\nCache-Control: no-cache\r\n\r\n";
-		server.sendContent(header);
+		request->sendContent(header);
 		return;
 	}
+
+	request->send(200, "text/plain", String(PAGE_head) + String(PAGE_menu_logedin)+ String(PAGE_pumps)+ String(PAGE_foot));
+
 	if (server.hasArg("cmd")) {
     String cmd = server.arg("cmd");
 		Serial.print(cmd + ";");
@@ -117,12 +120,8 @@ void handlePumps() {
       case 4:
         ardData.pump4Status = status;
         break;
-       
+
     }
-    SerialHandler::handle();
-		server.sendHeader("Location", String("/pumps"), true);
-		server.send(302, "text/plain", "");
 	}
-  String content = String(PAGE_head) + String(PAGE_menu_logedin)+ String(PAGE_pumps)+ String(PAGE_foot);
-	server.sendContent(content);
+
 }

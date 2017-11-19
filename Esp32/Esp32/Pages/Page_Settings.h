@@ -82,11 +82,11 @@ function updatePopup() {
 }
 
 function OTAUpdate() {
-    setValues("/settings/ota");
+    setValues("/ota");
 }
 
 function GetSettingsData() {
-    setValues("/settings/data");
+    setValues("/data/settings");
 }
 
 window.onload = function() {
@@ -98,85 +98,74 @@ window.onload = function() {
 function load(e,t,n){if("js"==t){var a=document.createElement("script");a.src=e,a.type="text/javascript",a.async=!1,a.onload=function(){n()},document.getElementsByTagName("head")[0].appendChild(a)}else if("css"==t){var a=document.createElement("link");a.href=e,a.rel="stylesheet",a.type="text/css",a.async=!1,a.onload=function(){n()},document.getElementsByTagName("head")[0].appendChild(a)}}
 </script>
 )=====";
-
-void send_system_settings_data()
-{
-  unsigned long lastRequest = 0;
-	SerialHandler::requestSettings();
-  while(!Serial.available()){
-    if(millis() - lastRequest >= noDataRecivedInterval){
-      SerialHandler::requestSettings();
-      lastRequest = millis();
-    }
-  }
-  SerialHandler::handle();
+String getSettingsData(){
 	String values = "";
-	values += "tdiffmin|" + (String)ardSettings.tdiffmin + "|span\n";
-	values += "tdiffmininput|" + (String)ardSettings.tdiffmin + "|input\n";
-	values += "tkmax|" + (String)ardSettings.tkmax + "|span\n";
-	values += "tkmaxinput|" + (String)ardSettings.tkmax + "|input\n";
-	values += "tkmin|" + (String)ardSettings.tkmin + "|span\n";
-	values += "tkmininput|" + (String)ardSettings.tkmin + "|input\n";
-	values += "tbmax|" + (String)ardSettings.tbmax + "|span\n";
-	values += "tbmaxinput|" + (String)ardSettings.tbmax + "|input\n";
-	values += "altitude|" + (String)ardSettings.altitude + "|span\n";
-  values += "altitudeinput|" + (String)ardSettings.altitude + "|input\n";
+	values += "tdiffmin|" + (String)SettingsValues.tdiffmin + "|span\n";
+	values += "tdiffmininput|" + (String)SettingsValues.tdiffmin + "|input\n";
+	values += "tkmax|" + (String)SettingsValues.tkmax + "|span\n";
+	values += "tkmaxinput|" + (String)SettingsValues.tkmax + "|input\n";
+	values += "tkmin|" + (String)SettingsValues.tkmin + "|span\n";
+	values += "tkmininput|" + (String)SettingsValues.tkmin + "|input\n";
+	values += "tbmax|" + (String)SettingsValues.tbmax + "|span\n";
+	values += "tbmaxinput|" + (String)SettingsValues.tbmax + "|input\n";
+	values += "altitude|" + (String)SettingsValues.altitude + "|span\n";
+  values += "altitudeinput|" + (String)SettingsValues.altitude + "|input\n";
   values += "tsapi|" + (String)apiKey + "|span\n";
   values += "tsapiinput|" + (String)apiKey + "|input\n";
   values += "tschid|" + (String)thingspeakChannelID + "|span\n";
   values += "tschidinput|" + (String)thingspeakChannelID + "|input\n";
   values += "password|" + (String)"******" + "|span\n";
   values += "passwordinput|" + (String)loginPassword + "|input";
-	server.send(200, "text/plain", values);
+	return values;
 }
 
-void handleSettings() {
-	if (!is_authentified()) {
+void handleSettings(AsyncWebServerRequest* &request) {
+	if (!is_authentified(request)) {
 		String header = "HTTP/1.1 301 OK\r\nLocation: /\r\nCache-Control: no-cache\r\n\r\n";
-		server.sendContent(header);
+		request->send(200, "text/html", header);
 		return;
 	}
 
-	server.send(200, "text/html", String(PAGE_head) + String(PAGE_menu_logedin) + String(PAGE_settings) + String(PAGE_foot));
+	request->send(200, "text/html", String(PAGE_head) + String(PAGE_menu_logedin) + String(PAGE_settings) + String(PAGE_foot));
 
-	if (server.args() > 0)  // Save Settings
+	if (request->args() > 0)  // Save Settings
 	{
-		if (server.hasArg("tdiffmininput")) {
-			ardSettings.tdiffmin = server.arg("tdiffmininput").toInt();
-			ardSettings.tdiffmininput = ardSettings.tdiffmin;
+		if (request->hasArg("tdiffmininput")) {
+			SettingsValues.tdiffmin = request->arg("tdiffmininput").toInt();
+			SettingsValues.tdiffmininput = SettingsValues.tdiffmin;
 		}
-		if (server.hasArg("tkmaxinput")) {
-			ardSettings.tkmax = server.arg("tkmaxinput").toInt();
-			ardSettings.tkmaxinput = ardSettings.tkmax;
+		if (request->hasArg("tkmaxinput")) {
+			SettingsValues.tkmax = request->arg("tkmaxinput").toInt();
+			SettingsValues.tkmaxinput = SettingsValues.tkmax;
 		}
-		if (server.hasArg("tkmininput")) {
-			ardSettings.tkmin = server.arg("tkmininput").toInt();
-			ardSettings.tkmininput = ardSettings.tkmin;
+		if (request->hasArg("tkmininput")) {
+			SettingsValues.tkmin = request->arg("tkmininput").toInt();
+			SettingsValues.tkmininput = SettingsValues.tkmin;
 		}
-		if (server.hasArg("tbmaxinput")) {
-			ardSettings.tbmax = server.arg("tbmaxinput").toInt();
-			ardSettings.tbmaxinput = ardSettings.tbmax;
+		if (request->hasArg("tbmaxinput")) {
+			SettingsValues.tbmax = request->arg("tbmaxinput").toInt();
+			SettingsValues.tbmaxinput = SettingsValues.tbmax;
 		}
-		if (server.hasArg("altitudeinput")) {
-      ardSettings.altitude = server.arg("altitudeinput").toInt();
-      ardSettings.altitudeinput = ardSettings.altitude;
+		if (request->hasArg("altitudeinput")) {
+      SettingsValues.altitude = request->arg("altitudeinput").toInt();
+      SettingsValues.altitudeinput = SettingsValues.altitude;
     }
-    if (server.hasArg("tsapiinput")) {
-      apiKey = server.arg("tsapiinput");
-      eepromWriteString(0, 16, apiKey);
+    if (request->hasArg("tsapiinput")) {
+      apiKey = request->arg("tsapiinput");
+      //eepromWriteString(0, 16, apiKey);
     }
-    if (server.hasArg("tschidinput")) {
-      thingspeakChannelID = server.arg("tschidinput");
-      eepromWriteString(25, 6, thingspeakChannelID);
+    if (request->hasArg("tschidinput")) {
+      thingspeakChannelID = request->arg("tschidinput");
+      //eepromWriteString(25, 6, thingspeakChannelID);
     }
-    if (server.hasArg("passwordinput")) {
-      loginPassword = server.arg("passwordinput");
+    if (request->hasArg("passwordinput")) {
+      loginPassword = request->arg("passwordinput");
       File f = SPIFFS.open("/data.txt", "w");
       f.println(loginPassword + "|" + thingspeakChannelID + "|" + apiKey + "|");
       f.close();
     }
 		String Settings = "Set(";
-		Settings += "{\"mTD\": " + String(ardSettings.tdiffmin) + ",\"maxTC\": " + String(ardSettings.tkmax) + ",\"minTC\": " + String(ardSettings.tkmin) + ",\"mTB\": " + String(ardSettings.tbmax) + ",\"a\": " + String(ardSettings.altitude) + "});";
+		Settings += "{\"mTD\": " + String(SettingsValues.tdiffmin) + ",\"maxTC\": " + String(SettingsValues.tkmax) + ",\"minTC\": " + String(SettingsValues.tkmin) + ",\"mTB\": " + String(SettingsValues.tbmax) + ",\"a\": " + String(SettingsValues.altitude) + "});";
 		Serial.print(Settings);
 	}
 }

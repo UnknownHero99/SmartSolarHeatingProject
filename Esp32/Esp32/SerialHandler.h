@@ -1,4 +1,3 @@
-
 /*Struct for saving data from arduino*/
 struct arduinoData {
   bool pump1operating = false;
@@ -29,7 +28,7 @@ struct arduinoSettings {
   int tbmaxinput = 0;
   int altitude = 0;
   int altitudeinput = 0;
-}   ardSettings;
+}   SettingsValues;
 
 
 
@@ -42,20 +41,20 @@ class SerialHandler {
       JsonObject& root = jsonBuffer.parseObject(json);
       if (!root.success()) return false;
 
-      ardSettings.tdiffmin = root["mTD"];
-      ardSettings.tdiffmininput = ardSettings.tdiffmin;
+      SettingsValues.tdiffmin = root["mTD"];
+      SettingsValues.tdiffmininput = SettingsValues.tdiffmin;
 
-      ardSettings.tkmax = root["maxTC"];
-      ardSettings.tkmaxinput = ardSettings.tkmax;
+      SettingsValues.tkmax = root["maxTC"];
+      SettingsValues.tkmaxinput = SettingsValues.tkmax;
 
-      ardSettings.tkmin = root["minTC"];
-      ardSettings.tkmininput = ardSettings.tkmin;
+      SettingsValues.tkmin = root["minTC"];
+      SettingsValues.tkmininput = SettingsValues.tkmin;
 
-      ardSettings.tbmax = root["mTB"];
-      ardSettings.tbmaxinput = ardSettings.tbmax;
+      SettingsValues.tbmax = root["mTB"];
+      SettingsValues.tbmaxinput = SettingsValues.tbmax;
 
-      ardSettings.altitude = root["a"];
-      ardSettings.altitudeinput = ardSettings.altitude;
+      SettingsValues.altitude = root["a"];
+      SettingsValues.altitudeinput = SettingsValues.altitude;
 
       return true;
     }
