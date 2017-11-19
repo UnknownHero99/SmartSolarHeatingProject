@@ -1,15 +1,12 @@
 # Smart Solar Heating Project
-It's a program for solar collector controller, using arduino and esp32(esp8266 branch still exists).
+It's a program for solar collector controller, esp32.
 
 ## Parts used:
-- Arduino
 - Esp32
 - 4x ds18b20 temperature sensors
-- Dht22
-- BMP180 pressure sensor
-- Encoder
+- BME280 pressure sensor
 - Rtc module
-- 20x4 lcd
+- 3.5" TFT lcd
 - Rgb led diode (for status signalization)
 
 ## You can set:
