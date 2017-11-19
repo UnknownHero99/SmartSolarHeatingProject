@@ -17,7 +17,7 @@ const char PAGE_graphs[] PROGMEM = R"=====(
       <script>
       function GetGraphsData()
       {
-        setValues("/graphs/data");
+        setValues("/data/graphs");
       }
 
       window.onload = function ()
@@ -31,28 +31,3 @@ const char PAGE_graphs[] PROGMEM = R"=====(
 
       </script>
 )=====";
-
-void send_system_graphs_data()
-{
-	String values = "";
-  if(thingspeakChannelID != NULL ){
-	values += "graph1url|" + graphThingspeakURL + thingspeakChannelID + "/charts/1"+ graphProperties + "|iframe\n";
-  values += "graph2url|" + graphThingspeakURL + thingspeakChannelID + "/charts/2"+ graphProperties + "|iframe\n";
-  values += "graph3url|" + graphThingspeakURL + thingspeakChannelID + "/charts/3"+ graphProperties + "|iframe\n";
-  values += "graph4url|" + graphThingspeakURL + thingspeakChannelID + "/charts/4"+ graphProperties + "|iframe\n";
-  values += "graph5url|" + graphThingspeakURL + thingspeakChannelID + "/charts/5"+ graphProperties + "|iframe\n";
-  values += "graph6url|" + graphThingspeakURL + thingspeakChannelID + "/maps/channel_show" + "|iframe\n";
-  }
-	server.send(200, "text/plain", values);
-}
-
-void handleGraphs() {
-	if (!is_authentified()) {
-		String header = "HTTP/1.1 301 OK\r\nLocation: /\r\nCache-Control: no-cache\r\n\r\n";
-		server.sendContent(header);
-		return;
-	}
-  server.send(200, "text/html", String(PAGE_head)+String(PAGE_menu_logedin)+String(PAGE_graphs)+String(PAGE_foot));
-
-
-}

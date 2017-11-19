@@ -105,11 +105,11 @@ void OTAUpdate() {
         return;
       }
     }
-   
+
     while (client.available()) {
 
       String line = client.readStringUntil('\n');
-	  
+
       // remove space, to check if the line is end of headers
       line.trim();
 
@@ -143,13 +143,13 @@ void OTAUpdate() {
   } else {
     // failed to connect to update server
   }
-  
+
   // check contentLength and content type
   if (contentLength && isValidContentType) {
     // if there is enough flash to write BIN file
     bool canBegin = Update.begin(contentLength);
 
-    
+
     if (canBegin) {
 	  //OTA started need write to WEB GUI that it may take up to 5 mins
       size_t written = Update.writeStream(client);
@@ -180,20 +180,4 @@ void OTAUpdate() {
     //no content in response
     client.flush();
   }
-}
-
-void handleSystemUpdate() {
-
-  String content = String(PAGE_head);
-  if (is_authentified())
-  {
-    content += String(PAGE_menu_logedin)+String(PAGE_update);
-  }
-
-  else{
-    content += String(PAGE_menu_normal)+String(PAGE_noPermission);
-  }
-  content += String(PAGE_foot);
-  server.send(200, "text/html", content);
-  OTAUpdate();//Update
 }
