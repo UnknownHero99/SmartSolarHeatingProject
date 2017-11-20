@@ -32,24 +32,24 @@ const char PAGE_pumps[] PROGMEM = R"=====(
             </form>
             <script>
               function check1() {
-                if(document.getElementById('pump1-on').checked) window.location.replace('?pump1=ON');
-                else if(document.getElementById('pump1-auto').checked) window.location.replace('?pump1=Auto');
-                else if(document.getElementById('pump1-off').checked) window.location.replace('?pump1=OFF');
+                if(document.getElementById('pump1-on').checked) sendPumpMode("pump1", "ON");
+                else if(document.getElementById('pump1-auto').checked) sendPumpMode("pump1", "Auto");
+                else if(document.getElementById('pump1-off').checked) sendPumpMode("pump1", "OFF");
               }
               function check2() {
-                if(document.getElementById('pump2-on').checked) window.location.replace('?pump2=ON');
-                else if(document.getElementById('pump2-auto').checked) window.location.replace('?pump2=Auto');
-                else if(document.getElementById('pump2-off').checked) window.location.replace('?pump2=OFF');
+                if(document.getElementById('pump2-on').checked) sendPumpMode("pump2", "ON");
+                else if(document.getElementById('pump2-auto').checked)sendPumpMode("pump2", "Auto");
+                else if(document.getElementById('pump2-off').checked) sendPumpMode("pump1", "OFF");
               }
               function check3() {
-                if(document.getElementById('pump3-on').checked) window.location.replace('?pump3=ON');
-                else if(document.getElementById('pump3-auto').checked) window.location.replace('?pump3=Auto');
-                else if(document.getElementById('pump3-off').checked) window.location.replace('?pump3=OFF');
+                if(document.getElementById('pump3-on').checked) sendPumpMode("pump3", "ON");
+                else if(document.getElementById('pump3-auto').checked) sendPumpMode("pump3", "Auto");
+                else if(document.getElementById('pump3-off').checked) sendPumpMode("pump3", "OFF");
               }
               function check4() {
-                if(document.getElementById('pump4-on').checked) window.location.replace('?pump4=ON');
-                else if(document.getElementById('pump4-auto').checked) window.location.replace('?pump4=Auto');
-                else if(document.getElementById('pump4-off').checked) window.location.replace('?pump4=OFF');
+                if(document.getElementById('pump4-on').checked) sendPumpMode("pump4", "ON");
+                else if(document.getElementById('pump4-auto').checked) sendPumpMode("pump4", "Auto");
+                else if(document.getElementById('pump4-off').checked) sendPumpMode("pump4", "OFF");
               }
             </script>
 
@@ -72,28 +72,37 @@ const char PAGE_pumps[] PROGMEM = R"=====(
       </script>
 )=====";
 
-String getPumpsData(){
+String getPumpsData() {
   String values = "";
 
   values += "pump1status|";
-  if(autoMode) values += "A";
-  else if(pumps[0].isOperating())values += "On";
-  else values += "Off";
+  if (autoMode)
+    values += "A";
+  else if (pumps[0].isOperating())
+    values += "On";
+  else
+    values += "Off";
   values += "|span\n";
 
   values += "pump2status|";
-  if(pumps[1].isOperating())values += "On";
-  else values += "Off";
+  if (pumps[1].isOperating())
+    values += "On";
+  else
+    values += "Off";
   values += "|span\n";
 
-  values += "pump3status|" ;
-  if(pumps[2].isOperating())values += "On";
-  else values += "Off";
+  values += "pump3status|";
+  if (pumps[2].isOperating())
+    values += "On";
+  else
+    values += "Off";
   values += "|span\n";
 
   values += "pump4status|";
-  if(pumps[3].isOperating())values += "On";
-  else values += "Off";
+  if (pumps[3].isOperating())
+    values += "On";
+  else
+    values += "Off";
   values += "|span\n";
 
   return values;
