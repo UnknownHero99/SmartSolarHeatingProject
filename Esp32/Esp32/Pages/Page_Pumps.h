@@ -39,7 +39,7 @@ const char PAGE_pumps[] PROGMEM = R"=====(
               function check2() {
                 if(document.getElementById('pump2-on').checked) sendPumpMode("pump2", "ON");
                 else if(document.getElementById('pump2-auto').checked)sendPumpMode("pump2", "Auto");
-                else if(document.getElementById('pump2-off').checked) sendPumpMode("pump1", "OFF");
+                else if(document.getElementById('pump2-off').checked) sendPumpMode("pump2", "OFF");
               }
               function check3() {
                 if(document.getElementById('pump3-on').checked) sendPumpMode("pump3", "ON");

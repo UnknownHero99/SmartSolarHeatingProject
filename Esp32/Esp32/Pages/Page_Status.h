@@ -100,12 +100,20 @@ String getStatusData() {
     values += "OFF";
   values += "|span\n";
 
-  values += "operatinghours|" + String(pumps[0].operatingTime("%H")) + "|span\n";
-  values += "operatingminutes|" + String(pumps[0].operatingTime("%M")) + "|span\n";
+  values +=
+      "operatinghours|" + String(pumps[0].operatingTime("%H")) + "|span\n";
+  values +=
+      "operatingminutes|" + String(pumps[0].operatingTime("%M")) + "|span\n";
   values += "tempcollector|" + String(collectorSensor.tempDouble()) + "|span\n";
   values += "tempboiler|" + String(boilerSensor.tempDouble()) + "|span\n";
-  values += "tempt1|" +  String(t1Sensor.tempDouble()) + "|span\n";
-  values += "tempt2|" +  String(t2Sensor.tempDouble()) + "|span\n";
+  values +=
+      "tempt1|" +
+      String((t1Sensor.tempDouble() == -127 ? 0 : t1Sensor.tempDouble())) +
+      "|span\n";
+  values +=
+      "tempt2|" +
+      String((t2Sensor.tempDouble() == -127 ? 0 : t2Sensor.tempDouble())) +
+      "|span\n";
   values += "temproom|" + String(roomTemp) + "|span\n";
   values += "humidityroom|" + String(roomHumidity) + "|span\n";
   values += "pressureroom|" + String(roomPressure) + "|span\n";
