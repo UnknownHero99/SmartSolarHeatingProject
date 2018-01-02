@@ -1,5 +1,5 @@
 # Smart Solar Heating Project
-It's a program for solar collector controller, esp32.
+It's a program for solar collector controller based on esp32.
 
 ## Parts used:
 - Esp32
@@ -8,6 +8,7 @@ It's a program for solar collector controller, esp32.
 - Rtc module
 - 3.5" TFT lcd
 - Rgb led diode (for status signalization)
+- relays
 
 ## You can set:
 - manual pump control(on/off) or automatic
@@ -19,17 +20,10 @@ It's a program for solar collector controller, esp32.
 - altitude(for pressure sensor)
 
 ## Features:
-- Log to SD card
 - Smart pump control
-- Esp32 web interface to control pump options are Pump on, Pump off and Automatic
-- Log to thingspeak, displaying graphs in esp32 web interface
+- web interface
+- Log to thingspeak, displaying graphs in web interface
 - Statistics (Max Min of temperatures, pressure etc.)
 - Current sensor data
-- Encoder controlled
 - RGB signalization
 
-## RGB signalization:
-- Green, pump is operating
-- Violet, pump is not operating
-- Red, overheated
-- Blue, sensor problem, check serial monitor for more details
