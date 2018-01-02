@@ -16,7 +16,7 @@ class Pump
       this->name = name;
       this->pumpPin = pin;
       this->normalState = state;
-      //pinMode(this->pumpPin, OUTPUT);
+      pinMode(this->pumpPin, OUTPUT);
       off();
     }
 
@@ -47,16 +47,16 @@ class Pump
     void on() {
       this->lastOperatingTimeUpdate = millis();
 
-      if (this->normalState) PCF_01.write(this->pumpPin, LOW);
-      else PCF_01.write(this->pumpPin, HIGH);
+      if (this->normalState) digitalWrite(this->pumpPin, LOW);
+      else digitalWrite(this->pumpPin, HIGH);
       
       this->pumpOperation = true;
     }
 
     void off() {
       this->lastOperatingTimeUpdate = 0;
-      if (this->normalState) PCF_01.write(this->pumpPin, HIGH);
-      else PCF_01.write(this->pumpPin, LOW);;
+      if (this->normalState) digitalWrite(this->pumpPin, HIGH);
+      else digitalWrite(this->pumpPin, LOW);;
 
       this->pumpOperation = false;
     }

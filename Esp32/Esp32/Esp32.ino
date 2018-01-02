@@ -17,10 +17,12 @@
 #include <BME280I2C.h>
 #include <Wire.h>
 
-#include "PCF8574.h"
 
+HardwareSerial Serial1(1);
+// Choose two free pins
+#define SERIAL1_RXPIN   19
+#define SERIAL1_TXPIN 18
 
-PCF8574 PCF_01(0x38);
 RTC_DS3231 rtc;
 BME280I2C bme;
 
@@ -30,22 +32,31 @@ const char *password = "dejavu12";
 
 #include "global.h"
 #include "WebServerHandler.h"
-
+#include "LCDHandler.h"
 
 void setup(void) {
   Serial.begin(115200);
-
+  Serial1.begin(9600, SERIAL_8N1, SERIAL1_RXPIN, SERIAL1_TXPIN);
+  LCDHandler::switchPage(0);
+  LCDHandler::changeText("t0", "Initalizing temperature sensors");
+  while (boilerSensor.tempDouble() == -127.0 || collectorSensor.tempDouble() == -127.0 ) {
+    sensorUpdate();
+  }
   latestVersion = releaseVersion;
+  
+  LCDHandler::changeText("t0", "Initalizing RTC module");
   Wire.begin(21, 22);
-  PCF_01.begin();
   if (!rtc.begin()) {
     //RTC
+    LCDHandler::changeText("t0", "RTC module problem");
     Serial.println("Problem with RTC");
   }
   now = rtc.now();
 
+  LCDHandler::changeText("t0", "Initalizing BME sensor");
   while (!bme.begin())
   {
+    LCDHandler::changeText("t0", "BME sensor problem");
     Serial.println("Could not find BME280 sensor!");
     delay(1000);
   }
@@ -53,26 +64,35 @@ void setup(void) {
   // begin SPIFFS and read data from it
   SPIFFSInitReadData();
 
+  LCDHandler::changeText("t0", "Connecting to WIFI");
   // connect to WIFI
   wifiConnect();
 
   // init webserver
+  LCDHandler::changeText("t0", "Initalizing Webserver");
   WebServerHandler::initWebserver();
   sensorUpdate(); //update sensors data
+
   resetStatistics(); //reset pump operating time statistics
   ledSetup();
   ledHandler(); //run ledhandler
+
+
+  LCDHandler::switchPage(1);
+  LCDHandler::updateStatusPage();
+  
 }
 
 void loop(void) {
-
+  
   //do it every minute
   unsigned long currentMillis = millis();
   if (currentMillis - lastUpdate >= updateInterval) {
+    
     sensorUpdate(); //update sensors data
     TempHandler();
     ledHandler();
-
+  
     //update pumps operating time
     for (int i = 0; i < 4; i++) {
       pumps[i].updateTime();
@@ -85,24 +105,15 @@ void loop(void) {
       pumps[0].resetTime();
       resetStatistics();
     }
+
+    //Update LCD statusPage
+    LCDHandler::updateStatusPage();
+    
     lastUpdate = millis();
   }
+  
   if (currentMillis - lastThingspeak >= thingspeakInterval) {
     sendToThingspeak();
     lastThingspeak = millis();
   }
-  /*delay(500);
-    setColor(255);
-    delay(500);
-    setColor(0,255);
-    delay(500);
-    setColor(0,0,255);
-    delay(500);
-    setColor(255,255,255);
-    delay(500);
-    setColor(150,73,150);
-    delay(500);
-    PCF_01.write(3, LOW);
-    delay(500);
-    PCF_01.write(3, HIGH);*/
 }

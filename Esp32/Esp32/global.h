@@ -1,5 +1,3 @@
-
-const char *thingspeak = "api.thingspeak.com";
 #include <ESPmDNS.h>
 
 #include <WiFiClient.h>
@@ -7,7 +5,10 @@ const char *thingspeak = "api.thingspeak.com";
 #include "Pump.h"
 #include "TempSensors.h"
 
+
 WiFiClient client; // needed for sending data to thingspeak
+const char *thingspeak = "api.thingspeak.com";
+AsyncWebServer server(80); // The Webserver
 
 String apiKey;
 String thingspeakChannelID;
@@ -23,15 +24,6 @@ String loginPassword = "";
 int redPin = 27;
 int greenPin = 14;
 int bluePin = 12;
-// use first 3 channels of 16 channels (started from zero)
-#define LEDC_CHANNEL_0_R 0
-#define LEDC_CHANNEL_1_G 1
-#define LEDC_CHANNEL_2_B 2
-// use 13 bit precission for LEDC timer
-#define LEDC_TIMER_13_BIT 13
-
-// use 5000 Hz as a LEDC base frequency
-#define LEDC_BASE_FREQ 5000
 
 /*Struct for saving arduino settings*/
 struct Settings {
@@ -62,8 +54,9 @@ TempSensor collectorSensor(collectorSensorPin);
 TempSensor t1Sensor(t1SensorPin);
 TempSensor t2Sensor(t2SensorPin);
 
-Pump pumps[4] = {Pump("1", 3, true), Pump("2", 4, true), Pump("3", 5, true),
-                 Pump("4", 6, true)};
+Pump pumps[4] = {Pump("1", 4), Pump("2", 16), Pump("3", 17),
+                 Pump("4", 5)
+                };
 
 DateTime now;
 
@@ -88,7 +81,6 @@ void wifiConnect() {
     Serial.print(".");
   }
   delay(500);
-
   WiFi.setHostname("SSHProject");
   if (!MDNS.begin("SSHProject")) {
     while (1) {
@@ -96,12 +88,12 @@ void wifiConnect() {
     }
   }
   // Add service to MDNS-SD
-  MDNS.addService("http", "tcp", 80);
+  //MDNS.addService("http", "tcp", 80);
   SettingsValues.IP = WiFi.localIP().toString();
 }
 
 void SPIFFSInitReadData() {
-  SPIFFS.begin();
+  SPIFFS.begin(true);
   File f = SPIFFS.open("/data.txt", "r");
   loginPassword = f.readStringUntil('|');
   if (loginPassword == "")
@@ -117,10 +109,16 @@ void SPIFFSInitReadData() {
 }
 
 void TempHandler() {
+  
+  if(boilerSensor.tempDouble() == -127.0 || collectorSensor.tempDouble() == -127.0){
+    pumps[0].off();
+    return;
+  }
+  
   if (autoMode) {
     if (boilerSensor.tempDouble() < SettingsValues.tbmax &&
         ((collectorSensor.tempDouble() - boilerSensor.tempDouble() >=
-              SettingsValues.tdiffmin &&
+          SettingsValues.tdiffmin &&
           collectorSensor.tempDouble() >= SettingsValues.tkmin) ||
          collectorSensor.tempDouble() > SettingsValues.tkmax)) {
       if (!pumps[0].isOperating())
@@ -143,6 +141,7 @@ void TempHandler() {
     pumps[0].off();
   }
   if (collectorSensor.tempDouble() <= antiFreezeTemperature &&
+      collectorSensor.tempDouble() != -127.0 &&
       !antiFreezeActivated) {
     antiFreezeActivated = true;
     pumps[0].on();
@@ -185,8 +184,7 @@ void TempUpdate() {
 }
 
 double bmeAtSealevel(double pressure) {
-  return pressure /
-         pow((1.0 - (float)SettingsValues.altitude / 44330.0), 5.255);
+  return pressure / pow((1.0 - (float)SettingsValues.altitude / 44330.0), 5.255);
 }
 
 void BMEUpdate() {
@@ -201,32 +199,24 @@ void BMEUpdate() {
 }
 
 void sensorUpdate() {
+  
+  //disable interupts
+  portDISABLE_INTERRUPTS();
+  
   now = rtc.now();
   TempUpdate();
   BMEUpdate();
   lastSensorsUpdate = millis();
   statisticshandler();
+  
+  //reenable interupts
+  portENABLE_INTERRUPTS();
 }
 
 void ledSetup() {
-  ledcSetup(LEDC_CHANNEL_0_R, LEDC_BASE_FREQ, LEDC_TIMER_13_BIT);
-  ledcAttachPin(redPin, LEDC_CHANNEL_0_R);
-  ledcSetup(LEDC_CHANNEL_1_G, LEDC_BASE_FREQ, LEDC_TIMER_13_BIT);
-  ledcAttachPin(greenPin, LEDC_CHANNEL_1_G);
-  ledcSetup(LEDC_CHANNEL_2_B, LEDC_BASE_FREQ, LEDC_TIMER_13_BIT);
-  ledcAttachPin(bluePin, LEDC_CHANNEL_2_B);
 }
 
-void ledcAnalogWrite(uint8_t channel, uint32_t value, uint32_t valueMax = 255) {
-  // calculate duty
-  uint32_t duty = (LEDC_BASE_FREQ / valueMax) * value;
-  // write duty to LEDC
-  ledcWrite(channel, duty);
-}
 void setColor(int red = 0, int green = 0, int blue = 0) {
-  ledcAnalogWrite(LEDC_CHANNEL_0_R, map(red, 0, 255, 255, 0));
-  ledcAnalogWrite(LEDC_CHANNEL_1_G, map(green, 0, 255, 255, 0));
-  ledcAnalogWrite(LEDC_CHANNEL_2_B, map(blue, 0, 255, 255, 0));
   // analogWrite(redPin, map(red, 0, 255, 255, 0));
   // analogWrite(greenPin, map(green, 0, 255, 255, 0));
   // analogWrite(bluePin, map(blue, 0, 255, 255, 0));
@@ -234,12 +224,12 @@ void setColor(int red = 0, int green = 0, int blue = 0) {
 
 void ledHandler() {
   switch (problemID) {
-  case 0:
-    setColor(0, 255); // green
-    break;
-  case 1:
-    setColor(255);
-    break;
+    case 0:
+      setColor(0, 255); // green
+      break;
+    case 1:
+      setColor(255);
+      break;
   }
 }
 

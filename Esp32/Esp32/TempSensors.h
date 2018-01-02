@@ -39,10 +39,10 @@ public:
       if (temporary == -127.00) {
         for (int i = 0; i < 3 || temporary != -127.00; i++)
           temporary = sensor->getTempCByIndex(0);
-        return "n/a";
       }
 
       this->sensorTemperature = temporary;
+      if(this->sensorTemperature == -127.0) return "N/A";
       this->numberOfReadings++;
       this->avgSumHelper += sensorTemperature;
 
@@ -66,10 +66,10 @@ public:
   }
 
   double tempDouble() {
-    if (this->enabled)
+    //if (this->enabled)
       return this->sensorTemperature;
-    else
-      return -127;
+    //else
+    //  return -127;
   }
 
   double avgTemp() {

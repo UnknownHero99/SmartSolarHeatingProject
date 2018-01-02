@@ -12,7 +12,7 @@
 #include "Pages/Page_Settings.h"
 #include "Pages/Page_Status.h"
 #include "Pages/Page_Update.h"
-AsyncWebServer server(80); // The Webserver
+
 
 class WebServerHandler {
   public:
