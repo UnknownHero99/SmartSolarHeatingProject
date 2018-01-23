@@ -26,6 +26,7 @@ HardwareSerial Serial1(1);
 RTC_DS3231 rtc;
 BME280I2C bme;
 
+
 const String releaseVersion = "1.0";
 const char *ssid = "dejavumasaze";
 const char *password = "dejavu12";
@@ -33,6 +34,7 @@ const char *password = "dejavu12";
 #include "global.h"
 #include "WebServerHandler.h"
 #include "LCDHandler.h"
+#include "SerialHandler.h"
 
 void setup(void) {
   Serial.begin(115200);
@@ -43,7 +45,7 @@ void setup(void) {
     sensorUpdate();
   }
   latestVersion = releaseVersion;
-  
+
   LCDHandler::changeText("t0", "Initalizing RTC module");
   Wire.begin(21, 22);
   if (!rtc.begin()) {
@@ -60,6 +62,7 @@ void setup(void) {
     Serial.println("Could not find BME280 sensor!");
     delay(1000);
   }
+
 
   // begin SPIFFS and read data from it
   SPIFFSInitReadData();
@@ -80,19 +83,19 @@ void setup(void) {
 
   LCDHandler::switchPage(1);
   LCDHandler::updateStatusPage();
-  
+
 }
 
 void loop(void) {
-  
+  SerialHandler::handle();
   //do it every minute
   unsigned long currentMillis = millis();
   if (currentMillis - lastUpdate >= updateInterval) {
-    
+
     sensorUpdate(); //update sensors data
     TempHandler();
     ledHandler();
-  
+
     //update pumps operating time
     for (int i = 0; i < 4; i++) {
       pumps[i].updateTime();
@@ -108,10 +111,10 @@ void loop(void) {
 
     //Update LCD statusPage
     LCDHandler::updateStatusPage();
-    
+
     lastUpdate = millis();
   }
-  
+
   if (currentMillis - lastThingspeak >= thingspeakInterval) {
     sendToThingspeak();
     lastThingspeak = millis();

@@ -109,12 +109,12 @@ void SPIFFSInitReadData() {
 }
 
 void TempHandler() {
-  
+
   if(boilerSensor.tempDouble() == -127.0 || collectorSensor.tempDouble() == -127.0){
     pumps[0].off();
     return;
   }
-  
+
   if (autoMode) {
     if (boilerSensor.tempDouble() < SettingsValues.tbmax &&
         ((collectorSensor.tempDouble() - boilerSensor.tempDouble() >=
@@ -199,19 +199,20 @@ void BMEUpdate() {
 }
 
 void sensorUpdate() {
-  
+
   //disable interupts
   portDISABLE_INTERRUPTS();
-  
+
   now = rtc.now();
   TempUpdate();
   BMEUpdate();
   lastSensorsUpdate = millis();
   statisticshandler();
-  
+
   //reenable interupts
   portENABLE_INTERRUPTS();
 }
+
 
 void ledSetup() {
 }
