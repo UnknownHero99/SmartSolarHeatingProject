@@ -84,7 +84,7 @@ void setup(void) {
 
   LCDHandler::switchPage(2);
   updateStatusPage();
-
+  Serial.println("setup successfuly completed");
 }
 
 void loop(void) {
