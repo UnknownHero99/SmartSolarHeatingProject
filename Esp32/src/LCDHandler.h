@@ -28,12 +28,11 @@ public:
     endCommand();
   }
 
-  static void updateStatusPage(){
-    changeText("boilerTemp", (boilerSensor.tempDouble() != -127.0) ? String(boilerSensor.tempDouble())+(char)176+"C" : "N/A" );
-    changeText("collectorTemp", (collectorSensor.tempDouble() != -127.0) ? String(collectorSensor.tempDouble())+(char)176+"C" : "N/A" );
-    changeText("t1Temp", (t1Sensor.tempDouble() != -127.0) ? String(t1Sensor.tempDouble())+(char)176+"C" : "N/A" );
-    changeText("t2Temp", (t2Sensor.tempDouble() != -127.0) ? String(t2Sensor.tempDouble())+(char)176+"C" : "N/A" );
-    changeText("operatingTime", String(pumps[0].operatingTime("%Hh %Mm")));
+  static void setVisibility(String element, bool visible){
+    String command = "vis " + element + "," + String(visible);
+    Serial.println(command);
+    sendCommand(command);
+    endCommand();
   }
 
   static String getIntValue(String element){

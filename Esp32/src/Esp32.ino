@@ -31,9 +31,10 @@ const String releaseVersion = "1.0";
 const char *ssid = "dejavumasaze";
 const char *password = "dejavu12";
 
+#include "LCDHandler.h"
 #include "global.h"
 #include "WebServerHandler.h"
-#include "LCDHandler.h"
+
 #include "SerialHandler.h"
 
 void setup(void) {
@@ -81,8 +82,8 @@ void setup(void) {
   ledHandler(); //run ledhandler
 
 
-  LCDHandler::switchPage(1);
-  LCDHandler::updateStatusPage();
+  LCDHandler::switchPage(2);
+  updateStatusPage();
 
 }
 
@@ -110,7 +111,7 @@ void loop(void) {
     }
 
     //Update LCD statusPage
-    LCDHandler::updateStatusPage();
+    updateStatusPage();
 
     lastUpdate = millis();
   }

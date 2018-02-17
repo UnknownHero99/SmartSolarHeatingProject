@@ -5,7 +5,6 @@
 #include "Pump.h"
 #include "TempSensors.h"
 
-
 WiFiClient client; // needed for sending data to thingspeak
 const char *thingspeak = "api.thingspeak.com";
 AsyncWebServer server(80); // The Webserver
@@ -75,6 +74,23 @@ bool autoMode = true;
 int problemID = 0; // 0-No problem, 1-BME280 Problem
 
 void wifiConnect() {
+  int numberOfAPs =  WiFi.scanNetworks();
+  LCDHandler::switchPage(1);
+  int numberIfSameSSIDs = 0;
+  for (int i = 0; i < numberOfAPs && i < 5; i++) {
+    boolean InList = false;
+    for (int j = 0; j < i; j++) {
+      if ((String(WiFi.SSID(j))==String(WiFi.SSID(i)))) {
+        InList = true;
+        numberIfSameSSIDs++;
+      }
+    }
+    if (!InList) {
+      LCDHandler::changeText("b"+String(i-numberIfSameSSIDs), String(WiFi.SSID(i)));
+      LCDHandler::setVisibility("b"+String(i-numberIfSameSSIDs), true);
+    }
+  }
+
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
@@ -90,6 +106,7 @@ void wifiConnect() {
   // Add service to MDNS-SD
   //MDNS.addService("http", "tcp", 80);
   SettingsValues.IP = WiFi.localIP().toString();
+  LCDHandler::switchPage(2);
 }
 
 void SPIFFSInitReadData() {
@@ -260,4 +277,13 @@ void sendToThingspeak() {
     client.print(postStr);
     client.stop();
   }
+}
+
+static void updateStatusPage(){
+  LCDHandler::changeText("boilerTemp", (boilerSensor.tempDouble() != -127.0) ? String(boilerSensor.tempDouble())+(char)176+"C" : "N/A" );
+  LCDHandler::changeText("collectorTemp", (collectorSensor.tempDouble() != -127.0) ? String(collectorSensor.tempDouble())+(char)176+"C" : "N/A" );
+  LCDHandler::changeText("t1Temp", (t1Sensor.tempDouble() != -127.0) ? String(t1Sensor.tempDouble())+(char)176+"C" : "N/A" );
+  LCDHandler::changeText("t2Temp", (t2Sensor.tempDouble() != -127.0) ? String(t2Sensor.tempDouble())+(char)176+"C" : "N/A" );
+  LCDHandler::changeText("operatingTime", String(pumps[0].operatingTime("%Hh %Mm")));
+  LCDHandler::changeText("IP", WiFi.localIP().toString());
 }
