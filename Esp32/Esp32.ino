@@ -31,11 +31,36 @@ const String releaseVersion = "1.0";
 const char *ssid = "dejavumasaze";
 const char *password = "dejavu12";
 
+/*Struct for saving arduino settings*/
+struct Settings {
+  int tdiffmin = 0;
+  int tdiffmininput = 0;
+  int tkmax = 0;
+  int tkmaxinput = 0;
+  int tkmin = 0;
+  int tkmininput = 0;
+  int tbmax = 0;
+  int tbmaxinput = 0;
+  int altitude = 0;
+  int altitudeinput = 0;
+  String IP = "";
+} SettingsValues;
+
+struct statistics {
+  double roomMinTemp;
+  double roomMaxTemp;
+  double roomMaxHumidity;
+  double roomMinHumidity;
+  double roomMinPressure;
+  double roomMaxPressure;
+} statisticsValues;
+
 #include "LCDHandler.h"
+#include "SerialHandler.h"
 #include "global.h"
 #include "WebServerHandler.h"
 
-#include "SerialHandler.h"
+
 
 void setup(void) {
   Serial.begin(115200);
@@ -46,20 +71,21 @@ void setup(void) {
     sensorUpdate();
   }
   latestVersion = releaseVersion;
-
-  LCDHandler::changeText("t0", "Initalizing RTC module");
+  LCDHandler::wake();
+  LCDHandler::changeText("loadingPage.t0", "Initalizing RTC module");
   Wire.begin(21, 22);
   if (!rtc.begin()) {
     //RTC
-    LCDHandler::changeText("t0", "RTC module problem");
+    LCDHandler::changeText("loadingPage.t0", "RTC module problem");
     Serial.println("Problem with RTC");
   }
   now = rtc.now();
 
-  LCDHandler::changeText("t0", "Initalizing BME sensor");
-  while (!bme.begin())
+  LCDHandler::changeText("loadingPage.t0", "Initalizing BME sensor");
+  bme.begin();
+  while (false)
   {
-    LCDHandler::changeText("t0", "BME sensor problem");
+    LCDHandler::changeText("loadingPage.t00", "BME sensor problem");
     Serial.println("Could not find BME280 sensor!");
     delay(1000);
   }
@@ -68,12 +94,12 @@ void setup(void) {
   // begin SPIFFS and read data from it
   SPIFFSInitReadData();
 
-  LCDHandler::changeText("t0", "Connecting to WIFI");
+  LCDHandler::changeText("loadingPage.t0", "Connecting to WIFI");
   // connect to WIFI
   wifiConnect();
 
   // init webserver
-  LCDHandler::changeText("t0", "Initalizing Webserver");
+  LCDHandler::changeText("loadingPage.t0", "Initalizing Webserver");
   WebServerHandler::initWebserver();
   sensorUpdate(); //update sensors data
 

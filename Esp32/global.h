@@ -24,30 +24,6 @@ int redPin = 27;
 int greenPin = 14;
 int bluePin = 12;
 
-/*Struct for saving arduino settings*/
-struct Settings {
-  int tdiffmin = 0;
-  int tdiffmininput = 0;
-  int tkmax = 0;
-  int tkmaxinput = 0;
-  int tkmin = 0;
-  int tkmininput = 0;
-  int tbmax = 0;
-  int tbmaxinput = 0;
-  int altitude = 0;
-  int altitudeinput = 0;
-  String IP = "";
-} SettingsValues;
-
-struct statistics {
-  double roomMinTemp;
-  double roomMaxTemp;
-  double roomMaxHumidity;
-  double roomMinHumidity;
-  double roomMinPressure;
-  double roomMaxPressure;
-} statisticsValues;
-
 TempSensor boilerSensor(boilerSensorPin);
 TempSensor collectorSensor(collectorSensorPin);
 TempSensor t1Sensor(t1SensorPin);
@@ -74,28 +50,14 @@ bool autoMode = true;
 int problemID = 0; // 0-No problem, 1-BME280 Problem
 
 void wifiConnect() {
-  int numberOfAPs =  WiFi.scanNetworks();
+  LCDHandler::loadWIFIAPS();
   LCDHandler::switchPage(1);
-  int numberIfSameSSIDs = 0;
-  for (int i = 0; i < numberOfAPs && i < 5; i++) {
-    boolean InList = false;
-    for (int j = 0; j < i; j++) {
-      if ((String(WiFi.SSID(j))==String(WiFi.SSID(i)))) {
-        InList = true;
-        numberIfSameSSIDs++;
-      }
-    }
-    if (!InList) {
-      LCDHandler::changeText("b"+String(i-numberIfSameSSIDs), String(WiFi.SSID(i)));
-      LCDHandler::setVisibility("b"+String(i-numberIfSameSSIDs), true);
-    }
-  }
-
-  WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
+    SerialHandler::handle();
     Serial.print(".");
+    delay(500);
   }
+  
   delay(500);
   WiFi.setHostname("SSHProject");
   if (!MDNS.begin("SSHProject")) {
