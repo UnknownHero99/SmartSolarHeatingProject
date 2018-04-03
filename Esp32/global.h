@@ -155,13 +155,6 @@ void resetStatistics() {
   statisticsValues.roomMaxTemp = roomTemp;
 }
 
-void TempUpdate() {
-  boilerSensor.updateTemp();
-  collectorSensor.updateTemp();
-  t1Sensor.updateTemp();
-  t2Sensor.updateTemp();
-}
-
 double bmeAtSealevel(double pressure) {
   return pressure / pow((1.0 - (float)SettingsValues.altitude / 44330.0), 5.255);
 }
@@ -176,6 +169,16 @@ void BMEUpdate() {
   roomHumidity = bme.hum();
   roomPressure = bmeAtSealevel(roomPressure / 100);
 }
+
+void TempUpdate() {
+  boilerSensor.updateTemp();
+  collectorSensor.updateTemp();
+  t1Sensor.updateTemp();
+  t2Sensor.updateTemp();
+  BMEUpdate();
+}
+
+
 
 void sensorUpdate() {
 
@@ -242,10 +245,13 @@ void sendToThingspeak() {
 }
 
 static void updateStatusPage(){
-  LCDHandler::changeText("boilerTemp", (boilerSensor.tempDouble() != -127.0) ? String(boilerSensor.tempDouble())+(char)176+"C" : "N/A" );
-  LCDHandler::changeText("collectorTemp", (collectorSensor.tempDouble() != -127.0) ? String(collectorSensor.tempDouble())+(char)176+"C" : "N/A" );
-  LCDHandler::changeText("t1Temp", (t1Sensor.tempDouble() != -127.0) ? String(t1Sensor.tempDouble())+(char)176+"C" : "N/A" );
-  LCDHandler::changeText("t2Temp", (t2Sensor.tempDouble() != -127.0) ? String(t2Sensor.tempDouble())+(char)176+"C" : "N/A" );
-  LCDHandler::changeText("operatingTime", String(pumps[0].operatingTime("%Hh %Mm")));
-  LCDHandler::changeText("IP", WiFi.localIP().toString());
+  LCDHandler::changeText("statusPage.boilerTemp", (boilerSensor.tempDouble() != -127.0) ? String(boilerSensor.tempDouble())+(char)176+"C" : "N/A" );
+  LCDHandler::changeText("statusPage.collectorTemp", (collectorSensor.tempDouble() != -127.0) ? String(collectorSensor.tempDouble())+(char)176+"C" : "N/A" );
+  LCDHandler::changeText("statusPage.t1Temp", (t1Sensor.tempDouble() != -127.0) ? String(t1Sensor.tempDouble())+(char)176+"C" : "N/A" );
+  LCDHandler::changeText("statusPage.t2Temp", (t2Sensor.tempDouble() != -127.0) ? String(t2Sensor.tempDouble())+(char)176+"C" : "N/A" );
+  LCDHandler::changeText("statusPage.operatingTime", String(pumps[0].operatingTime("%Hh %Mm")));
+  LCDHandler::changeText("statusPage.IP", WiFi.localIP().toString());
+  LCDHandler::changeText("statusPage2.roomTemp", String(roomTemp)+(char)176+"C");
+  LCDHandler::changeText("statusPage2.roomHum",  String(roomHumidity) + " %");
+  LCDHandler::changeText("statusPage2.roomPress", String(roomPressure) + " mBar");
 }

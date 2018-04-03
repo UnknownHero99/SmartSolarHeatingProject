@@ -40,17 +40,12 @@ class LCDHandler {
       endCommand();
     }
 
-    static String getIntValue(String element) {
-      String command = "print \"" + element + "(\n" + element + ".txt\n);\"";
-      Serial.println(command);
-      sendCommand("print \"" + element + "(\"");
-      sendCommand(element + ".txt");
-      sendCommand("\");\"");
+    static int getIntValue(String element) {
+      sendCommand("print " + element + ".txt");
       endCommand();
       while (!Serial1.available());
       String value = Serial1.readString();
-      Serial.println(value.substring(4, value.length() - 3));
-      return value;
+      return value.toInt();
     }
 
     static void loadWIFIAPS() {

@@ -28,8 +28,6 @@ BME280I2C bme;
 
 
 const String releaseVersion = "1.0";
-const char *ssid = "dejavumasaze";
-const char *password = "dejavu12";
 
 /*Struct for saving arduino settings*/
 struct Settings {
@@ -65,15 +63,18 @@ struct statistics {
 void setup(void) {
   Serial.begin(115200);
   Serial1.begin(9600, SERIAL_8N1, SERIAL1_RXPIN, SERIAL1_TXPIN);
+  
   LCDHandler::switchPage(0);
   LCDHandler::changeText("t0", "Initalizing temperature sensors");
   while (boilerSensor.tempDouble() == -127.0 || collectorSensor.tempDouble() == -127.0 ) {
-    sensorUpdate();
+    boilerSensor.updateTemp();
+    collectorSensor.updateTemp();
   }
   latestVersion = releaseVersion;
   LCDHandler::wake();
   LCDHandler::changeText("loadingPage.t0", "Initalizing RTC module");
   Wire.begin(21, 22);
+
   if (!rtc.begin()) {
     //RTC
     LCDHandler::changeText("loadingPage.t0", "RTC module problem");
@@ -82,14 +83,14 @@ void setup(void) {
   now = rtc.now();
 
   LCDHandler::changeText("loadingPage.t0", "Initalizing BME sensor");
-  bme.begin();
-  while (false)
+
+  while (!bme.begin())
   {
-    LCDHandler::changeText("loadingPage.t00", "BME sensor problem");
+    LCDHandler::changeText("loadingPage.t0", "BME sensor problem");
     Serial.println("Could not find BME280 sensor!");
     delay(1000);
   }
-
+  BMEUpdate();
 
   // begin SPIFFS and read data from it
   SPIFFSInitReadData();
