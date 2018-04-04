@@ -1,11 +1,12 @@
-#include <Update.h>
-
+#include <HTTPClient.h>
+#include <ESP32httpUpdate.h>
 //OTA settings
-const String host = "sshp.dejavu.si"; // OTA server
+const String host = "http://sshp.dejavu.si"; // OTA server
 const int port = 80; // port number
-const String firmwareLocation = "/updates/firmware/"; // firmwareLocation file location
-const String firmwareFileName = "/firmware.bin";
+const String firmwareLocation = "/updates/firmware"; // firmwareLocation file location
+const String firmwareFileName = "firmware.bin";
 String latestVersion;
+
 
 //response
 int contentLength = 0;
@@ -83,5 +84,22 @@ String getHeaderValue(String header, String headerName) {
 }
 
 void OTAUpdate() {
-  
-  }
+  if(!checkForUpdate()) return; //latest version already installed
+  Serial.println("Connecting to: " + String(host));
+          t_httpUpdate_return ret = ESPhttpUpdate.update(host + firmwareLocation + "/" + latestVersion + "/" + firmwareFileName);
+          switch(ret) {
+              case HTTP_UPDATE_FAILED:
+                  Serial.print("HTTP_UPDATE_FAILD Error (");
+                  Serial.print(ESPhttpUpdate.getLastError());
+                  Serial.print(ESPhttpUpdate.getLastErrorString().c_str());
+                  break;
+
+              case HTTP_UPDATE_NO_UPDATES:
+                  Serial.println("HTTP_UPDATE_NO_UPDATES");
+                  break;
+
+              case HTTP_UPDATE_OK:
+                  Serial.println("HTTP_UPDATE_OK");
+                  break;
+          }
+      }
