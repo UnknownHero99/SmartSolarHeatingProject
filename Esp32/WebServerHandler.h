@@ -28,8 +28,8 @@ class WebServerHandler {
       });
 
       server.on("/status/data", HTTP_ANY, [](AsyncWebServerRequest * request) {
-        sensorUpdate();
         request->send(200, "text/plain", getStatusData());
+        sensorUpdate();
       });
 
       // API
@@ -118,9 +118,10 @@ class WebServerHandler {
             loginPassword = request->arg("passwordinput");
             File f = SPIFFS.open("/data.txt", "w");
             f.println(loginPassword + "|" + thingspeakChannelID + "|" + apiKey +
-                      "|" + SettingsValues.tdiffmin + "|" + SettingsValues.tkmax +
-                      "|" + SettingsValues.tkmin + "|" + SettingsValues.tbmax +
-                      "|" + SettingsValues.altitude + "|");
+            "|" + SettingsValues.tdiffmin + "|" + SettingsValues.tkmax +
+            "|" + SettingsValues.tkmin + "|" + SettingsValues.tbmax +
+            "|" + SettingsValues.altitude + "|" + SettingsValues.ssid +
+            "|" + SettingsValues.password + "|");
             f.close();
           }
         }
@@ -145,7 +146,7 @@ class WebServerHandler {
       });
 
       server.on("/microajax.js", HTTP_ANY, [](AsyncWebServerRequest * request) {
-        request->send(200, "text/html", PAGE_microajax_js);
+        request->send(200, "text/javascript", PAGE_microajax_js);
       });
 
       server.on("/pumps", HTTP_ANY, [](AsyncWebServerRequest * request) {

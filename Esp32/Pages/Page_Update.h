@@ -1,8 +1,8 @@
-#include <HTTPClient.h>
+#include <WiFi.h>
 #include <ESP32httpUpdate.h>
 //OTA settings
-const String host = "http://sshp.dejavu.si"; // OTA server
-const int port = 80; // port number
+const uint16_t port = 80;
+const char * host = "sshp.time-out.si"; // ip or dns
 const String firmwareLocation = "/updates/firmware"; // firmwareLocation file location
 const String firmwareFileName = "firmware.bin";
 String latestVersion;
@@ -40,19 +40,29 @@ const char PAGE_noPermission[] PROGMEM = R"=====(
 )=====";
 
 String getLatestVersion(){
+
+  Serial.print("Connecting to ");
+  Serial.println(host);
   String latestVersion = "";
-  //Serial.println("Checking latest Version AT: " + String(host));
-  if (client.connect(host.c_str(), port)) {
-    client.print(String("GET ") + "/updates/index.php" + " HTTP/1.1\r\n" +
-                 "Host: " + host + "\r\n" +
-                 "Cache-Control: no-cache\r\n" +
-                 "Connection: close\r\n\r\n");
-    String line = client.readStringUntil('\n');
-    //Serial.println(line);
-    latestVersion = line.substring(line.lastIndexOf(' ')+1, line.length()-1);
-    //Serial.println(latestVersion);
-    client.stop();
+  // Use WiFiClient class to create TCP connections
+  WiFiClient client;
+
+  if (!client.connect(host, port)) {
+      Serial.println("Connection failed.");
+      Serial.println("Waiting 5 seconds before retrying...");
+      delay(5000);
+      return releaseVersion;
   }
+
+  client.print(String("GET ") + "/updates/index.php" + " HTTP/1.1\r\n" +
+               "Host: " + host + "\r\n" +
+               "Cache-Control: no-cache\r\n" +
+               "Connection: close\r\n\r\n");
+  String line = client.readString();
+  Serial.println(line);
+  latestVersion = line.substring(line.lastIndexOf(' ')+1, line.length());
+  Serial.println(latestVersion);
+  client.stop();
   return latestVersion;
 }
 
@@ -69,9 +79,9 @@ bool checkForUpdate(){
   currentVersionDigits[1] = releaseVersion.substring(releaseVersion.indexOf('.')+1).toInt();
 
 
-  //Serial.println("latestVersion is: "+ String(latestVersion));
-  //Serial.println(String(latestVersionDigits[0]) + "."+ String(latestVersionDigits[1]));
-  //Serial.println(String(currentVersionDigits[0]) + "."+ String(currentVersionDigits[1]));
+  Serial.println("latestVersion is: "+ String(latestVersion));
+  Serial.println(String(latestVersionDigits[0]) + "."+ String(latestVersionDigits[1]));
+  Serial.println(String(currentVersionDigits[0]) + "."+ String(currentVersionDigits[1]));
 
 	if(latestVersionDigits[0] > currentVersionDigits[0]) return true;
   else if(latestVersionDigits[1] > currentVersionDigits[1]) return true;
@@ -86,7 +96,7 @@ String getHeaderValue(String header, String headerName) {
 void OTAUpdate() {
   if(!checkForUpdate()) return; //latest version already installed
   Serial.println("Connecting to: " + String(host));
-          t_httpUpdate_return ret = ESPhttpUpdate.update(host + firmwareLocation + "/" + latestVersion + "/" + firmwareFileName);
+          t_httpUpdate_return ret = ESPhttpUpdate.update("http://" + String(host) + firmwareLocation + "/" + latestVersion + "/" + firmwareFileName);
           switch(ret) {
               case HTTP_UPDATE_FAILED:
                   Serial.print("HTTP_UPDATE_FAILD Error (");

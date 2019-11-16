@@ -40,7 +40,15 @@ class SerialHandler {
 
           String ssid = args.substring(0, args.indexOf(','));
           String pass = args.substring(args.indexOf(',') + 1, args.length());
-
+          SettingsValues.ssid = ssid;
+          SettingsValues.password = pass;
+          File f = SPIFFS.open("/data.txt", "w");
+            f.println(loginPassword + "|" + thingspeakChannelID + "|" + apiKey +
+            "|" + SettingsValues.tdiffmin + "|" + SettingsValues.tkmax +
+            "|" + SettingsValues.tkmin + "|" + SettingsValues.tbmax +
+            "|" + SettingsValues.altitude + "|" + SettingsValues.ssid +
+            "|" + SettingsValues.password + "|");
+            f.close();
           Serial.println(ssid + "\t" + pass);
           WiFi.begin(ssid.c_str(), pass.c_str());
           while(WiFi.status() != WL_CONNECTED);

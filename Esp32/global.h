@@ -1,6 +1,8 @@
 #include <ESPmDNS.h>
 
 #include <WiFiClient.h>
+#include <NTPClient.h>
+#include <WiFiUdp.h>
 
 #include "Pump.h"
 #include "TempSensors.h"
@@ -9,10 +11,7 @@ WiFiClient client; // needed for sending data to thingspeak
 const char *thingspeak = "api.thingspeak.com";
 AsyncWebServer server(80); // The Webserver
 
-String apiKey;
-String thingspeakChannelID;
-const char *loginUsername = "admin";
-String loginPassword = "";
+
 
 // Pin settings
 #define boilerSensorPin 32
@@ -36,7 +35,7 @@ Pump pumps[4] = {Pump("1", 4), Pump("2", 16), Pump("3", 17),
 DateTime now;
 
 unsigned long lastUpdate = 0;
-unsigned long updateInterval = 60L * 1000L; // 1 min
+unsigned long updateInterval = 5L * 1000L; // 5s
 unsigned long lastSensorsUpdate = 0;
 unsigned long lastThingspeak = 0;
 unsigned long thingspeakInterval = 5L * 60L * 1000L; // 5 mins
@@ -48,28 +47,6 @@ float roomPressure = 1111;
 bool autoMode = true;
 
 int problemID = 0; // 0-No problem, 1-BME280 Problem
-
-void wifiConnect() {
-  LCDHandler::loadWIFIAPS();
-  LCDHandler::switchPage(1);
-  while (WiFi.status() != WL_CONNECTED) {
-    SerialHandler::handle();
-    Serial.print(".");
-    delay(500);
-  }
-  
-  delay(500);
-  WiFi.setHostname("SSHProject");
-  if (!MDNS.begin("SSHProject")) {
-    while (1) {
-      delay(1000);
-    }
-  }
-  // Add service to MDNS-SD
-  //MDNS.addService("http", "tcp", 80);
-  SettingsValues.IP = WiFi.localIP().toString();
-  LCDHandler::switchPage(2);
-}
 
 void SPIFFSInitReadData() {
   SPIFFS.begin(true);
@@ -84,8 +61,40 @@ void SPIFFSInitReadData() {
   SettingsValues.tkmin = f.readStringUntil('|').toInt();
   SettingsValues.tbmax = f.readStringUntil('|').toInt();
   SettingsValues.altitude = f.readStringUntil('|').toInt();
+  SettingsValues.ssid = f.readStringUntil('|');
+  SettingsValues.password = f.readStringUntil('|');
   f.close();
 }
+
+void wifiConnect() {
+  LCDHandler::loadWIFIAPS();
+  LCDHandler::switchPage(1);
+  static unsigned int start = millis();
+  while (WiFi.status() != WL_CONNECTED) {
+    if(millis()-start > 60*1000 && SettingsValues.ssid != ""){
+      Serial.println("connecting to : " + SettingsValues.ssid);
+      WiFi.begin(SettingsValues.ssid.c_str(), SettingsValues.password.c_str());
+      while(WiFi.status() != WL_CONNECTED);
+    }
+    SerialHandler::handle();
+    Serial.print(".");
+    delay(500);
+  }
+
+  delay(500);
+  WiFi.setHostname("SSHProject");
+  if (!MDNS.begin("SSHProject")) {
+    while (1) {
+      delay(1000);
+    }
+  }
+  // Add service to MDNS-SD
+  //MDNS.addService("http", "tcp", 80);
+  SettingsValues.IP = WiFi.localIP().toString();
+  LCDHandler::switchPage(2);
+}
+
+
 
 void TempHandler() {
 
@@ -167,7 +176,7 @@ void BMEUpdate() {
   roomPressure = bme.pres();
   roomTemp = bme.temp();
   roomHumidity = bme.hum();
-  roomPressure = bmeAtSealevel(roomPressure / 100);
+  roomPressure = bmeAtSealevel(roomPressure);
 }
 
 void TempUpdate() {
@@ -183,16 +192,15 @@ void TempUpdate() {
 void sensorUpdate() {
 
   //disable interupts
-  portDISABLE_INTERRUPTS();
+  //portDISABLE_INTERRUPTS();
 
   now = rtc.now();
   TempUpdate();
-  BMEUpdate();
   lastSensorsUpdate = millis();
   statisticshandler();
 
   //reenable interupts
-  portENABLE_INTERRUPTS();
+  //portENABLE_INTERRUPTS();
 }
 
 
@@ -216,9 +224,10 @@ void ledHandler() {
   }
 }
 
+
 void sendToThingspeak() {
-  if (client.connect(thingspeak,
-                     80)) { //   "184.106.153.149" or api.thingspeak.com
+  if (client.connect(thingspeak, 80)) { //   "184.106.153.149" or api.thingspeak.com
+    Serial.println(apiKey);
     String postStr = apiKey;
     postStr += "&field1=";
     postStr += String(boilerSensor.tempDouble());
@@ -232,14 +241,15 @@ void sendToThingspeak() {
     postStr += String(roomPressure);
     postStr += "\r\n\r\n";
     client.print("POST /update HTTP/1.1\n");
-    client.print("Host: api.thingspeak.com\n");
-    client.print("Connection: close\n");
-    client.print("X-THINGSPEAKAPIKEY: " + apiKey + "\n");
+     client.print("Host: api.thingspeak.com\n");
+     client.print("Connection: close\n");
+     client.print("X-THINGSPEAKAPIKEY: "+apiKey+"\n");
     client.print("Content-Type: application/x-www-form-urlencoded\n");
     client.print("Content-Length: ");
     client.print(postStr.length());
     client.print("\n\n");
     client.print(postStr);
+    Serial.println(client.readString());
     client.stop();
   }
 }

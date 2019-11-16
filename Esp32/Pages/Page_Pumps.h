@@ -7,25 +7,25 @@ const char PAGE_pumps[] PROGMEM = R"=====(
           </style>
 
             <form class="inline-block">
-              <div class="text underline">Pumpa 1</div>
+              <div class="text underline">Črpalka 1</div>
               <div class="radio-group">
                 <input type="radio" class="option-one" id="pump1-on" name="selector" onclick="check1()" /><label class="text" for="pump1-on" >On</label><input type="radio" class="option-two" id="pump1-auto" name="selector" onclick="check1()" /><label class="text" for="pump1-auto">Auto</label><input type="radio" class="option-three" id="pump1-off" name="selector" onclick="check1()" /><label class="text" for="pump1-off">Off</label>
               </div>
             </form>
             <form class="inline-block">
-              <div class="text underline">Pumpa 2</div>
+              <div class="text underline">Črpalka 2</div>
               <div class="radio-group">
                 <input type="radio" class="option-one" id="pump2-on" name="selector" onclick="check2()" /><label class="text" for="pump2-on">On</label><input type="radio" class="option-two" id="pump2-auto" name="selector" onclick="check2()" /><label class="text" for="pump2-auto">Auto</label><input type="radio" class="option-three" id="pump2-off" name="selector" onclick="check2()" /><label class="text" for="pump2-off">Off</label>
               </div>
             </form>
             <form class="inline-block">
-              <div class="text underline">Pumpa 3</div>
+              <div class="text underline">Črpalka 3</div>
               <div class="radio-group">
                 <input type="radio" class="option-one" id="pump3-on" name="selector" onclick="check3()" /><label class="text" for="pump3-on">On</label><input type="radio" class="option-two" id="pump3-auto" name="selector" onclick="check3()" /><label class="text" for="pump3-auto">Auto</label><input type="radio" class="option-three" id="pump3-off" name="selector" onclick="check3()" /><label class="text" for="pump3-off">Off</label>
               </div>
             </form>
             <form class="inline-block">
-              <div class="text underline">Pumpa 4</div>
+              <div class="text underline">Črpalka 4</div>
               <div class="radio-group">
                 <input type="radio" class="option-one" id="pump4-on" name="selector" onclick="check4()" /><label class="text" for="pump4-on">On</label><input type="radio" class="option-two" id="pump4-auto" name="selector" onclick="check4()" /><label class="text" for="pump4-auto">Auto</label><input type="radio" class="option-three" id="pump4-off" name="selector" onclick="check4()" /><label class="text" for="pump4-off">Off</label>
               </div>

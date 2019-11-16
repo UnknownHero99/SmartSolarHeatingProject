@@ -17,16 +17,17 @@
 #include <BME280I2C.h>
 #include <Wire.h>
 
-
-HardwareSerial Serial1(1);
 // Choose two free pins
-#define SERIAL1_RXPIN   19
+#define SERIAL1_RXPIN 19
 #define SERIAL1_TXPIN 18
 
 RTC_DS3231 rtc;
 BME280I2C bme;
 
-
+String loginPassword = "";
+String apiKey;
+String thingspeakChannelID;
+const char *loginUsername = "admin";
 const String releaseVersion = "1.0";
 
 /*Struct for saving arduino settings*/
@@ -42,6 +43,8 @@ struct Settings {
   int altitude = 0;
   int altitudeinput = 0;
   String IP = "";
+  String ssid = "";
+  String password = "";
 } SettingsValues;
 
 struct statistics {
@@ -63,7 +66,6 @@ struct statistics {
 void setup(void) {
   Serial.begin(115200);
   Serial1.begin(9600, SERIAL_8N1, SERIAL1_RXPIN, SERIAL1_TXPIN);
-  
   LCDHandler::switchPage(0);
   LCDHandler::changeText("t0", "Initalizing temperature sensors");
   while (boilerSensor.tempDouble() == -127.0 || collectorSensor.tempDouble() == -127.0 ) {
@@ -80,7 +82,7 @@ void setup(void) {
     LCDHandler::changeText("loadingPage.t0", "RTC module problem");
     Serial.println("Problem with RTC");
   }
-  now = rtc.now();
+  //now = rtc.now();
 
   LCDHandler::changeText("loadingPage.t0", "Initalizing BME sensor");
 
@@ -94,10 +96,28 @@ void setup(void) {
 
   // begin SPIFFS and read data from it
   SPIFFSInitReadData();
-
+    Serial.println("begin");
   LCDHandler::changeText("loadingPage.t0", "Connecting to WIFI");
   // connect to WIFI
   wifiConnect();
+
+  int timezone = 2;
+  int UTCOffsetInSecconds = 60*60*timezone;
+  WiFiUDP ntpUDP;
+  NTPClient timeClient(ntpUDP, "pool.ntp.org", UTCOffsetInSecconds);
+  timeClient.begin();
+  while(!timeClient.update()) {
+  timeClient.forceUpdate();
+  }
+  String formattedDate = timeClient.getFormattedDate();
+   int splitT = formattedDate.indexOf("T");
+  char dayStamp[10];
+  formattedDate.substring(0, splitT).toCharArray(dayStamp,10);
+  // Extract time
+ char timeStamp[5];
+ formattedDate.substring(splitT+1, formattedDate.length()-1).toCharArray(timeStamp,5);
+  DateTime date = DateTime(F(dayStamp), F(timeStamp));
+  rtc.adjust(date);
 
   // init webserver
   LCDHandler::changeText("loadingPage.t0", "Initalizing Webserver");
@@ -111,6 +131,7 @@ void setup(void) {
 
   LCDHandler::switchPage(2);
   updateStatusPage();
+  sendToThingspeak();
   Serial.println("setup successfuly completed");
 }
 
@@ -125,9 +146,8 @@ void loop(void) {
     ledHandler();
 
     //update pumps operating time
-    for (int i = 0; i < 4; i++) {
-      pumps[i].updateTime();
-    }
+    for (int i = 0; i < 4; i++) pumps[i].updateTime();
+    
     //if disconnected from wifi reconnect
     if (WiFi.status() != WL_CONNECTED) wifiConnect(); // reconnect to WIFI
 
@@ -147,4 +167,5 @@ void loop(void) {
     sendToThingspeak();
     lastThingspeak = millis();
   }
+
 }

@@ -3,18 +3,18 @@ const char PAGE_status[] PROGMEM = R"=====(
         <article>
           <h1>Trenutno stanje</h1>
           <div style="text-align: center;max-width: 1250px;margin: 0 auto;">
-            <div class="textValue"><div class="text underline">Pump Status</div><div class="text" id="pumpstatus">-</div></div>
-            <div class="textValue"><div class="text underline">Pump Auto Mode</div><div class="text" id="pumpautomode">-</div></div>
-            <div class="textValue"><div class="text underline">Pump Operating Time</div><span class="text" id="operatinghours">-</span><span class="text"> h </span><span class="text" id="operatingminutes">-</span><span class="text"> m</span></div>
+            <div class="textValue"><div class="text underline">Stanje črpalke</div><div class="text" id="pumpstatus">-</div></div>
+            <div class="textValue"><div class="text underline">Avtomatski način</div><div class="text" id="pumpautomode">-</div></div>
+            <div class="textValue"><div class="text underline">Čas delovanja črpalke</div><span class="text" id="operatinghours">-</span><span class="text"> h </span><span class="text" id="operatingminutes">-</span><span class="text"> m</span></div>
           </div>
           <div style="text-align: center;max-width: 1250px;margin: 0 auto;">
-            <div id="boilerTempContainer" class="progressbar"><div class="text progressbarText">Boiler Temp</div></div>
-            <div id="collectorTempContainer" class="progressbar"><div class="text progressbarText">Collector Temp</div></div>
-            <div id="t1TempContainer" class="progressbar"><div class="text progressbarText">T1 Temp</div></div>
-            <div id="t2TempContainer" class="progressbar"><div class="text progressbarText">T2 Temp</div></div>
-            <div id="roomTempContainer" class="progressbar"><div class="text progressbarText">Room Temp</div></div>
-            <div id="roomHumidityContainer" class="progressbar"><div class="text progressbarText">Room Humidity</div></div>
-            <div id="airPressureContainer" class="progressbar"><div class="text progressbarText">Air Pressure</div></div>
+            <div id="boilerTempContainer" class="progressbar"><div class="text progressbarText">Temp Bojlerja</div></div>
+            <div id="collectorTempContainer" class="progressbar"><div class="text progressbarText">Temp Kolektorja</div></div>
+            <div id="t1TempContainer" class="progressbar"><div class="text progressbarText">Temp T1</div></div>
+            <div id="t2TempContainer" class="progressbar"><div class="text progressbarText">Temp T2</div></div>
+            <div id="roomTempContainer" class="progressbar"><div class="text progressbarText">Sobna Temp</div></div>
+            <div id="roomHumidityContainer" class="progressbar"><div class="text progressbarText">Sobna vlažnost</div></div>
+            <div id="airPressureContainer" class="progressbar"><div class="text progressbarText">Zračni pritisk</div></div>
           </div>
           <button onclick="GetStatusData()" class="shadow button">Osveži</button>
         </article>
