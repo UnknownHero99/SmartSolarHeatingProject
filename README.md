@@ -1,17 +1,17 @@
 # Smart Solar Heating Project
-It's a program for solar collector controller based on esp32.
+ESP32 based water heating collector controler 
 
-## Parts used:
+## Components:
 - Esp32
 - 4x ds18b20 temperature sensors
-- BME280 pressure sensor
-- Rtc module
-- 3.5" TFT lcd
+- BME280 air pressure/temperature sensor
+- Rtc
+- 3.5" Nextion TFT lcd
 - Rgb led diode (for status signalization)
-- relays
+- up to 4 relays
 
-## You can set:
-- manual pump control(on/off) or automatic
+## Features:
+- manual/automatic pump(relay) control
 - min temp difference , if temp difference is lower than this pump wont be enabled
 - max temp of boiler , if boiler is higher than this pupm will stop
 - min temp of collector , if temp of collector is lowet than this pump wont be enabled
