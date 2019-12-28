@@ -26,6 +26,7 @@ ESP32 based water heating collector controler
 - Statistics (Max Min of temperatures, pressure etc.)
 - Current sensor data
 - RGB signalization
+- OTA update (still in development)
 
 ## Screenshots
 ![](https://user-images.githubusercontent.com/3913450/71542633-104ce080-2969-11ea-93a7-17aaf85d9cbf.png)
