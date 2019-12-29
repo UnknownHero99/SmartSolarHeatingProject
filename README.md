@@ -1,5 +1,6 @@
 # Smart Solar Heating Project
-ESP32 based water heating collector controler 
+ESP32 based water heating collector controler firmware
+PCB design included
 
 ## Components:
 - Esp32
@@ -34,4 +35,9 @@ ESP32 based water heating collector controler
 ![](https://user-images.githubusercontent.com/3913450/71542660-573ad600-2969-11ea-952a-ca91952b709f.png)
 ![](https://user-images.githubusercontent.com/3913450/71542663-64f05b80-2969-11ea-99f5-49d91ee6da32.png)
 ![](https://user-images.githubusercontent.com/3913450/71542667-6a4da600-2969-11ea-888b-ec4e1065db8b.png)
+
+## PCB
+
+![](https://user-images.githubusercontent.com/3913450/71561532-0d8ce100-2a78-11ea-8dd7-8cb9736cc087.png)
+![](https://user-images.githubusercontent.com/3913450/71561537-44fb8d80-2a78-11ea-9018-037baf67aa9d.jpg)
 

@@ -1,0 +1,4 @@
+(sym_lib_table
+  (lib (name SmartSolarHeatingProject-rescue)(type Legacy)(uri ${KIPRJMOD}/SmartSolarHeatingProject-rescue.lib)(options "")(descr ""))
+  (lib (name libraries)(type Legacy)(uri D:/backup/jakob/Projects/SmartSolarHeatingProject/PCB/Libraries/ESP32-Footprints/ESP32-footprints-Shem-Lib.lib)(options "")(descr ""))
+)

@@ -1,0 +1,9 @@
+(sym_lib_table
+  (lib (name SmartSolarHeatingProject-rescue)(type Legacy)(uri ${KIPRJMOD}/SmartSolarHeatingProject-rescue.lib)(options "")(descr ""))
+  (lib (name ch340g)(type Legacy)(uri ${KIPRJMOD}/Libraries/kicad-ESP8266-master/ch340g.lib)(options "")(descr ""))
+  (lib (name vreg)(type Legacy)(uri ${KIPRJMOD}/Libraries/Kicad-Libraries-master/library/vreg.lib)(options "")(descr ""))
+  (lib (name DS3231N_DIP)(type Legacy)(uri ${KIPRJMOD}/Libraries/ds3231/DS3231N_DIP.lib)(options "")(descr ""))
+  (lib (name lm3940)(type Legacy)(uri ${KIPRJMOD}/Libraries/LM3940/lm3940.lib)(options "")(descr ""))
+  (lib (name ESP32-footprints-Shem-Lib)(type Legacy)(uri ${KIPRJMOD}/Libraries/ESP32-Footprints/ESP32-footprints-Shem-Lib.lib)(options "")(descr ""))
+  (lib (name Bosch)(type Legacy)(uri ${KIPRJMOD}/Libraries/library/Bosch.lib)(options "")(descr ""))
+)

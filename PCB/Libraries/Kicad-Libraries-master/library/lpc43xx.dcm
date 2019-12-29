@@ -1,0 +1,8 @@
+EESchema-DOCLIB  Version 2.0  Date: 6/21/2012 2:46:30 AM
+#
+$CMP LPC4330FBD144
+D 32-bit ARM Cortex-M4/M0 MCU
+K PWM, dual core, NXP
+$ENDCMP
+#
+#End Doc Library

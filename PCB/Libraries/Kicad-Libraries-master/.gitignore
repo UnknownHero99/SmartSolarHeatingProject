@@ -1,0 +1,8 @@
+*.o
+*.a
+desktop.ini
+~$*.*x
+template/*
+*opendous*
+str710.lib
+*.bak

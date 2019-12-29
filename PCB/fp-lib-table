@@ -1,0 +1,4 @@
+(fp_lib_table
+  (lib (name PCF8574T_3_512)(type Legacy)(uri "$(KIPRJMOD)/Libraries/PCF8574T_3_512/PCF8574T_3_512.mod")(options "")(descr ""))
+  (lib (name ESP32-footprints-Lib)(type KiCad)(uri "$(KIPRJMOD)/Libraries/ESP32-Footprints/ESP32-footprints-Lib.pretty")(options "")(descr ""))
+)

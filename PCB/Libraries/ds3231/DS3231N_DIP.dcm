@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP DS3231N_DIP
+D 32.768kHz CMOS TCXO Oscillator Through Hole 5V 220A
+K
+F http://datasheets.maximintegrated.com/en/ds/DS3231.pdf
+$ENDCMP
+#
+#End Doc Library

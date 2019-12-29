@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP PCF8574T_3,512
+D Remote I/O Exp For I2C Bus,PCF8574T/3 NXP PCF8574T/3,512, 8-channel 8 bit I/O Expander 100kHz, I2C, 16-Pin SOIC
+K
+F http://www.nxp.com/documents/data_sheet/PCF8574_PCF8574A.pdf
+$ENDCMP
+#
+#End Doc Library
