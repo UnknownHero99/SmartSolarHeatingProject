@@ -39,5 +39,5 @@ PCB design included
 ## PCB
 
 ![](https://user-images.githubusercontent.com/3913450/71561532-0d8ce100-2a78-11ea-8dd7-8cb9736cc087.png)
-![](https://user-images.githubusercontent.com/3913450/71561537-44fb8d80-2a78-11ea-9018-037baf67aa9d.jpg)
+![](https://user-images.githubusercontent.com/3913450/72749334-0c079200-3bba-11ea-9b89-6267fead7efd.jpg)
 
