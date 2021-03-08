@@ -28,7 +28,7 @@ String loginPassword = "";
 String apiKey;
 String thingspeakChannelID;
 const char *loginUsername = "admin";
-const String releaseVersion = "1.0";
+const String releaseVersion = "1.1";
 
 /*Struct for saving arduino settings*/
 struct Settings {
@@ -61,7 +61,7 @@ struct statistics {
 #include "global.h"
 #include "WebServerHandler.h"
 
-
+TaskHandle_t sensorsTask;
 
 void setup(void) {
   Serial.begin(115200);
@@ -133,10 +133,19 @@ void setup(void) {
   updateStatusPage();
   sendToThingspeak();
   Serial.println("setup successfuly completed");
+  xTaskCreatePinnedToCore(
+             sensorsTaskFunction, /* Task function. */
+             "sensorsTask",   /* name of task. */
+             10000,     /* Stack size of task */
+             NULL,      /* parameter of the task */
+             1,         /* priority of the task */
+             &sensorsTask,    /* Task handle to keep track of created task */
+             1);        /* pin task to core 0 */
 }
 
-void loop(void) {
+void sensorsTaskFunction( void * pvParameters ){
   SerialHandler::handle();
+
   //do it every minute
   unsigned long currentMillis = millis();
   if (currentMillis - lastUpdate >= updateInterval) {
@@ -162,10 +171,14 @@ void loop(void) {
 
     lastUpdate = millis();
   }
-
+  
   if (currentMillis - lastThingspeak >= thingspeakInterval) {
     sendToThingspeak();
     lastThingspeak = millis();
   }
+}
+
+void loop(void) {
+
 
 }
