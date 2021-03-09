@@ -65,7 +65,7 @@ TaskHandle_t sensorsTask;
 
 void setup(void) {
   Serial.begin(115200);
-  Serial1.begin(9600, SERIAL_8N1, SERIAL1_RXPIN, SERIAL1_TXPIN);
+  Serial1.begin(115200, SERIAL_8N1, SERIAL1_RXPIN, SERIAL1_TXPIN);
   LCDHandler::switchPage(0);
   LCDHandler::changeText("t0", "Initalizing temperature sensors");
   while (boilerSensor.tempDouble() == -127.0 || collectorSensor.tempDouble() == -127.0 ) {
@@ -96,26 +96,26 @@ void setup(void) {
 
   // begin SPIFFS and read data from it
   SPIFFSInitReadData();
-    Serial.println("begin");
+  Serial.println("begin");
   LCDHandler::changeText("loadingPage.t0", "Connecting to WIFI");
   // connect to WIFI
   wifiConnect();
 
   int timezone = 2;
-  int UTCOffsetInSecconds = 60*60*timezone;
+  int UTCOffsetInSecconds = 60 * 60 * timezone;
   WiFiUDP ntpUDP;
   NTPClient timeClient(ntpUDP, "pool.ntp.org", UTCOffsetInSecconds);
   timeClient.begin();
-  while(!timeClient.update()) {
-  timeClient.forceUpdate();
+  while (!timeClient.update()) {
+    timeClient.forceUpdate();
   }
   String formattedDate = timeClient.getFormattedDate();
-   int splitT = formattedDate.indexOf("T");
+  int splitT = formattedDate.indexOf("T");
   char dayStamp[10];
-  formattedDate.substring(0, splitT).toCharArray(dayStamp,10);
+  formattedDate.substring(0, splitT).toCharArray(dayStamp, 10);
   // Extract time
- char timeStamp[5];
- formattedDate.substring(splitT+1, formattedDate.length()-1).toCharArray(timeStamp,5);
+  char timeStamp[5];
+  formattedDate.substring(splitT + 1, formattedDate.length() - 1).toCharArray(timeStamp, 5);
   DateTime date = DateTime(F(dayStamp), F(timeStamp));
   rtc.adjust(date);
 
@@ -134,51 +134,53 @@ void setup(void) {
   sendToThingspeak();
   Serial.println("setup successfuly completed");
   xTaskCreatePinnedToCore(
-             sensorsTaskFunction, /* Task function. */
-             "sensorsTask",   /* name of task. */
-             10000,     /* Stack size of task */
-             NULL,      /* parameter of the task */
-             1,         /* priority of the task */
-             &sensorsTask,    /* Task handle to keep track of created task */
-             1);        /* pin task to core 0 */
+    sensorsTaskFunction, /* Task function. */
+    "sensorsTask",   /* name of task. */
+    10000,     /* Stack size of task */
+    NULL,      /* parameter of the task */
+    1,         /* priority of the task */
+    &sensorsTask,    /* Task handle to keep track of created task */
+    1);        /* pin task to core 0 */
 }
 
-void sensorsTaskFunction( void * pvParameters ){
-  SerialHandler::handle();
+void sensorsTaskFunction( void * pvParameters ) {
+  Serial.print("Task1 running on core ");
+  Serial.println(xPortGetCoreID());
+  for ( ;; ) {
+    SerialHandler::handle();
+    unsigned long currentMillis = millis();
+    if (currentMillis - lastUpdate >= updateInterval) {
 
-  //do it every minute
-  unsigned long currentMillis = millis();
-  if (currentMillis - lastUpdate >= updateInterval) {
+      sensorUpdate(); //update sensors data
+      TempHandler();
+      ledHandler();
 
-    sensorUpdate(); //update sensors data
-    TempHandler();
-    ledHandler();
+      //update pumps operating time
+      for (int i = 0; i < 4; i++) pumps[i].updateTime();
 
-    //update pumps operating time
-    for (int i = 0; i < 4; i++) pumps[i].updateTime();
-    
-    //if disconnected from wifi reconnect
-    if (WiFi.status() != WL_CONNECTED) wifiConnect(); // reconnect to WIFI
+      //if disconnected from wifi reconnect
+      if (WiFi.status() != WL_CONNECTED) wifiConnect(); // reconnect to WIFI
 
-    //check if statistics needs to be cleared
-    if (now.hour() == 0 && now.minute() == 0) {
-      pumps[0].resetTime();
-      resetStatistics();
+      //check if statistics needs to be cleared
+      if (now.hour() == 0 && now.minute() == 0) {
+        pumps[0].resetTime();
+        resetStatistics();
+      }
+
+      //Update LCD statusPage
+      updateStatusPage();
+
+      lastUpdate = millis();
     }
 
-    //Update LCD statusPage
-    updateStatusPage();
+    if (currentMillis - lastThingspeak >= thingspeakInterval) {
+      sendToThingspeak();
+      lastThingspeak = millis();
+    }
 
-    lastUpdate = millis();
-  }
-  
-  if (currentMillis - lastThingspeak >= thingspeakInterval) {
-    sendToThingspeak();
-    lastThingspeak = millis();
   }
 }
 
 void loop(void) {
-
 
 }
