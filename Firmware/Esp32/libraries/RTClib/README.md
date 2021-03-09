@@ -1,11 +1,14 @@
+# RTClib [![Build Status](https://github.com/adafruit/RTClib/workflows/Arduino%20Library%20CI/badge.svg)](https://github.com/adafruit/RTClib/actions)[![Documentation](https://github.com/adafruit/ci-arduino/blob/master/assets/doxygen_badge.svg)](http://adafruit.github.io/RTClib/html/index.html)
+
 This is a fork of JeeLab's fantastic real time clock library for Arduino.
 
-For details on using this library with an RTC module like the DS1307, see the guide at: https://learn.adafruit.com/ds1307-real-time-clock-breakout-board-kit/overview
+Works great with Adafruit RTC breakouts:
 
-To download. click the DOWNLOADS button to the right, and rename the uncompressed folder RTClib.
+- [DS3231 Precision RTC](https://www.adafruit.com/product/3013)
+- [PCF8523 RTC](https://www.adafruit.com/product/3295)
+- [DS1307 RTC](https://www.adafruit.com/product/3296)
 
-Place the RTClib folder in your *arduinosketchfolder*/libraries/ folder. 
-You may need to create the libraries subfolder if its your first library. Restart the IDE.
+Please note that dayOfTheWeek() ranges from 0 to 6 inclusive with 0 being 'Sunday'.
 
 <!-- START COMPATIBILITY TABLE -->
 
@@ -13,18 +16,18 @@ You may need to create the libraries subfolder if its your first library. Restar
 
 MCU                | Tested Works | Doesn't Work | Not Tested  | Notes
 ------------------ | :----------: | :----------: | :---------: | -----
-Atmega328 @ 16MHz  |      X       |             |            | 
-Atmega328 @ 12MHz  |      X       |             |            | 
+Atmega328 @ 16MHz  |      X       |             |            |
+Atmega328 @ 12MHz  |      X       |             |            |
 Atmega32u4 @ 16MHz |      X       |             |            | Use SDA/SCL on pins D3 &amp; D2
 Atmega32u4 @ 8MHz  |      X       |             |            | Use SDA/SCL on pins D3 &amp; D2
 ESP8266            |      X       |             |            | SDA/SCL default to pins 4 &amp; 5 but any two pins can be assigned as SDA/SCL using Wire.begin(SDA,SCL)
 Atmega2560 @ 16MHz |      X       |             |            | Use SDA/SCL on Pins 20 &amp; 21
 ATSAM3X8E          |      X       |             |            | Use SDA1 and SCL1
-ATSAM21D           |      X       |             |            | 
-ATtiny85 @ 16MHz   |      X       |             |            | 
-ATtiny85 @ 8MHz    |      X       |             |            | 
-Intel Curie @ 32MHz |             |             |     X       | 
-STM32F2            |             |             |     X       | 
+ATSAM21D           |      X       |             |            |
+ATtiny85 @ 16MHz   |      X       |             |            |
+ATtiny85 @ 8MHz    |      X       |             |            |
+Intel Curie @ 32MHz |             |             |     X       |
+STM32F2            |             |             |     X       |
 
   * ATmega328 @ 16MHz : Arduino UNO, Adafruit Pro Trinket 5V, Adafruit Metro 328, Adafruit Metro Mini
   * ATmega328 @ 12MHz : Adafruit Pro Trinket 3V
@@ -38,3 +41,35 @@ STM32F2            |             |             |     X       |
   * ATtiny85 @ 8MHz : Adafruit Gemma, Arduino Gemma, Adafruit Trinket 3V
 
 <!-- END COMPATIBILITY TABLE -->
+Adafruit invests time and resources providing this open source code, please support Adafruit and open-source hardware by purchasing products from Adafruit!
+
+# Dependencies
+ * [TinyWireM](https://github.com/adafruit/TinyWireM)
+
+# Contributing
+
+Contributions are welcome! Please read our [Code of Conduct](https://github.com/adafruit/RTClib/blob/master/code-of-conduct.md)
+before contributing to help this project stay welcoming.
+
+## Documentation and doxygen
+For the detailed API documentation, see https://adafruit.github.io/RTClib/html/index.html
+Documentation is produced by doxygen. Contributions should include documentation for any new code added.
+
+Some examples of how to use doxygen can be found in these guide pages:
+
+https://learn.adafruit.com/the-well-automated-arduino-library/doxygen
+
+https://learn.adafruit.com/the-well-automated-arduino-library/doxygen-tips
+
+## Code formatting and clang-format
+The code should be formatted according to the [LLVM Coding Standards](https://llvm.org/docs/CodingStandards.html), which is the default of the clang-format tool.  The easiest way to ensure conformance is to [install clang-format](https://llvm.org/builds/) and run
+
+```shell
+clang-format -i <source_file>`
+```
+
+Written by JeeLabs
+MIT license, check license.txt for more information
+All text above must be included in any redistribution
+
+To install, use the Arduino Library Manager and search for "RTClib" and install the library.

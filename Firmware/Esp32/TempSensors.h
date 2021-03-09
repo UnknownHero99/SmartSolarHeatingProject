@@ -70,7 +70,7 @@ class TempSensor {
     }
 
     double tempDouble() {
-      if (this->sensorTemperature == DEVICE_DISCONNECTED_C) updateTemp()
+      if (this->sensorTemperature == DEVICE_DISCONNECTED_C) updateTemp();
         //if (this->enabled)
         return this->sensorTemperature;
       //else
