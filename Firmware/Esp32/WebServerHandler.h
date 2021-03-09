@@ -29,7 +29,6 @@ class WebServerHandler {
 
       server.on("/status/data", HTTP_ANY, [](AsyncWebServerRequest * request) {
         request->send(200, "text/plain", getStatusData());
-        sensorUpdate();
       });
 
       // API

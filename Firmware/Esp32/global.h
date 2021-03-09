@@ -98,10 +98,10 @@ void wifiConnect() {
 
 void TempHandler() {
 
-  if(boilerSensor.tempDouble() == -127.0 || collectorSensor.tempDouble() == -127.0){
-    pumps[0].off();
-    return;
-  }
+//  if(boilerSensor.tempDouble() == -127.0 || collectorSensor.tempDouble() == -127.0){
+//    pumps[0].off();
+//    return;
+//  }
 
   if (autoMode) {
     if (boilerSensor.tempDouble() < SettingsValues.tbmax &&
